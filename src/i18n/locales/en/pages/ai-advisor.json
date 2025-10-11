@@ -1,0 +1,23 @@
+{
+  "title": "AI Photography Advisor",
+  "description": "Get personalized equipment recommendations powered by artificial intelligence.",
+  "howItWorks": {
+    "title": "How it works",
+    "step1": {
+      "title": "Tell us your project",
+      "description": "Describe your photography project and requirements"
+    },
+    "step2": {
+      "title": "AI Analysis",
+      "description": "Our AI analyzes your needs and budget"
+    },
+    "step3": {
+      "title": "Get Recommendations",
+      "description": "Receive personalized equipment suggestions"
+    }
+  },
+  "cta": {
+    "title": "Start Your AI Consultation",
+    "button": "Begin AI Consultation"
+  }
+}

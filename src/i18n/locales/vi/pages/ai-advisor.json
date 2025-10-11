@@ -1,0 +1,23 @@
+{
+  "title": "Cố vấn nhiếp ảnh AI",
+  "description": "Nhận gợi ý thiết bị cá nhân hóa được hỗ trợ bởi trí tuệ nhân tạo.",
+  "howItWorks": {
+    "title": "Cách thức hoạt động",
+    "step1": {
+      "title": "Mô tả dự án của bạn",
+      "description": "Mô tả dự án nhiếp ảnh và yêu cầu của bạn"
+    },
+    "step2": {
+      "title": "Phân tích AI",
+      "description": "AI của chúng tôi phân tích nhu cầu và ngân sách của bạn"
+    },
+    "step3": {
+      "title": "Nhận gợi ý",
+      "description": "Nhận gợi ý thiết bị được cá nhân hóa"
+    }
+  },
+  "cta": {
+    "title": "Bắt đầu tư vấn AI của bạn",
+    "button": "Bắt đầu tư vấn AI"
+  }
+}

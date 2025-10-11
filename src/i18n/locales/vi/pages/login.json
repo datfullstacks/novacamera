@@ -1,0 +1,18 @@
+{
+  "title": "Đăng nhập Nova Camera",
+  "form": {
+    "email": {
+      "label": "Địa chỉ email",
+      "placeholder": "Nhập email của bạn"
+    },
+    "password": {
+      "label": "Mật khẩu",
+      "placeholder": "Nhập mật khẩu của bạn"
+    },
+    "rememberMe": "Ghi nhớ đăng nhập",
+    "forgotPassword": "Quên mật khẩu?",
+    "submitButton": "Đăng nhập",
+    "signUpPrompt": "Chưa có tài khoản?",
+    "signUpLink": "Đăng ký tại đây"
+  }
+}

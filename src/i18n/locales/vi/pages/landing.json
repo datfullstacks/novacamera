@@ -1,0 +1,141 @@
+{
+  "navigation": {
+    "home": "Trang chủ",
+    "rental": "Thuê thiết bị",
+    "pricing": "Giá",
+    "aiAdvisor": "Cố vấn AI",
+    "support": "Cần hỗ trợ",
+    "courses": "Khoá học nhiếp ảnh gia AI",
+    "consignment": "Ký gửi",
+    "login": "Đăng nhập"
+  },
+  "hero": {
+    "title": "Thiết Bị Nhiếp Ảnh Chuyên Nghiệp",
+    "subtitle": "Thuê đúng – quay chất – AI giúp bạn ra quyết định nhanh hơn",
+    "ctaPrimary": "Thuê Ngay",
+    "ctaSecondary": "Tư vấn AI"
+  },
+  "categories": {
+    "title": "Danh Mục Thiết Bị",
+    "items": {
+      "camera": {
+        "name": "Máy Ảnh",
+        "subtitle": "DSLR, Mirrorless"
+      },
+      "lens": {
+        "name": "Ống Kính",
+        "subtitle": "Wide, Tele, Macro"
+      },
+      "lighting": {
+        "name": "Ánh Sáng",
+        "subtitle": "Đèn Flash, Softbox"
+      },
+      "tripod": {
+        "name": "Chân Máy",
+        "subtitle": "Tripod, Monopod"
+      },
+      "accessories": {
+        "name": "Phụ Kiện",
+        "subtitle": "Filter, Gimbal, Mic"
+      }
+    }
+  },
+  "featured": {
+    "title": "Thiết Bị Nổi Bật",
+    "equipment": {
+      "canonR5": {
+        "name": "Canon EOS R5",
+        "features": {
+          "sensor": "45MP Full-Frame CMOS",
+          "video": "8K RAW Video Recording",
+          "stabilization": "In-Body Image Stabilization"
+        },
+        "price": "500.000đ/ngày"
+      },
+      "sonyA7III": {
+        "name": "Sony Alpha A7III",
+        "features": {
+          "sensor": "24.2MP Full-Frame BSI CMOS",
+          "video": "4K Video, 5-Axis Stabilization",
+          "autofocus": "693-Point AF System"
+        },
+        "price": "450.000đ/ngày"
+      },
+      "canonLens": {
+        "name": "Canon RF 24-70mm f/2.8L",
+        "features": {
+          "type": "Standard Zoom Lens",
+          "stabilization": "Image Stabilization",
+          "weather": "Dust and Water Resistant"
+        },
+        "price": "300.000đ/ngày"
+      }
+    },
+    "rentButton": "Thuê Ngay"
+  },
+  "process": {
+    "title": "Quy Trình Thuê Thiết Bị",
+    "steps": {
+      "step1": {
+        "title": "Chọn Thiết Bị",
+        "description": "Lựa chọn thiết bị phù hợp với nhu cầu của bạn từ danh mục đa dạng của chúng tôi."
+      },
+      "step2": {
+        "title": "Đặt Lịch",
+        "description": "Chọn ngày thuê và hoàn tất đơn đặt hàng trực tuyến hoặc qua điện thoại."
+      },
+      "step3": {
+        "title": "Nhận Thiết Bị",
+        "description": "Nhận thiết bị tại cửa hàng hoặc yêu cầu giao hàng tận nơi."
+      },
+      "step4": {
+        "title": "Hoàn Trả",
+        "description": "Trả thiết bị đúng hạn tại cửa hàng hoặc qua dịch vụ thu hồi."
+      }
+    }
+  },
+  "testimonials": {
+    "title": "Khách Hàng Nói Gì",
+    "subtitle": "Những phản hồi tích cực từ khách hàng",
+    "items": {
+      "testimonial1": {
+        "quote": "Thiết bị chất lượng cao, dịch vụ chuyên nghiệp. Tôi đã thuê Canon R5 cho một dự án quảng cáo và rất hài lòng với hiệu suất của nó.",
+        "author": "Minh Tuấn"
+      },
+      "testimonial2": {
+        "quote": "Giá cả hợp lý và quy trình thuê đơn giản. Tôi đặc biệt ấn tượng với tình trạng của thiết bị - tất cả đều như mới.",
+        "author": "Thu Hà"
+      },
+      "testimonial3": {
+        "quote": "Đội ngũ nhân viên rất am hiểu và sẵn sàng tư vấn. Họ đã giúp tôi chọn được bộ ống kính hoàn hảo cho chuyến đi chụp ảnh phong cảnh.",
+        "author": "Quang Đạt"
+      }
+    }
+  },
+  "footer": {
+    "company": {
+      "title": "Nova Camera",
+      "description": "Công ty TNHH Dịch vụ Nova Camera",
+      "mission": "Sứ mệnh của chúng tôi là cung cấp cho các nhiếp ảnh gia và nhà làm phim quyền truy cập vào thiết bị chuyên nghiệp với giá cả phải chăng."
+    },
+    "services": {
+      "title": "Dịch vụ",
+      "rental": "Cho thuê thiết bị",
+      "consulting": "Tư vấn nhiếp ảnh",
+      "courses": "Khóa học nhiếp ảnh",
+      "maintenance": "Bảo trì thiết bị"
+    },
+    "contact": {
+      "title": "Liên hệ",
+      "address": "199/39 Đường 3 Tháng 2, P.11, Q.10, HCMC, Việt Nam",
+      "phone": "Điện thoại: (028) 7301 3878",
+      "email": "Email: info@novacamera.com"
+    },
+    "support": {
+      "title": "Hỗ trợ khách hàng",
+      "hotline": "Hotline: (028) 7301 3878",
+      "technical": "Hỗ trợ kỹ thuật: (028) 7301 3879",
+      "businessEmail": "Kinh doanh: sales@novacamera.247"
+    }
+  }
+}

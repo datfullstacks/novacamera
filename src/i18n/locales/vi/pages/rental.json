@@ -1,0 +1,72 @@
+{
+  "title": "Thiết bị chụp ảnh",
+  "items": "mặt hàng",
+  "description": "Duyệt qua bộ sưu tập toàn diện thiết bị nhiếp ảnh chuyên nghiệp có sẵn để thuê.",
+  "filters": {
+    "title": "Bộ lọc",
+    "categories": {
+      "title": "Danh mục thiết bị",
+      "dslr": "Máy ảnh DSLR",
+      "mirrorless": "Máy ảnh không gương lật",
+      "mediumFormat": "Định dạng trung bình",
+      "primeLens": "Ống kính chính",
+      "zoomLens": "Ống kính thu nhỏ",
+      "lighting": "Ánh sáng",
+      "drone": "Máy bay không người lái",
+      "accessories": "Phụ kiện"
+    },
+    "brands": {
+      "title": "Thương hiệu"
+    },
+    "priceRange": {
+      "title": "Phạm vi giá (mỗi ngày)"
+    },
+    "availability": {
+      "title": "Có sẵn"
+    },
+    "ratings": {
+      "title": "Xếp hạng",
+      "fiveStars": "5 sao",
+      "fourPlus": "Hơn 4 sao",
+      "threePlus": "Hơn 3 sao"
+    },
+    "actions": {
+      "apply": "Áp dụng",
+      "clear": "Xoá tất cả"
+    }
+  },
+  "sort": {
+    "recommended": "Sắp xếp: Khuyến nghị",
+    "priceLow": "Giá: Thấp đến cao",
+    "priceHigh": "Giá: Cao đến thấp",
+    "rating": "Đánh giá cao nhất",
+    "newest": "Mới nhất"
+  },
+  "categories": {
+    "title": "Danh mục thiết bị",
+    "camera": {
+      "title": "Máy ảnh",
+      "description": "DSLR, Mirrorless, Film cameras"
+    },
+    "lens": {
+      "title": "Ống kính",
+      "description": "Wide angle, Telephoto, Macro lenses"
+    },
+    "lighting": {
+      "title": "Ánh sáng",
+      "description": "Flash, Softbox, LED panels"
+    },
+    "tripod": {
+      "title": "Chân máy",
+      "description": "Carbon fiber, Aluminum tripods"
+    },
+    "accessories": {
+      "title": "Phụ kiện",
+      "description": "Filters, Gimbals, Microphones"
+    },
+    "audio": {
+      "title": "Âm thanh",
+      "description": "Wireless mics, Recorders"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "title": "Ký gửi thiết bị",
+  "description": "Bán thiết bị nhiếp ảnh của bạn thông qua chương trình ký gửi của chúng tôi.",
+  "howItWorks": {
+    "title": "Cách thức ký gửi hoạt động",
+    "step1": {
+      "title": "Gửi thiết bị",
+      "description": "Gửi cho chúng tôi thông tin chi tiết về thiết bị của bạn"
+    },
+    "step2": {
+      "title": "Đánh giá",
+      "description": "Chúng tôi đánh giá tình trạng và giá trị thị trường"
+    },
+    "step3": {
+      "title": "Đăng bán",
+      "description": "Thiết bị của bạn sẽ được đăng trên nền tảng của chúng tôi"
+    },
+    "step4": {
+      "title": "Nhận thanh toán",
+      "description": "Nhận thanh toán khi sản phẩm của bạn được bán"
+    }
+  },
+  "cta": {
+    "title": "Bắt đầu quy trình ký gửi",
+    "description": "Sẵn sàng bán thiết bị của bạn? Bắt đầu với quy trình ký gửi đơn giản của chúng tôi.",
+    "button": "Gửi thiết bị ký gửi"
+  }
+}

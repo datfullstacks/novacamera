@@ -1,0 +1,9 @@
+export { default as EquipmentTable } from './EquipmentTable';
+export { default as EquipmentManagement } from './EquipmentManagement';
+export { default as EquipmentDetailHeader } from './EquipmentDetailHeader';
+export { default as EquipmentSpecsTable } from './EquipmentSpecsTable';
+export { default as EquipmentAccessories } from './EquipmentAccessories';
+export { default as EquipmentBookings } from './EquipmentBookings';
+export { default as EquipmentDetailTabs } from './EquipmentDetailTabs';
+export { default as AddEquipmentForm } from './AddEquipmentForm';
+export { default as EquipmentFormModal } from './EquipmentFormModal';

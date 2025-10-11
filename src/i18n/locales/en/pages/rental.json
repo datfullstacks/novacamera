@@ -1,0 +1,72 @@
+{
+  "title": "Photography Equipment",
+  "items": "items",
+  "description": "Browse our comprehensive collection of professional photography equipment available for rent.",
+  "filters": {
+    "title": "Filters",
+    "categories": {
+      "title": "Equipment Categories",
+      "dslr": "DSLR Cameras",
+      "mirrorless": "Mirrorless Cameras",
+      "mediumFormat": "Medium Format",
+      "primeLens": "Prime Lenses",
+      "zoomLens": "Zoom Lenses",
+      "lighting": "Lighting",
+      "drone": "Drones",
+      "accessories": "Accessories"
+    },
+    "brands": {
+      "title": "Brands"
+    },
+    "priceRange": {
+      "title": "Price Range (per day)"
+    },
+    "availability": {
+      "title": "Availability"
+    },
+    "ratings": {
+      "title": "Rating",
+      "fiveStars": "5 stars",
+      "fourPlus": "4+ stars",
+      "threePlus": "3+ stars"
+    },
+    "actions": {
+      "apply": "Apply",
+      "clear": "Clear All"
+    }
+  },
+  "sort": {
+    "recommended": "Sort: Recommended",
+    "priceLow": "Price: Low to High",
+    "priceHigh": "Price: High to Low",
+    "rating": "Highest Rated",
+    "newest": "Newest"
+  },
+  "categories": {
+    "title": "Equipment Categories",
+    "camera": {
+      "title": "Cameras",
+      "description": "DSLR, Mirrorless, Film cameras"
+    },
+    "lens": {
+      "title": "Lenses",
+      "description": "Wide angle, Telephoto, Macro lenses"
+    },
+    "lighting": {
+      "title": "Lighting",
+      "description": "Flash, Softbox, LED panels"
+    },
+    "tripod": {
+      "title": "Tripods",
+      "description": "Carbon fiber, Aluminum tripods"
+    },
+    "accessories": {
+      "title": "Accessories",
+      "description": "Filters, Gimbals, Microphones"
+    },
+    "audio": {
+      "title": "Audio",
+      "description": "Wireless mics, Recorders"
+    }
+  }
+}

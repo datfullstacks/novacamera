@@ -1,0 +1,27 @@
+{
+  "title": "Khóa học nhiếp ảnh AI",
+  "description": "Học kỹ thuật nhiếp ảnh được tăng cường bởi công nghệ AI.",
+  "courses": {
+    "composition": {
+      "title": "Bố cục được hỗ trợ AI",
+      "description": "Học cách AI có thể giúp bạn tạo ra những bố cục tốt hơn và tìm ra cú shot hoàn hảo.",
+      "price": "$99"
+    },
+    "lighting": {
+      "title": "Ánh sáng thông minh với AI",
+      "description": "Làm chủ kỹ thuật ánh sáng sử dụng các công cụ và phân tích được hỗ trợ AI.",
+      "price": "$129"
+    },
+    "editing": {
+      "title": "Chỉnh sửa ảnh AI",
+      "description": "Kỹ thuật chỉnh sửa ảnh nâng cao sử dụng các công cụ và quy trình được hỗ trợ AI.",
+      "price": "$149"
+    },
+    "complete": {
+      "title": "Nhiếp ảnh AI hoàn chỉnh",
+      "description": "Khóa học toàn diện bao gồm tất cả các khía cạnh của nhiếp ảnh được tăng cường AI.",
+      "price": "$299"
+    }
+  },
+  "enrollButton": "Đăng ký ngay"
+}

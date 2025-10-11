@@ -1,0 +1,17 @@
+{
+  "title": "Need Support?",
+  "description": "We're here to help with your equipment rental and photography needs.",
+  "contact": {
+    "title": "Contact Information",
+    "email": "support@novacamera.com",
+    "phone": "+84 123 456 789",
+    "hours": "Mon-Fri: 8AM-6PM"
+  },
+  "quickHelp": {
+    "title": "Quick Help",
+    "manuals": "Equipment Manuals",
+    "tutorials": "Tutorial Videos",
+    "faq": "FAQ",
+    "chat": "Live Chat"
+  }
+}

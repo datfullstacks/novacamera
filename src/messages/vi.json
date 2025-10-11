@@ -1,0 +1,141 @@
+{
+  "landing": {
+    "nav": {
+      "home": "Trang chủ",
+      "equipment": "Thiết bị",
+      "about": "Giới thiệu",
+      "contact": "Liên hệ"
+    },
+    "navigation": {
+      "home": "Trang chủ",
+      "rental": "Cho thuê",
+      "pricing": "Bảng giá",
+      "aiAdvisor": "AI Tư vấn",
+      "support": "Hỗ trợ",
+      "courses": "Khóa học",
+      "consignment": "Ký gửi",
+      "login": "Đăng nhập"
+    },
+    "hero": {
+      "title": "Cho thuê thiết bị chụp ảnh chuyên nghiệp",
+      "subtitle": "Khám phá bộ sưu tập thiết bị chụp ảnh và quay phim chất lượng cao với giá cả phải chăng",
+      "ctaPrimary": "Khám phá thiết bị",
+      "ctaSecondary": "Tìm hiểu thêm"
+    },
+    "categories": {
+      "title": "Danh mục thiết bị",
+      "subtitle": "Khám phá các loại thiết bị chụp ảnh và quay phim",
+      "items": {
+        "camera": {
+          "name": "Máy ảnh",
+          "subtitle": "Máy ảnh DSLR & Mirrorless"
+        },
+        "lens": {
+          "name": "Ống kính",
+          "subtitle": "Ống kính chuyên nghiệp"
+        },
+        "tripod": {
+          "name": "Chân máy",
+          "subtitle": "Chân máy ổn định"
+        },
+        "lighting": {
+          "name": "Ánh sáng",
+          "subtitle": "Đèn flash & LED"
+        },
+        "accessories": {
+          "name": "Phụ kiện",
+          "subtitle": "Phụ kiện hỗ trợ"
+        },
+        "video": {
+          "name": "Video",
+          "subtitle": "Thiết bị quay phim"
+        }
+      }
+    },
+    "featured": {
+      "title": "Thiết bị nổi bật",
+      "subtitle": "Các sản phẩm được lựa chọn nhiều nhất",
+      "rentButton": "Thuê ngay"
+    },
+    "process": {
+      "title": "Quy trình thuê đơn giản",
+      "subtitle": "3 bước đơn giản để thuê thiết bị",
+      "steps": {
+        "browse": {
+          "title": "Duyệt thiết bị",
+          "description": "Khám phá bộ sưu tập thiết bị phong phú"
+        },
+        "book": {
+          "title": "Đặt hàng",
+          "description": "Chọn ngày thuê và xác nhận đơn hàng"
+        },
+        "enjoy": {
+          "title": "Sử dụng",
+          "description": "Nhận thiết bị và bắt đầu sáng tạo"
+        }
+      }
+    },
+    "testimonials": {
+      "title": "Khách hàng nói gì",
+      "subtitle": "Những phản hồi tích cực từ khách hàng",
+      "items": {
+        "testimonial1": {
+          "quote": "Thiết bị chất lượng cao, dịch vụ chuyên nghiệp. Tôi đã thuê Canon R5 cho dự án quảng cáo và rất hài lòng về hiệu suất của nó.",
+          "author": "John Photographer",
+          "rating": "★★★★★"
+        },
+        "testimonial2": {
+          "quote": "Giá cả hợp lý và quy trình thuê đơn giản. Tôi đặc biệt ấn tượng với tình trạng của thiết bị - mọi thứ đều như mới.",
+          "author": "Sarah Wilson",
+          "rating": "★★★★☆"
+        },
+        "testimonial3": {
+          "quote": "Nhân viên rất am hiểu và hỗ trợ nhiệt tình. Họ đã giúp tôi chọn bộ ống kính hoàn hảo cho chuyến chụp ảnh phong cảnh.",
+          "author": "Mike Chen",
+          "rating": "★★★★★"
+        }
+      }
+    },
+    "footer": {
+      "company": {
+        "title": "Nova Camera",
+        "description": "Nova Camera Services LLC - Chuyên cho thuê thiết bị chụp ảnh và quay phim chất lượng cao với dịch vụ tận tâm.",
+        "mission": "Sứ mệnh của chúng tôi là cung cấp cho các nhiếp ảnh gia và nhà quay phim quyền truy cập vào thiết bị chuyên nghiệp với giá cả phải chăng.",
+        "copyright": "© 2025 Nova Camera, Inc. Bảo lưu mọi quyền.",
+        "items": {
+          "about": "Giới thiệu",
+          "services": "Dịch vụ",
+          "contact": "Liên hệ"
+        }
+      },
+      "services": {
+        "title": "Dịch vụ",
+        "rental": "Cho thuê thiết bị",
+        "consulting": "Tư vấn nhiếp ảnh",
+        "courses": "Khóa học nhiếp ảnh",
+        "maintenance": "Bảo trì thiết bị"
+      },
+      "equipment": {
+        "title": "Thiết bị",
+        "items": {
+          "cameras": "Máy ảnh",
+          "lenses": "Ống kính",
+          "lighting": "Đèn chiếu sáng",
+          "accessories": "Phụ kiện"
+        }
+      },
+      "contact": {
+        "title": "Liên hệ",
+        "address": "123 Đường Nhiếp Ảnh, Thành phố Camera, CC 12345",
+        "phone": "Điện thoại: +1 (555) 123-4567",
+        "email": "Email: info@novacamera.com"
+      },
+      "support": {
+        "title": "Hỗ trợ khách hàng",
+        "hotline": "Hotline: 0123-456-789",
+        "technical": "Hỗ trợ kỹ thuật: 0987-654-321",
+        "businessEmail": "Kinh doanh: sales@novacamera.247"
+      }
+    }
+  }
+}

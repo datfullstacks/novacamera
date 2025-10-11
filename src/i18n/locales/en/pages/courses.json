@@ -1,0 +1,27 @@
+{
+  "title": "Photography AI Courses",
+  "description": "Learn photography techniques enhanced by AI technology.",
+  "courses": {
+    "composition": {
+      "title": "AI-Powered Composition",
+      "description": "Learn how AI can help you create better compositions and find the perfect shot.",
+      "price": "$99"
+    },
+    "lighting": {
+      "title": "Smart Lighting with AI",
+      "description": "Master lighting techniques using AI-assisted tools and analysis.",
+      "price": "$129"
+    },
+    "editing": {
+      "title": "AI Photo Editing",
+      "description": "Advanced photo editing techniques using AI-powered tools and workflows.",
+      "price": "$149"
+    },
+    "complete": {
+      "title": "Complete AI Photography",
+      "description": "Comprehensive course covering all aspects of AI-enhanced photography.",
+      "price": "$299"
+    }
+  },
+  "enrollButton": "Enroll Now"
+}

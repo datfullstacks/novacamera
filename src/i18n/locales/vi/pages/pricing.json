@@ -1,0 +1,36 @@
+{
+  "title": "Bảng giá",
+  "description": "Chọn gói thuê hoàn hảo cho nhu cầu nhiếp ảnh của bạn.",
+  "plans": {
+    "basic": {
+      "title": "Cơ bản",
+      "price": "49$/ngày",
+      "features": [
+        "Máy ảnh cơ bản",
+        "Ống kính tiêu chuẩn",
+        "Thẻ nhớ",
+        "Hỗ trợ cơ bản"
+      ]
+    },
+    "professional": {
+      "title": "Chuyên nghiệp",
+      "price": "99$/ngày",
+      "features": [
+        "Máy ảnh chuyên nghiệp",
+        "Nhiều ống kính",
+        "Thiết bị ánh sáng",
+        "Hỗ trợ ưu tiên"
+      ]
+    },
+    "enterprise": {
+      "title": "Doanh nghiệp",
+      "price": "199$/ngày",
+      "features": [
+        "Bộ thiết bị hoàn chỉnh",
+        "Thiết lập ánh sáng đầy đủ",
+        "Thiết bị âm thanh",
+        "Hỗ trợ 24/7"
+      ]
+    }
+  }
+}

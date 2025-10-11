@@ -1,0 +1,28 @@
+{
+  "title": "Equipment Consignment",
+  "description": "Sell your photography equipment through our consignment program.",
+  "howItWorks": {
+    "title": "How Consignment Works",
+    "step1": {
+      "title": "Submit Equipment",
+      "description": "Send us details about your equipment"
+    },
+    "step2": {
+      "title": "Evaluation",
+      "description": "We assess condition and market value"
+    },
+    "step3": {
+      "title": "List for Sale",
+      "description": "Your equipment goes live on our platform"
+    },
+    "step4": {
+      "title": "Get Paid",
+      "description": "Receive payment when your item sells"
+    }
+  },
+  "cta": {
+    "title": "Start Consignment Process",
+    "description": "Ready to sell your equipment? Get started with our easy consignment process.",
+    "button": "Submit Equipment for Consignment"
+  }
+}

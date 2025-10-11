@@ -1,0 +1,141 @@
+{
+  "landing": {
+    "nav": {
+      "home": "Home",
+      "equipment": "Equipment",
+      "about": "About",
+      "contact": "Contact"
+    },
+    "navigation": {
+      "home": "Home",
+      "rental": "Rental",
+      "pricing": "Pricing",
+      "aiAdvisor": "AI Advisor",
+      "support": "Support",
+      "courses": "Courses",
+      "consignment": "Consignment",
+      "login": "Login"
+    },
+    "hero": {
+      "title": "Professional Photography Equipment Rental",
+      "subtitle": "Explore our high-quality camera and video equipment collection at affordable prices",
+      "ctaPrimary": "Explore Equipment",
+      "ctaSecondary": "Learn More"
+    },
+    "categories": {
+      "title": "Equipment Categories",
+      "subtitle": "Explore our photography and videography equipment",
+      "items": {
+        "camera": {
+          "name": "Cameras",
+          "subtitle": "DSLR & Mirrorless Cameras"
+        },
+        "lens": {
+          "name": "Lenses",
+          "subtitle": "Professional Lenses"
+        },
+        "tripod": {
+          "name": "Tripods",
+          "subtitle": "Stable Tripods"
+        },
+        "lighting": {
+          "name": "Lighting",
+          "subtitle": "Flash & LED Lights"
+        },
+        "accessories": {
+          "name": "Accessories",
+          "subtitle": "Support Accessories"
+        },
+        "video": {
+          "name": "Video",
+          "subtitle": "Video Equipment"
+        }
+      }
+    },
+    "featured": {
+      "title": "Featured Equipment",
+      "subtitle": "Most popular rental items",
+      "rentButton": "Rent Now"
+    },
+    "process": {
+      "title": "Simple Rental Process",
+      "subtitle": "3 simple steps to rent equipment",
+      "steps": {
+        "browse": {
+          "title": "Browse Equipment",
+          "description": "Explore our rich equipment collection"
+        },
+        "book": {
+          "title": "Book",
+          "description": "Select rental dates and confirm order"
+        },
+        "enjoy": {
+          "title": "Enjoy",
+          "description": "Receive equipment and start creating"
+        }
+      }
+    },
+    "testimonials": {
+      "title": "What Customers Say",
+      "subtitle": "Positive feedback from our customers",
+      "items": {
+        "testimonial1": {
+          "quote": "High-quality equipment, professional service. I rented the Canon R5 for an advertising project and was very satisfied with its performance.",
+          "author": "John Photographer",
+          "rating": "★★★★★"
+        },
+        "testimonial2": {
+          "quote": "Reasonable prices and simple rental process. I was particularly impressed with the condition of the equipment - everything was like new.",
+          "author": "Sarah Wilson",
+          "rating": "★★★★☆"
+        },
+        "testimonial3": {
+          "quote": "Very knowledgeable and helpful staff. They helped me choose the perfect lens set for my landscape photography trip.",
+          "author": "Mike Chen",
+          "rating": "★★★★★"
+        }
+      }
+    },
+    "footer": {
+      "company": {
+        "title": "Nova Camera",
+        "description": "Nova Camera Services LLC - Specializing in high-quality photography and videography equipment rental with dedicated service.",
+        "mission": "Our mission is to provide photographers and videographers with access to professional equipment at affordable prices.",
+        "copyright": "© 2025 Nova Camera, Inc. All rights reserved.",
+        "items": {
+          "about": "About",
+          "services": "Services",
+          "contact": "Contact"
+        }
+      },
+      "services": {
+        "title": "Services",
+        "rental": "Equipment Rental",
+        "consulting": "Photography Consulting", 
+        "courses": "Photography Courses",
+        "maintenance": "Equipment Maintenance"
+      },
+      "equipment": {
+        "title": "Equipment",
+        "items": {
+          "cameras": "Cameras",
+          "lenses": "Lenses",
+          "lighting": "Lighting",
+          "accessories": "Accessories"
+        }
+      },
+      "contact": {
+        "title": "Contact",
+        "address": "123 Photography Street, Camera City, CC 12345",
+        "phone": "Phone: +1 (555) 123-4567",
+        "email": "Email: info@novacamera.com"
+      },
+      "support": {
+        "title": "Customer Support",
+        "hotline": "Hotline: 0123-456-789",
+        "technical": "Technical Support: 0987-654-321",
+        "businessEmail": "Business: sales@novacamera.247"
+      }
+    }
+  }
+}

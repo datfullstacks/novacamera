@@ -1,0 +1,23 @@
+{
+  "navigation": {
+    "home": "Trang chủ",
+    "about": "Giới thiệu",
+    "contact": "Liên hệ",
+    "products": "Sản phẩm",
+    "services": "Dịch vụ"
+  },
+  "footer": {
+    "learn": "Học tập",
+    "examples": "Ví dụ",
+    "goToNextjs": "Đến nextjs.org →",
+    "allRightsReserved": "Bảo lưu mọi quyền"
+  },
+  "actions": {
+    "submit": "Gửi",
+    "cancel": "Hủy",
+    "save": "Lưu",
+    "delete": "Xóa",
+    "edit": "Sửa",
+    "close": "Đóng"
+  }
+}

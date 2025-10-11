@@ -1,0 +1,141 @@
+{
+  "navigation": {
+    "home": "Home",
+    "rental": "Rental Equipment",
+    "pricing": "Pricing",
+    "aiAdvisor": "AI Advisor",
+    "support": "Need Support",
+    "courses": "Photography AI Courses",
+    "consignment": "Consignment",
+    "login": "Login"
+  },
+  "hero": {
+    "title": "Professional Photography Equipment",
+    "subtitle": "Rent right - shoot quality - AI helps you make decisions faster",
+    "ctaPrimary": "Rent Now",
+    "ctaSecondary": "AI Consultation"
+  },
+  "categories": {
+    "title": "Equipment Categories",
+    "items": {
+      "camera": {
+        "name": "Cameras",
+        "subtitle": "DSLR, Mirrorless"
+      },
+      "lens": {
+        "name": "Lenses",
+        "subtitle": "Wide, Tele, Macro"
+      },
+      "lighting": {
+        "name": "Lighting",
+        "subtitle": "Flash, Softbox"
+      },
+      "tripod": {
+        "name": "Tripods",
+        "subtitle": "Tripod, Monopod"
+      },
+      "accessories": {
+        "name": "Accessories",
+        "subtitle": "Filter, Gimbal, Mic"
+      }
+    }
+  },
+  "featured": {
+    "title": "Featured Equipment",
+    "equipment": {
+      "canonR5": {
+        "name": "Canon EOS R5",
+        "features": {
+          "sensor": "45MP Full-Frame CMOS",
+          "video": "8K RAW Video Recording",
+          "stabilization": "In-Body Image Stabilization"
+        },
+        "price": "500,000₫/day"
+      },
+      "sonyA7III": {
+        "name": "Sony Alpha A7III",
+        "features": {
+          "sensor": "24.2MP Full-Frame BSI CMOS",
+          "video": "4K Video, 5-Axis Stabilization",
+          "autofocus": "693-Point AF System"
+        },
+        "price": "450,000₫/day"
+      },
+      "canonLens": {
+        "name": "Canon RF 24-70mm f/2.8L",
+        "features": {
+          "type": "Standard Zoom Lens",
+          "stabilization": "Image Stabilization",
+          "weather": "Dust and Water Resistant"
+        },
+        "price": "300,000₫/day"
+      }
+    },
+    "rentButton": "Rent Now"
+  },
+  "process": {
+    "title": "Equipment Rental Process",
+    "steps": {
+      "step1": {
+        "title": "Choose Equipment",
+        "description": "Select the equipment that fits your needs from our diverse catalog."
+      },
+      "step2": {
+        "title": "Book Schedule",
+        "description": "Choose rental dates and complete your order online or by phone."
+      },
+      "step3": {
+        "title": "Receive Equipment",
+        "description": "Pick up equipment at the store or request home delivery."
+      },
+      "step4": {
+        "title": "Return",
+        "description": "Return equipment on time to the store or via collection service."
+      }
+    }
+  },
+  "testimonials": {
+    "title": "What Customers Say",
+    "subtitle": "Positive feedback from our customers",
+    "items": {
+      "testimonial1": {
+        "quote": "High-quality equipment, professional service. I rented the Canon R5 for an advertising project and was very satisfied with its performance.",
+        "author": "John Photographer"
+      },
+      "testimonial2": {
+        "quote": "Reasonable prices and simple rental process. I was particularly impressed with the condition of the equipment - everything was like new.",
+        "author": "Sarah Wilson"
+      },
+      "testimonial3": {
+        "quote": "Very knowledgeable and helpful staff. They helped me choose the perfect lens set for my landscape photography trip.",
+        "author": "Mike Chen"
+      }
+    }
+  },
+  "footer": {
+    "company": {
+      "title": "Nova Camera",
+      "description": "Nova Camera Services LLC - Specializing in high-quality photography and videography equipment rental with dedicated service.",
+      "mission": "Our mission is to provide photographers and videographers with access to professional equipment at affordable prices."
+    },
+    "services": {
+      "title": "Services",
+      "rental": "Equipment Rental",
+      "consulting": "Photography Consulting",
+      "courses": "Photography Courses",
+      "maintenance": "Equipment Maintenance"
+    },
+    "contact": {
+      "title": "Contact",
+      "address": "123 Photography Street, Camera City, CC 12345",
+      "phone": "Phone: +1 (555) 123-4567",
+      "email": "Email: info@novacamera.com"
+    },
+    "support": {
+      "title": "Customer Support",
+      "hotline": "Hotline: 0123-456-789",
+      "technical": "Technical Support: 0987-654-321",
+      "businessEmail": "Business: sales@novacamera.247"
+    }
+  }
+}

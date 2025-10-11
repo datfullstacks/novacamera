@@ -1,0 +1,36 @@
+{
+  "title": "Pricing Plans",
+  "description": "Choose the perfect rental plan for your photography needs.",
+  "plans": {
+    "basic": {
+      "title": "Basic",
+      "price": "$49/day",
+      "features": [
+        "Basic camera body",
+        "Standard lens",
+        "Memory card",
+        "Basic support"
+      ]
+    },
+    "professional": {
+      "title": "Professional",
+      "price": "$99/day",
+      "features": [
+        "Professional camera",
+        "Multiple lenses",
+        "Lighting equipment",
+        "Priority support"
+      ]
+    },
+    "enterprise": {
+      "title": "Enterprise",
+      "price": "$199/day",
+      "features": [
+        "Complete equipment set",
+        "Full lighting setup",
+        "Audio equipment",
+        "24/7 support"
+      ]
+    }
+  }
+}

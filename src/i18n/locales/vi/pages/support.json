@@ -1,0 +1,17 @@
+{
+  "title": "Cần hỗ trợ?",
+  "description": "Chúng tôi luôn sẵn sàng hỗ trợ bạn về thiết bị thuê và nhu cầu nhiếp ảnh.",
+  "contact": {
+    "title": "Thông tin liên hệ",
+    "email": "support@novacamera.com",
+    "phone": "+84 123 456 789",
+    "hours": "Thứ 2-6: 8AM-6PM"
+  },
+  "quickHelp": {
+    "title": "Trợ giúp nhanh",
+    "manuals": "Hướng dẫn thiết bị",
+    "tutorials": "Video hướng dẫn",
+    "faq": "Câu hỏi thường gặp",
+    "chat": "Chat trực tuyến"
+  }
+}
