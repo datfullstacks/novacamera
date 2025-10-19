@@ -1,7 +1,6 @@
 import { Equipment } from '@/types';
 import { apiClient } from './client';
 import { 
-  ApiResponse, 
   EquipmentListParams, 
   CategoryResponse, 
   BrandResponse 
@@ -10,7 +9,7 @@ import {
 export class EquipmentService {
   private readonly basePath = '/Equipment';
 
-  async getEquipment(params: EquipmentListParams = {}): Promise<ApiResponse<Equipment[]>> {
+  async getEquipment(params: EquipmentListParams = {}): Promise<Equipment[]> {
     try {
       const searchParams = new URLSearchParams();
       
@@ -45,61 +44,49 @@ export class EquipmentService {
       const queryString = searchParams.toString();
       const endpoint = `${this.basePath}${queryString ? `?${queryString}` : ''}`;
       
-      const data = await apiClient.get<Equipment[]>(endpoint);
+      const response = await apiClient.get<Equipment[]>(endpoint);
       
-      return {
-        data,
-        success: true,
-      };
+      return response.data;
     } catch (error) {
       console.error('Failed to fetch equipment:', error);
       throw error;
     }
   }
 
-  async getEquipmentById(id: string): Promise<ApiResponse<Equipment>> {
+  async getEquipmentById(id: string): Promise<Equipment> {
     try {
-      const data = await apiClient.get<Equipment>(`${this.basePath}/${id}`);
+      const response = await apiClient.get<Equipment>(`${this.basePath}/${id}`);
       
-      return {
-        data,
-        success: true,
-      };
+      return response.data;
     } catch (error) {
       console.error(`Failed to fetch equipment ${id}:`, error);
       throw error;
     }
   }
 
-  async getCategories(): Promise<ApiResponse<CategoryResponse[]>> {
+  async getCategories(): Promise<CategoryResponse[]> {
     try {
-      const data = await apiClient.get<CategoryResponse[]>(`${this.basePath}/categories`);
+      const response = await apiClient.get<CategoryResponse[]>(`${this.basePath}/categories`);
       
-      return {
-        data,
-        success: true,
-      };
+      return response.data;
     } catch (error) {
       console.error('Failed to fetch categories:', error);
       throw error;
     }
   }
 
-  async getBrands(): Promise<ApiResponse<BrandResponse[]>> {
+  async getBrands(): Promise<BrandResponse[]> {
     try {
-      const data = await apiClient.get<BrandResponse[]>(`${this.basePath}/brands`);
+      const response = await apiClient.get<BrandResponse[]>(`${this.basePath}/brands`);
       
-      return {
-        data,
-        success: true,
-      };
+      return response.data;
     } catch (error) {
       console.error('Failed to fetch brands:', error);
       throw error;
     }
   }
 
-  async searchEquipment(query: string, params: EquipmentListParams = {}): Promise<ApiResponse<Equipment[]>> {
+  async searchEquipment(query: string, params: EquipmentListParams = {}): Promise<Equipment[]> {
     try {
       const searchParams = new URLSearchParams();
       searchParams.append('q', query);
@@ -108,12 +95,9 @@ export class EquipmentService {
       if (params.pageSize) searchParams.append('pageSize', params.pageSize.toString());
       
       const endpoint = `${this.basePath}/search?${searchParams.toString()}`;
-      const data = await apiClient.get<Equipment[]>(endpoint);
+      const response = await apiClient.get<Equipment[]>(endpoint);
       
-      return {
-        data,
-        success: true,
-      };
+      return response.data;
     } catch (error) {
       console.error('Failed to search equipment:', error);
       throw error;

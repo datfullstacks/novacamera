@@ -1,6 +1,6 @@
 // Landing Organisms Index
 export { LandingHeader } from './LandingHeader';
-export type { LandingHeaderProps, NavigationItem } from './LandingHeader';
+export type { LandingHeaderProps, LandingNavigationItem } from './LandingHeader';
 
 export { HeroSection } from './HeroSection';
 export type { HeroSectionProps } from './HeroSection';

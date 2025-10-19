@@ -37,11 +37,11 @@ export default function SignupPage() {
     try {
       // Map form data to API request format
       const registerRequest = {
-        firstName: data.firstName,
-        lastName: data.lastName,
+        fullName: `${data.firstName} ${data.lastName}`,
         email: data.email,
-        password: data.password,
-        phone: data.phone,
+        passwordHash: data.password, // Backend will hash this
+        phoneNumber: data.phone,
+        roleId: 3, // CUSTOMER role (default for signup)
       };
       
       // Call API using React Query mutation

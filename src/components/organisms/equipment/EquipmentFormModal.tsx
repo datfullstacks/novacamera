@@ -20,7 +20,7 @@ interface EquipmentFormData {
   accessories: Array<{ name: string; included: boolean }>;
 }
 
-interface EquipmentFormModalProps extends HTMLAttributes<HTMLDivElement> {
+interface EquipmentFormModalProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onSubmit'> {
   isOpen: boolean;
   onClose: () => void;
   onSubmit?: (data: EquipmentFormData) => void;

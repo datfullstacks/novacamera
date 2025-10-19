@@ -1,8 +1,8 @@
 'use client';
 
-import { HTMLAttributes, forwardRef } from 'react';
+import { InputHTMLAttributes, forwardRef } from 'react';
 
-interface FormInputProps extends Omit<HTMLAttributes<HTMLInputElement>, 'onChange'> {
+interface FormInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
   label?: string;
   error?: string;
   required?: boolean;

@@ -13,11 +13,12 @@ interface FormSelectProps extends Omit<HTMLAttributes<HTMLSelectElement>, 'onCha
   required?: boolean;
   options: ReadonlyArray<Option>;
   placeholder?: string;
+  value?: string;
   onChange?: (value: string) => void;
 }
 
 const FormSelect = forwardRef<HTMLSelectElement, FormSelectProps>(
-  ({ label, error, required, options, placeholder, onChange, className = '', ...props }, ref) => {
+  ({ label, error, required, options, placeholder, value, onChange, className = '', ...props }, ref) => {
     return (
       <div className="space-y-2">
         {label && (
@@ -28,6 +29,7 @@ const FormSelect = forwardRef<HTMLSelectElement, FormSelectProps>(
         )}
         <select
           ref={ref}
+          value={value}
           onChange={(e) => onChange?.(e.target.value)}
           className={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
             error ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : ''

@@ -19,7 +19,8 @@ export default function SpecField({
   className = '',
   ...props
 }: SpecFieldProps) {
-  const [localSpecs, setLocalSpecs] = useState<Spec[]>(specs);
+  // Convert readonly array to mutable array for state
+  const [localSpecs, setLocalSpecs] = useState<Spec[]>([...specs]);
 
   const addSpec = () => {
     const newSpecs = [...localSpecs, { label: '', value: '' }];

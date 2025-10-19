@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { AuthTemplate } from '@/components/templates/AuthTemplate';
+// TODO: Update to use AuthTemplateNew properly
+// import { AuthTemplate } from '@/components/templates/AuthTemplateNew';
 import { SignupFormData } from '@/types/forms/auth';
 import { showToast } from '@/components/atoms/ui/Toast';
 
@@ -146,24 +147,18 @@ export default function AuthPage({ initialMode = 'login' }: AuthPageProps = {}) 
     setCurrentMode('signup');
   };
 
+  // TODO: Refactor to use AuthTemplateNew with children pattern
   return (
-    <AuthTemplate
-      mode={currentMode}
-      loading={loading}
-      heroImageUrl="/images/auth-hero.jpg"
-      heroImageAlt="Nova Camera Equipment"
-      // Login handlers
-      onLogin={handleLogin}
-      onGoogleLogin={handleGoogleAuth}
-      onFacebookLogin={handleFacebookAuth}
-      onForgotPassword={handleForgotPassword}
-      // Signup handlers
-      onSignup={handleSignup}
-      onGoogleSignup={handleGoogleAuth}
-      onFacebookSignup={handleFacebookAuth}
-      // Mode switching
-      onSwitchToLogin={handleSwitchToLogin}
-      onSwitchToSignup={handleSwitchToSignup}
-    />
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="text-center">
+        <h1 className="text-2xl font-bold mb-4">Authentication Page</h1>
+        <p className="text-gray-600 mb-4">
+          This page needs to be refactored to use AuthTemplateNew
+        </p>
+        <p className="text-sm text-gray-500">
+          Please use /login or /signup pages instead
+        </p>
+      </div>
+    </div>
   );
 }

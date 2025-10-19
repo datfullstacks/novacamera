@@ -2,11 +2,11 @@
 
 import React from 'react';
 import { LandingHeader, LandingFooter } from '@/components/organisms/landing';
-import type { NavigationItem, FooterColumn } from '@/components/organisms/landing';
+import type { LandingNavigationItem, FooterColumn } from '@/components/organisms/landing';
 
 export interface CameraLandingTemplateProps {
   children: React.ReactNode;
-  navigationItems: NavigationItem[];
+  navigationItems: LandingNavigationItem[];
   companyInfo: string;
   footerColumns: FooterColumn[];
   onLoginClick?: () => void;

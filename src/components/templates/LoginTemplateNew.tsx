@@ -3,8 +3,7 @@
 import React from 'react';
 import { AuthLayout } from '@/components/layouts/AuthLayout';
 import { AuthHeroSection } from '@/components/organisms/auth/AuthHeroSection';
-import { LoginForm } from '@/components/molecules/auth/LoginForm';
-import { SocialLogin } from '@/components/molecules/auth/SocialLogin';
+import { LoginFormNew } from '@/components/molecules/auth/LoginFormNew';
 
 interface LoginFormData {
   email: string;
@@ -55,29 +54,12 @@ export const LoginTemplateNew: React.FC<LoginTemplateProps> = ({
           </p>
         </div>
 
-        {/* Login Form */}
-        <LoginForm 
-          onSubmit={onLogin}
-          loading={loading}
-          onForgotPassword={onForgotPassword}
-        />
-
-        {/* Divider */}
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-200" />
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">
-              Hoặc đăng nhập với
-            </span>
-          </div>
-        </div>
-
-        {/* Social Login */}
-        <SocialLogin
+        {/* Login Form (includes social login and forgot password) */}
+        <LoginFormNew 
+          onLogin={onLogin}
           onGoogleLogin={onGoogleLogin}
           onFacebookLogin={onFacebookLogin}
+          onForgotPassword={onForgotPassword}
           loading={loading}
         />
 

@@ -26,7 +26,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const cartItems = useAppSelector((state) => state.cart.items);
   
   // Find quantity in cart
-    const cartItem = cartItems.find((item) => item.equipment.id === equipment.id);
+  const cartItem = cartItems.find((item) => item.id === equipment.id.toString());
   const quantityInCart = cartItem?.quantity || 0;
 
   const handleAddToCart = () => {

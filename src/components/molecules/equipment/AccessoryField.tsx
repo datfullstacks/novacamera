@@ -19,7 +19,8 @@ export default function AccessoryField({
   className = '',
   ...props
 }: AccessoryFieldProps) {
-  const [localAccessories, setLocalAccessories] = useState<Accessory[]>(accessories);
+  // Convert readonly array to mutable array for state
+  const [localAccessories, setLocalAccessories] = useState<Accessory[]>([...accessories]);
 
   const addAccessory = () => {
     const newAccessories = [...localAccessories, { name: '', included: true }];
@@ -65,9 +66,9 @@ export default function AccessoryField({
             <div className="flex-1">
               <FormInput
                 label="Tên phụ kiện"
-                value={accessory.name}
                 onChange={(value) => updateAccessory(index, 'name', value)}
                 placeholder="Ví dụ: Pin Canon LP-E6NH"
+                defaultValue={accessory.name}
               />
             </div>
             <div className="flex items-center space-x-2">

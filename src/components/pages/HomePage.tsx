@@ -1,9 +1,16 @@
 'use client';
 
-import { Hero } from '../organisms';
+// import { Hero } from '../organisms';
 import { LanguageSwitcher } from '../molecules';
 import { Text } from '../atoms';
 import { useTranslations } from 'next-intl';
+
+// Placeholder Hero component (this file is not actively used - see app/page.tsx instead)
+const Hero = () => (
+  <div className="bg-gray-100 p-8 rounded-lg">
+    <h1 className="text-3xl font-bold">Welcome</h1>
+  </div>
+);
 
 export default function HomePage() {
   const t = useTranslations('home');

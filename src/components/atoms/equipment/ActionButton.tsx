@@ -1,8 +1,8 @@
 'use client';
 
-import { HTMLAttributes } from 'react';
+import { ButtonHTMLAttributes } from 'react';
 
-interface ActionButtonProps extends HTMLAttributes<HTMLButtonElement> {
+interface ActionButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant: 'primary' | 'secondary' | 'danger' | 'success';
   size?: 'sm' | 'md' | 'lg';
   icon?: React.ReactNode;

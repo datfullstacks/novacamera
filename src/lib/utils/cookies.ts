@@ -18,7 +18,7 @@ const TOKEN_EXPIRY_KEY = 'tokenExpiry';
 export const setAuthToken = (token: string, expiryTimestamp?: number): void => {
   console.log('🍪 Setting authToken in cookie...');
   
-  const options = { ...COOKIE_OPTIONS };
+  const options: Cookies.CookieAttributes = { ...COOKIE_OPTIONS };
   
   // If token has expiry, use it for cookie expiry
   if (expiryTimestamp) {
