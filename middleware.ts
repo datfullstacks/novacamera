@@ -27,6 +27,17 @@ const intlMiddleware = createMiddleware(routing);
 
 export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  
+  // Skip middleware for static files and API routes
+  if (
+    pathname.startsWith('/_next') ||
+    pathname.startsWith('/api') ||
+    pathname.startsWith('/static') ||
+    pathname.includes('.')
+  ) {
+    return NextResponse.next();
+  }
+  
   const authToken = request.cookies.get('authToken')?.value;
   
   // With localePrefix: 'never', no need to handle locale prefix in pathname
@@ -67,8 +78,15 @@ export default async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // Match all routes except static files and API routes
+  // Match all routes except static files and API routes  
   matcher: [
-    '/((?!api|_next|_vercel|favicon.ico|robots.txt|.*\\.).*)'
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ]
 };
