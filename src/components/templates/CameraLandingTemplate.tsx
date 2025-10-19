@@ -47,6 +47,10 @@ export const CameraLandingTemplate: React.FC<CameraLandingTemplateProps> = ({
       </main>
       
       {/* Footer */}
+      <LandingFooter
+        companyInfo={companyInfo}
+        columns={footerColumns}
+      />
     </div>
   );
 };

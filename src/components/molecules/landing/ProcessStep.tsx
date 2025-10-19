@@ -19,7 +19,7 @@ export const ProcessStep: React.FC<ProcessStepProps> = ({
     <div
       className={className}
       style={{
-        width: 265,
+        width: 220,
         height: 257,
         display: 'flex',
         flexDirection: 'column',
@@ -40,7 +40,7 @@ export const ProcessStep: React.FC<ProcessStepProps> = ({
           fontWeight: 700,
           lineHeight: '29px',
           margin: 0,
-          width: 225,
+          width: 200,
         }}
       >
         {title}
@@ -56,7 +56,7 @@ export const ProcessStep: React.FC<ProcessStepProps> = ({
           fontWeight: 400,
           lineHeight: '25px',
           margin: 0,
-          width: 225,
+          width: 200,
         }}
       >
         {description}

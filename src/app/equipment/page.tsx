@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { ProtectedRoute } from '@/components/auth';
 import DashboardTemplate from '@/components/templates/DashboardTemplate';
 import { EquipmentManagement } from '@/components/organisms/equipment';
+import { useEquipments } from '@/lib/react-query/hooks';
+import type { EquipmentFilterParams } from '@/types/api';
 
 interface Equipment {
   id: string;
@@ -18,64 +20,81 @@ interface Equipment {
 export default function EquipmentPage() {
   const [activeSidebarItem, setActiveSidebarItem] = useState('equipment');
   const [activeView, setActiveView] = useState('platform');
+  const [filters, setFilters] = useState<EquipmentFilterParams>({
+    pageNumber: 1,
+    pageSize: 20,
+  });
 
-  // Mock data - in real app, this would come from API
-  const equipment: Equipment[] = [
-    {
-      id: '1',
-      name: 'Canon EOS R5',
-      code: '#R5-01',
-      status: 'available',
-      price: '950.000₫',
-      usage: '88%',
-      image: 'https://placehold.co/60x60',
-    },
-    {
-      id: '2',
-      name: 'Sony A7III',
-      code: '#A7-10',
-      status: 'rented',
-      price: '850.000₫',
-      usage: '92%',
-      image: 'https://placehold.co/60x60',
-    },
-    {
-      id: '3',
-      name: 'DJI Ronin-S',
-      code: '#GIM-3',
-      status: 'maintenance',
-      price: '450.000₫',
-      usage: '76%',
-      image: 'https://placehold.co/60x60',
-    },
-    {
-      id: '4',
-      name: 'Nikon Z6 II',
-      code: '#Z6-05',
-      status: 'available',
-      price: '750.000₫',
-      usage: '72%',
-      image: 'https://placehold.co/60x60',
-    },
-    {
-      id: '5',
-      name: 'Canon 70-200mm f/2.8',
-      code: '#LENS-12',
-      status: 'repair',
-      price: '350.000₫',
-      usage: '45%',
-      image: 'https://placehold.co/60x60',
-    },
-    {
-      id: '6',
-      name: 'Blackmagic Pocket 6K',
-      code: '#BMP-02',
-      status: 'available',
-      price: '1.200.000₫',
-      usage: '65%',
-      image: 'https://placehold.co/60x60',
-    },
-  ];
+  // Fetch equipment from API
+  const { data, isLoading, error } = useEquipments(filters);
+
+  // Transform API data to component format
+  const equipment: Equipment[] = data?.data.items.map((item) => ({
+    id: item.equipmentId.toString(),
+    name: item.name || 'N/A',
+    code: `#${item.equipmentId}`,
+    status: item.isAvailable ? 'available' : 'rented',
+    price: `${item.pricePerDay.toLocaleString('vi-VN')}₫`,
+    usage: '0%', // API doesn't provide this, placeholder
+    image: item.mainImageUrl || 'https://placehold.co/60x60',
+  })) || [];
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <ProtectedRoute>
+        <DashboardTemplate
+          activeSidebarItem={activeSidebarItem}
+          onSidebarItemClick={setActiveSidebarItem}
+          activeView={activeView}
+          onViewChange={setActiveView}
+          userName="Alex Morgan"
+          userRole="Quản trị viên nền tảng"
+        >
+          <div className="flex items-center justify-center h-64">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <p className="text-gray-600">Đang tải thiết bị...</p>
+            </div>
+          </div>
+        </DashboardTemplate>
+      </ProtectedRoute>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <ProtectedRoute>
+        <DashboardTemplate
+          activeSidebarItem={activeSidebarItem}
+          onSidebarItemClick={setActiveSidebarItem}
+          activeView={activeView}
+          onViewChange={setActiveView}
+          userName="Alex Morgan"
+          userRole="Quản trị viên nền tảng"
+        >
+          <div className="flex items-center justify-center h-64">
+            <div className="text-center">
+              <div className="text-red-600 mb-4">
+                <svg className="w-16 h-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <p className="text-gray-800 font-semibold mb-2">Không thể tải dữ liệu thiết bị</p>
+              <p className="text-gray-600 text-sm">{error.message}</p>
+              <button 
+                onClick={() => setFilters({ ...filters })}
+                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                Thử lại
+              </button>
+            </div>
+          </div>
+        </DashboardTemplate>
+      </ProtectedRoute>
+    );
+  }
 
   const handleAddEquipment = () => {
     console.log('Add equipment clicked');

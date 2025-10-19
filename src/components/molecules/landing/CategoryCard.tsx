@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 export interface CategoryCardProps {
   id: string;
@@ -17,7 +18,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
   href
 }) => {
   return (
-    <a 
+    <Link 
       href={href}
       className="block group bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
     >
@@ -48,6 +49,6 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
           </span>
         </div>
       </div>
-    </a>
+    </Link>
   );
 };

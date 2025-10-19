@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { HeroSection } from '@/components/organisms/auth/HeroSection';
 import { LoginPanel } from '@/components/organisms/auth/LoginPanel';
 import { SignupPanel } from '@/components/organisms/auth/SignupPanel';
-import { SignupFormData } from '@/components/molecules/auth/SignupForm';
+import { SignupFormData } from '@/types/forms/auth';
 
 type AuthMode = 'login' | 'signup';
 

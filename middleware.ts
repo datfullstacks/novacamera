@@ -11,6 +11,7 @@ const protectedRoutes = [
   '/settings',
   '/cart',
   '/checkout',
+  '/bookings',
 ];
 
 // List of auth routes that should redirect to dashboard if already authenticated
@@ -18,6 +19,7 @@ const authRoutes = [
   '/login',
   '/signup',
   '/forgot-password',
+  '/auth',
 ];
 
 // Create the next-intl middleware
@@ -27,21 +29,19 @@ export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const authToken = request.cookies.get('authToken')?.value;
   
-  // Check if current path is protected (remove locale prefix for checking)
-  const pathWithoutLocale = pathname.replace(/^\/[a-z]{2}(?=\/|$)/, '') || '/';
+  // With localePrefix: 'never', no need to handle locale prefix in pathname
   const isProtectedRoute = protectedRoutes.some(route => 
-    pathWithoutLocale.startsWith(route)
+    pathname.startsWith(route)
   );
   
-  // Check if current path is auth route
   const isAuthRoute = authRoutes.some(route => 
-    pathWithoutLocale.startsWith(route)
+    pathname.startsWith(route)
   );
 
   // If user is on a protected route and doesn't have a token
   if (isProtectedRoute && !authToken) {
     const loginUrl = new URL('/login', request.url);
-    loginUrl.searchParams.set('redirect', pathWithoutLocale);
+    loginUrl.searchParams.set('redirect', pathname);
     return NextResponse.redirect(loginUrl);
   }
 
@@ -67,8 +67,8 @@ export default async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // Skip root path, allow it to go directly to app/page.tsx
+  // Match all routes except static files and API routes
   matcher: [
-    '/((?!api|_next|_vercel|favicon.ico|robots.txt|.*\\.)(?!^/$).*)'
+    '/((?!api|_next|_vercel|favicon.ico|robots.txt|.*\\.).*)'
   ]
 };

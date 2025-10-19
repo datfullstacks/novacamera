@@ -6,41 +6,53 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import DashboardTemplate from '@/components/templates/DashboardTemplate';
 import { StatsGrid, ChartCard, EquipmentList, BookingList, MaintenanceList } from '@/components/organisms/dashboard';
+import { useDashboardSummary, useUpcomingRentals } from '@/lib/react-query/hooks';
 
 export default function DashboardPage() {
   const authState = useSelector((state: RootState) => state.auth);
   const [activeSidebarItem, setActiveSidebarItem] = useState('dashboard');
   const [activeView, setActiveView] = useState('platform');
 
-  // Mock data - in real app, this would come from API
-  const stats = [
+  // Fetch dashboard data from API
+  const { data: summaryData, isLoading: loadingSummary } = useDashboardSummary();
+  const { data: upcomingData } = useUpcomingRentals();
+
+  const summary = summaryData?.data;
+
+  // Transform API data to component format - simplified without change fields
+  const stats = summary ? [
     {
       title: 'Tổng doanh thu',
-      value: '50.000.000đ',
-      change: {
-        value: '12.5% từ tháng trước',
-        type: 'positive' as const,
-      },
+      value: `${summary.totalRevenue?.toLocaleString('vi-VN')}₫` || 'N/A',
     },
     {
       title: 'Cho thuê tích cực',
-      value: '78',
-      change: {
-        value: '8.2% so với tháng trước',
-        type: 'positive' as const,
-      },
+      value: summary.activeRentals?.toString() || '0',
     },
     {
       title: 'Thiết bị có sẵn',
-      value: '142',
+      value: summary.availableEquipments?.toString() || '0',
     },
     {
       title: 'Khách hàng mới',
-      value: '36',
-      change: {
-        value: '24.1% so với tháng trước',
-        type: 'positive' as const,
-      },
+      value: summary.newCustomers?.toString() || '0',
+    },
+  ] : [
+    {
+      title: 'Tổng doanh thu',
+      value: loadingSummary ? 'Đang tải...' : '50.000.000đ',
+    },
+    {
+      title: 'Cho thuê tích cực',
+      value: loadingSummary ? 'Đang tải...' : '78',
+    },
+    {
+      title: 'Thiết bị có sẵn',
+      value: loadingSummary ? 'Đang tải...' : '142',
+    },
+    {
+      title: 'Khách hàng mới',
+      value: loadingSummary ? 'Đang tải...' : '36',
     },
   ];
 
@@ -78,40 +90,37 @@ export default function DashboardPage() {
     },
   ];
 
-  const bookings = [
-    {
-      id: '1',
-      day: 24,
-      month: 'Jun',
-      customerName: 'Sarah Johnson',
-      equipment: 'Sony alpha a7iii + ống kính 24- 70mm',
-      time: '9:00 sáng - 6:00 tối',
-    },
-    {
-      id: '2',
-      day: 25,
-      month: 'Jun',
-      customerName: 'Michael Chen',
-      equipment: 'Dji ronin-s gimbal + canon eos r5',
-      time: '10:30 sáng - 5:30 chiều',
-    },
-    {
-      id: '3',
-      day: 26,
-      month: 'Jun',
-      customerName: 'Emily Rodriguez',
-      equipment: 'Ống kính Nikon Z6 II + 14-24mm',
-      time: '8:00 sáng - 7:00 tối',
-    },
-    {
-      id: '4',
-      day: 28,
-      month: 'Jun',
-      customerName: 'David Wilson',
-      equipment: 'Túi đen 6K + Phụ kiện',
-      time: '9:00 sáng - 8:00 tối',
-    },
-  ];
+  // Transform upcoming rentals data - fallback to mock data if API fails
+  const bookings = (upcomingData?.data && upcomingData.data.length > 0) 
+    ? upcomingData.data.map((rental) => {
+        const rentalDate = new Date(rental.rentalStartDate || '');
+        return {
+          id: rental.orderId?.toString() || '',
+          day: rentalDate.getDate(),
+          month: rentalDate.toLocaleDateString('vi-VN', { month: 'short' }),
+          customerName: rental.customerName || 'N/A',
+          equipment: rental.equipmentName || 'N/A',
+          time: `${new Date(rental.rentalStartDate || '').toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })} - ${new Date(rental.rentalEndDate || '').toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}`,
+        };
+      })
+    : [
+        {
+          id: '1',
+          day: 24,
+          month: 'Jun',
+          customerName: 'Sarah Johnson',
+          equipment: 'Sony alpha a7iii + ống kính 24-70mm',
+          time: '9:00 sáng - 6:00 tối',
+        },
+        {
+          id: '2',
+          day: 25,
+          month: 'Jun',
+          customerName: 'Michael Chen',
+          equipment: 'Dji ronin-s gimbal + canon eos r5',
+          time: '10:30 sáng - 5:30 chiều',
+        },
+      ];
 
   const maintenance = [
     {
@@ -138,7 +147,7 @@ export default function DashboardPage() {
         activeView={activeView}
         onViewChange={setActiveView}
         userName={authState.user?.fullName || 'Alex Morgan'}
-        userRole={authState.user?.role || 'Quản trị viên nền tảng'}
+        userRole="Quản trị viên nền tảng"
         userAvatar={authState.user?.avatar}
       >
         <div className="flex flex-col xl:flex-row gap-6">

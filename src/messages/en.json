@@ -55,23 +55,56 @@
     "featured": {
       "title": "Featured Equipment",
       "subtitle": "Most popular rental items",
-      "rentButton": "Rent Now"
+      "rentButton": "Rent Now",
+      "equipment": {
+        "canonR5": {
+          "name": "Canon EOS R5",
+          "price": "$25/day",
+          "features": {
+            "sensor": "45MP Full Frame Sensor",
+            "video": "8K RAW Video Recording",
+            "autofocus": "Intelligent AF System"
+          }
+        },
+        "sonyA7III": {
+          "name": "Sony Alpha A7III",
+          "price": "$22/day",
+          "features": {
+            "sensor": "24.2MP Full Frame BSI CMOS",
+            "video": "4K Video, 5-Axis Stabilization",
+            "autofocus": "693-Point AF System"
+          }
+        },
+        "canonLens": {
+          "name": "Canon RF 24-70mm f/2.8L",
+          "price": "$15/day",
+          "features": {
+            "type": "Standard Zoom Lens",
+            "stabilization": "Image Stabilization",
+            "weather": "Dust and Water Resistant"
+          }
+        }
+      }
     },
     "process": {
       "title": "Simple Rental Process",
       "subtitle": "3 simple steps to rent equipment",
       "steps": {
-        "browse": {
+        "step1": {
           "title": "Browse Equipment",
           "description": "Explore our rich equipment collection"
         },
-        "book": {
+        "step2": {
           "title": "Book",
           "description": "Select rental dates and confirm order"
         },
-        "enjoy": {
+        "step3": {
           "title": "Enjoy",
           "description": "Receive equipment and start creating"
+        },
+        "step4": {
+          "title": "Return",
+          "description": "Return equipment on time and complete transaction"
         }
       }
     },

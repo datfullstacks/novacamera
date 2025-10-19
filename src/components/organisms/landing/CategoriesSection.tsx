@@ -68,10 +68,12 @@ export const CategoriesSection: React.FC<CategoriesSectionProps> = ({
         {categories.map((category, index) => (
           <CategoryCard
             key={index}
+            id={category.id}
             name={category.name}
-            subtitle={category.subtitle}
-            image={category.image}
-            {...(category.onClick && { onClick: category.onClick })}
+            description={category.description}
+            imageUrl={category.imageUrl}
+            itemCount={category.itemCount}
+            href={category.href}
           />
         ))}
       </div>

@@ -1,7 +1,7 @@
 import { ApiResponse, RequestOptions } from '@/types/api';
 
 // API Configuration
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5162/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.mmoshop.site';
 
 // Custom error class for API errors
 export class ApiClientError extends Error {
@@ -13,6 +13,25 @@ export class ApiClientError extends Error {
     super(apiMessage);
     this.name = 'ApiClientError';
   }
+}
+
+// Helper to build query string from params
+function buildQueryString(params?: Record<string, string | number | boolean | undefined>): string {
+  if (!params) return '';
+  
+  const searchParams = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) {
+      if (Array.isArray(value)) {
+        value.forEach(v => searchParams.append(key, String(v)));
+      } else {
+        searchParams.append(key, String(value));
+      }
+    }
+  });
+  
+  const queryString = searchParams.toString();
+  return queryString ? `?${queryString}` : '';
 }
 
 // Base API Client
@@ -37,13 +56,24 @@ export class ApiClient {
     }
   }
 
+  // Get authorization token from localStorage
+  private getStoredToken(): string | null {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('token');
+    }
+    return null;
+  }
+
   // Generic request method
   async request<T>(
     endpoint: string,
     options: RequestOptions = {}
   ): Promise<ApiResponse<T>> {
-    const url = `${this.baseURL}${endpoint}`;
-    const { method = 'GET', headers = {}, body, token } = options;
+    const { method = 'GET', headers = {}, body, token, params } = options;
+    
+    // Build URL with query params
+    const queryString = buildQueryString(params);
+    const url = `${this.baseURL}${endpoint}${queryString}`;
 
     // Prepare headers
     const requestHeaders = {
@@ -51,9 +81,10 @@ export class ApiClient {
       ...headers,
     };
 
-    // Add token if provided
-    if (token) {
-      requestHeaders['Authorization'] = `Bearer ${token}`;
+    // Add token if provided, otherwise use stored token
+    const authToken = token || this.getStoredToken();
+    if (authToken) {
+      requestHeaders['Authorization'] = `Bearer ${authToken}`;
     }
 
     // Prepare request configuration

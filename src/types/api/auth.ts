@@ -1,4 +1,4 @@
-import { ApiResponse } from './base';
+import { ApiResponse, PaginatedApiResponse } from './base';
 
 // User roles enum
 export enum UserRole {
@@ -7,32 +7,66 @@ export enum UserRole {
   CUSTOMER = 3,  // Khách hàng
 }
 
+// User status
+export enum UserStatus {
+  ACTIVE = 'active',
+  INACTIVE = 'inactive',
+  SUSPENDED = 'suspended',
+}
+
 // Auth requests
 export interface RegisterRequest {
   fullName: string;
   email: string;
-  passwordHash: string;
+  passwordHash: string; // Will be hashed on backend
+  phoneNumber?: string;
   roleId: number;
 }
 
 export interface LoginRequest {
   email: string;
   password: string;
-  rememberMe?: boolean;
-}
-
-export interface ForgotPasswordRequest {
-  email: string;
-}
-
-export interface ResetPasswordRequest {
-  token: string;
-  newPassword: string;
 }
 
 export interface ChangePasswordRequest {
-  currentPassword: string;
-  newPassword: string;
+  currentPassword: string | null;
+  newPassword: string | null;
+}
+
+export interface UpdateProfileRequest {
+  fullName?: string | null;
+  phoneNumber?: string | null;
+  address?: string | null;
+  updatedAt?: string;
+}
+
+export interface CreateUserOfflineRequest {
+  fullName: string;
+  phoneNumber: string;
+}
+
+// User Response
+export interface UserResponse {
+  fullName: string | null;
+  email: string | null;
+  passwordHash?: string | null;
+  phoneNumber: string | null;
+  loyaltyPoints: number;
+  avatarUrl: string | null;
+  address: string | null;
+  createdAt: string;
+  updatedAt: string;
+  status: string | null;
+  invoiceId: number;
+  invoiceAmount: number;
+  invoiceDate: string | null;
+  totaltransactions: number;
+  roleName: string | null;
+}
+
+// User Profile (extended)
+export interface UserProfile extends UserResponse {
+  userId: number;
 }
 
 // Auth responses
@@ -41,6 +75,7 @@ export interface RegisterResponse {
   email: string;
   fullName: string;
   roleId: number;
+  token?: string;
 }
 
 export interface LoginResponse {
@@ -48,32 +83,19 @@ export interface LoginResponse {
   email: string;
   fullName: string;
   accessToken: string;
-  refreshToken: string | null;
+  refreshToken?: string;
+  roleId: number;
   roleName: string;
-  roleId: number;
+  expiresIn?: number;
 }
 
-export interface RefreshTokenResponse {
-  token: string;
-  refreshToken: string;
-  expiresAt: string;
-}
-
-// User profile
-export interface UserProfile {
-  userId: number;
-  email: string;
-  fullName: string;
-  roleId: number;
-  phone?: string;
-  avatar?: string;
-  isEmailVerified: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-// API response types
-export type AuthRegisterResponse = ApiResponse<RegisterResponse>;
-export type AuthLoginResponse = ApiResponse<LoginResponse>;
-export type AuthProfileResponse = ApiResponse<UserProfile>;
-export type AuthRefreshResponse = ApiResponse<RefreshTokenResponse>;
+// API Response Types
+export type UserListResponse = PaginatedApiResponse<UserResponse>;
+export type UserDetailResponse = ApiResponse<UserResponse>;
+export type LoginApiResponse = ApiResponse<LoginResponse>;
+export type RegisterApiResponse = ApiResponse<RegisterResponse>;
+export type CurrentUserResponse = ApiResponse<UserProfile>;
+export type UpdateProfileResponse = ApiResponse<UserProfile>;
+export type ChangePasswordResponse = ApiResponse<string>;
+export type UploadAvatarResponse = ApiResponse<{ avatarUrl: string }>;
+export type CreateOfflineUserResponse = ApiResponse<UserResponse>;

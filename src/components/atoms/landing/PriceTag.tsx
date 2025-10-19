@@ -12,7 +12,7 @@ export interface PriceTagProps {
 
 export const PriceTag: React.FC<PriceTagProps> = ({
   amount,
-  period = '/ngày',
+  period,
   fontSize = landingTypography.fontSizes.price,
   fontWeight = landingTypography.fontWeights.bold,
   color = landingColors.primary.red,
@@ -29,7 +29,7 @@ export const PriceTag: React.FC<PriceTagProps> = ({
         lineHeight: '32px',
       }}
     >
-      {amount}{period}
+      {amount}{period ? period : ''}
     </div>
   );
 };

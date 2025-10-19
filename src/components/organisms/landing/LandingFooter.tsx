@@ -15,7 +15,7 @@ export interface LandingFooterProps {
 
 export const LandingFooter: React.FC<LandingFooterProps> = ({
   companyInfo,
-  columns,
+  columns = [],
   className = '',
 }) => {
   return (

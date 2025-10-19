@@ -55,23 +55,56 @@
     "featured": {
       "title": "Thiết bị nổi bật",
       "subtitle": "Các sản phẩm được lựa chọn nhiều nhất",
-      "rentButton": "Thuê ngay"
+      "rentButton": "Thuê ngay",
+      "equipment": {
+        "canonR5": {
+          "name": "Canon EOS R5",
+          "price": "500.000đ/ngày",
+          "features": {
+            "sensor": "Cảm biến 45MP Full Frame",
+            "video": "Quay video 8K RAW",
+            "autofocus": "Hệ thống AF thông minh"
+          }
+        },
+        "sonyA7III": {
+          "name": "Sony Alpha A7III",
+          "price": "450.000đ/ngày",
+          "features": {
+            "sensor": "Cảm biến 24.2MP Full Frame BSI CMOS",
+            "video": "Quay video 4K, ổn định 5 trục",
+            "autofocus": "Hệ thống AF 693 điểm"
+          }
+        },
+        "canonLens": {
+          "name": "Canon RF 24-70mm f/2.8L",
+          "price": "300.000đ/ngày",
+          "features": {
+            "type": "Ống kính zoom tiêu chuẩn",
+            "stabilization": "Chống rung hình ảnh",
+            "weather": "Chống bụi và nước"
+          }
+        }
+      }
     },
     "process": {
       "title": "Quy trình thuê đơn giản",
       "subtitle": "3 bước đơn giản để thuê thiết bị",
       "steps": {
-        "browse": {
+        "step1": {
           "title": "Duyệt thiết bị",
           "description": "Khám phá bộ sưu tập thiết bị phong phú"
         },
-        "book": {
+        "step2": {
           "title": "Đặt hàng",
           "description": "Chọn ngày thuê và xác nhận đơn hàng"
         },
-        "enjoy": {
+        "step3": {
           "title": "Sử dụng",
           "description": "Nhận thiết bị và bắt đầu sáng tạo"
+        },
+        "step4": {
+          "title": "Trả thiết bị",
+          "description": "Trả thiết bị đúng hạn và hoàn tất giao dịch"
         }
       }
     },
