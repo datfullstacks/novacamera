@@ -299,7 +299,7 @@ export default function Header() {
       </div>
       
       {/* Debug Info in Development */}
-      {process.env.NODE_ENV === 'development' && (
+      {/* {process.env.NODE_ENV === 'development' && (
         <div className="bg-yellow-100 border-t border-yellow-300 px-4 py-1 text-xs">
           <span className="text-yellow-800">
             🔧 Auth: Redux={authState.isAuthenticated ? '✅' : '❌'} | 
@@ -309,7 +309,7 @@ export default function Header() {
             Token={cookieData.authToken ? '🟢' : '🔴'}
           </span>
         </div>
-      )}
+      )} */}
     </header>
   );
 }

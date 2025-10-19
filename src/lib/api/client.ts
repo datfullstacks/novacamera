@@ -1,4 +1,5 @@
 import { ApiResponse, RequestOptions } from '@/types/api';
+import { getAuthToken } from '@/lib/utils/cookies';
 
 // API Configuration
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.mmoshop.site';
@@ -56,10 +57,10 @@ export class ApiClient {
     }
   }
 
-  // Get authorization token from localStorage
+  // Get authorization token from cookies
   private getStoredToken(): string | null {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('token');
+      return getAuthToken() || null;
     }
     return null;
   }

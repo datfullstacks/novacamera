@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { Equipment } from '@/types';
-import { equipmentService } from '@/lib/api/equipmentService';
+import { Equipment, EquipmentStatus } from '@/types';
+import { equipmentService } from '@/lib/api/services';
 import { ProductDetailTemplate } from '@/components/templates/ProductDetailTemplate';
 
 export default function ProductDetailPage() {
@@ -18,16 +18,59 @@ export default function ProductDetailPage() {
 
       try {
         setLoading(true);
-        const response = await equipmentService.getEquipmentById(params.id as string);
+        const equipmentId = parseInt(params.id as string, 10);
         
-        if (response.success && response.data) {
-          setProduct(response.data);
+        if (isNaN(equipmentId)) {
+          setError('Invalid product ID');
+          return;
+        }
+
+        const response = await equipmentService.getEquipmentById(equipmentId);
+        
+        console.log('✅ API Response for detail:', response);
+
+        if (response.statusCode === 200 && response.data) {
+          const apiData = response.data;
+          
+          // Map API response to Equipment type
+          const mappedProduct: Equipment = {
+            id: apiData.equipmentId,
+            name: apiData.name || '',
+            description: apiData.description || apiData.shortDescription || '',
+            dailyRate: apiData.pricePerDay,
+            category: apiData.categoryName || '',
+            brand: apiData.brand || '',
+            images: apiData.images?.map((img) => ({
+              id: img.imageId,
+              url: img.imageUrl || '',
+              alt: apiData.name || ''
+            })) || (apiData.mainImageUrl ? [{
+              id: 1,
+              url: apiData.mainImageUrl,
+              alt: apiData.name || ''
+            }] : []),
+            rating: apiData.rating || 0,
+            reviewCount: apiData.reviewCount || 0,
+            isAvailable: apiData.isAvailable,
+            availableQuantity: apiData.stock || 0,
+            specifications: apiData.specifications?.reduce((acc, spec) => {
+              if (spec.label) {
+                acc[spec.label] = spec.value || '';
+              }
+              return acc;
+            }, {} as Record<string, string>) || {},
+            status: apiData.isAvailable ? EquipmentStatus.ACTIVE : EquipmentStatus.INACTIVE,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          };
+
+          setProduct(mappedProduct);
         } else {
-          setError('Product not found');
+          setError(response.message || 'Product not found');
         }
       } catch (err) {
         setError('Failed to load product');
-        console.error('Error fetching product:', err);
+        console.error('❌ Error fetching product:', err);
       } finally {
         setLoading(false);
       }

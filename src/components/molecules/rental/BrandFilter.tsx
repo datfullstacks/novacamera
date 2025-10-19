@@ -5,7 +5,7 @@ import { FilterGroup } from './FilterGroup';
 import { Checkbox } from '../../atoms/rental/Checkbox';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { toggleBrand } from '@/store/slices/filtersSlice';
-import { equipmentService } from '@/lib/api/equipmentService';
+import { equipmentService } from '@/lib/api/services';
 
 export interface BrandFilterProps {
   title?: string;
@@ -26,11 +26,20 @@ export const BrandFilter: React.FC<BrandFilterProps> = ({
       setLoading(true);
       try {
         const response = await equipmentService.getBrands();
-        if (response.success) {
-          setBrands(response.data);
+        
+        console.log('✅ Brands API Response:', response);
+        
+        if (response.statusCode === 200 && response.data) {
+          // Map string array to component format with equipmentCount
+          const mappedBrands = response.data.map((brandName) => ({
+            id: brandName.toLowerCase(),
+            name: brandName,
+            equipmentCount: 0 // API doesn't provide count, will be 0
+          }));
+          setBrands(mappedBrands);
         }
       } catch (error) {
-        console.error('Failed to fetch brands:', error);
+        console.error('❌ Failed to fetch brands:', error);
         // Fallback to mock data
         setBrands([
           { id: 'canon', name: 'Canon', equipmentCount: 15 },

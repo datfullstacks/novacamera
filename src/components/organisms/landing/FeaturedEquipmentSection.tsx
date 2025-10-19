@@ -21,54 +21,60 @@ export const FeaturedEquipmentSection: React.FC<FeaturedEquipmentSectionProps> =
       className={className}
       style={{
         width: '100%',
-        maxWidth: 1181,
-        margin: '0 auto',
-        padding: '60px 0',
         background: landingColors.primary.lightGray,
+        padding: '60px 0',
       }}
     >
-      {/* Section title with underline */}
+      {/* Content container - centered */}
       <div
         style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          marginBottom: 60,
-        }}
-      >
-        <h2
-          style={{
-            textAlign: 'center',
-            color: landingColors.primary.navy,
-            fontSize: 31.88,
-            fontFamily: 'Segoe UI',
-            fontWeight: 700,
-            lineHeight: '51px',
-            margin: 0,
-          }}
-        >
-          {title}
-        </h2>
-        <div
-          style={{
-            width: 80,
-            height: 3,
-            background: landingColors.primary.red,
-            marginTop: 10,
-          }}
-        />
-      </div>
-      
-      {/* Equipment grid */}
-      <div
-        style={{
-          display: 'flex',
-          gap: 30,
-          justifyContent: 'center',
-          flexWrap: 'wrap',
+          width: '100%',
+          maxWidth: 1440,
+          margin: '0 auto',
           padding: '0 20px',
         }}
       >
+        {/* Section title with underline */}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            marginBottom: 60,
+          }}
+        >
+          <h2
+            style={{
+              textAlign: 'center',
+              color: landingColors.primary.navy,
+              fontSize: 31.88,
+              fontFamily: 'Segoe UI',
+              fontWeight: 700,
+              lineHeight: '51px',
+              margin: 0,
+            }}
+          >
+            {title}
+          </h2>
+          <div
+            style={{
+              width: 80,
+              height: 3,
+              background: landingColors.primary.red,
+              marginTop: 10,
+            }}
+          />
+        </div>
+        
+        {/* Equipment grid */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 360px))',
+            gap: 30,
+            justifyContent: 'center',
+          }}
+        >
         {equipment.map((item, index) => (
           <EquipmentCard
             key={index}
@@ -80,6 +86,7 @@ export const FeaturedEquipmentSection: React.FC<FeaturedEquipmentSectionProps> =
             {...(item.onRentClick && { onRentClick: item.onRentClick })}
           />
         ))}
+      </div>
       </div>
     </section>
   );

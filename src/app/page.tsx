@@ -33,41 +33,41 @@ export default async function HomePage() {
       id: "camera",
       name: t("categories.items.camera.name"),
       description: t("categories.items.camera.subtitle"),
-      imageUrl: "https://www.baltana.com/files/wallpapers-13/Camera-Black-Background-HD-Wallpaper-34097.jpg",
+      imageUrl: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=400&h=300&fit=crop&q=80",
       itemCount: 25,
-      href: "/equipment/public?category=camera",
+      href: "/rental?category=camera",
     },
     {
       id: "lens",
       name: t("categories.items.lens.name"),
       description: t("categories.items.lens.subtitle"),
-      imageUrl: "https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=212&h=265&fit=crop&q=80",
+      imageUrl: "https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=400&h=300&fit=crop&q=80",
       itemCount: 18,
-      href: "/equipment/public?category=lens",
+      href: "/rental?category=lens",
     },
     {
       id: "lighting",
       name: t("categories.items.lighting.name"),
       description: t("categories.items.lighting.subtitle"),
-      imageUrl: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=212&h=318&fit=crop&q=80",
+      imageUrl: "https://images.unsplash.com/photo-1603317266112-e7cb4a0a5c80?w=400&h=300&fit=crop&q=80",
       itemCount: 12,
-      href: "/equipment/public?category=lighting",
+      href: "/rental?category=lighting",
     },
     {
       id: "tripod",
       name: t("categories.items.tripod.name"),
       description: t("categories.items.tripod.subtitle"),
-      imageUrl: "https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=153&h=153&fit=crop&q=80",
+      imageUrl: "https://images.unsplash.com/photo-1617387608932-cf44c6ac6b28?w=400&h=300&fit=crop&q=80",
       itemCount: 8,
-      href: "/equipment/public?category=tripod",
+      href: "/rental?category=tripod",
     },
     {
       id: "accessories",
       name: t("categories.items.accessories.name"),
       description: t("categories.items.accessories.subtitle"),
-      imageUrl: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=225&h=150&fit=crop&q=80",
+      imageUrl: "https://images.unsplash.com/photo-1606016159991-f1d0b5e8c634?w=400&h=300&fit=crop&q=80",
       itemCount: 15,
-      href: "/equipment/public?category=accessories",
+      href: "/rental?category=accessories",
     },
   ];
 
@@ -75,8 +75,7 @@ export default async function HomePage() {
   const equipment = [
     {
       name: t("featured.equipment.canonR5.name"),
-      image:
-        "https://martinbaileyphotography.com/wp-content/uploads/2020/08/MBP_EOS_R5_20200807_MR27178.jpg",
+      image: "https://images.unsplash.com/photo-1606980707556-e2e13052b2d7?w=800&h=600&fit=crop&q=80",
       features: [
         t("featured.equipment.canonR5.features.sensor"),
         t("featured.equipment.canonR5.features.video"),
@@ -86,8 +85,7 @@ export default async function HomePage() {
     },
     {
       name: t("featured.equipment.sonyA7III.name"),
-      image:
-        "https://cms.dailysocial.id/wp-content/uploads/2018/10/4f273f89a486377f47838fde791b2ad9_Review-Sony-Alpha-A7-III-17.jpg",
+      image: "https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=800&h=600&fit=crop&q=80",
       features: [
         t("featured.equipment.sonyA7III.features.sensor"),
         t("featured.equipment.sonyA7III.features.video"),
@@ -97,8 +95,7 @@ export default async function HomePage() {
     },
     {
       name: t("featured.equipment.canonLens.name"),
-      image:
-        "https://cloudfront.slrlounge.com/wp-content/uploads/2020/03/SLR_LOUNGE_Canon_RF_24-70_Review-8938.jpg",
+      image: "https://images.unsplash.com/photo-1617005082133-548c4dd27f35?w=800&h=600&fit=crop&q=80",
       features: [
         t("featured.equipment.canonLens.features.type"),
         t("featured.equipment.canonLens.features.stabilization"),
@@ -137,19 +134,19 @@ export default async function HomePage() {
     {
       quote: t("testimonials.items.testimonial1.quote"),
       authorName: t("testimonials.items.testimonial1.author"),
-      authorAvatar: "https://placehold.co/50x75",
+      authorAvatar: "https://i.pravatar.cc/150?img=1",
       rating: 5 as const,
     },
     {
       quote: t("testimonials.items.testimonial2.quote"),
       authorName: t("testimonials.items.testimonial2.author"),
-      authorAvatar: "https://placehold.co/50x75",
+      authorAvatar: "https://i.pravatar.cc/150?img=2",
       rating: 4 as const,
     },
     {
       quote: t("testimonials.items.testimonial3.quote"),
       authorName: t("testimonials.items.testimonial3.author"),
-      authorAvatar: "https://placehold.co/50x75",
+      authorAvatar: "https://i.pravatar.cc/150?img=3",
       rating: 5 as const,
     },
   ];
@@ -223,7 +220,7 @@ export default async function HomePage() {
         subtitle={t("hero.subtitle")}
         ctaPrimaryText={t("hero.ctaPrimary")}
         ctaSecondaryText={t("hero.ctaSecondary")}
-        backgroundImage="https://placehold.co/1181x1477"
+        backgroundImage="https://images.unsplash.com/photo-1606980707556-e2e13052b2d7?w=1920&h=1200&fit=crop&q=90&sat=-20&contrast=10"
       />
 
       {/* Categories Section */}
@@ -249,3 +246,4 @@ export default async function HomePage() {
     </CameraLandingTemplate>
   );
 }
+

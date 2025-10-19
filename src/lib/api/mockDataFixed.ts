@@ -17,7 +17,7 @@ export const mockEquipmentData: Equipment[] = [
     description: 'Máy ảnh mirrorless full-frame với cảm biến 24.2MP, quay video 4K và chống rung 5 trục in-body.',
     dailyRate: 1500000,
     availableQuantity: 5,
-    category: 'Máy ảnh',
+    category: 'camera',
     images: [
       {
         id: 1,
@@ -52,7 +52,7 @@ export const mockEquipmentData: Equipment[] = [
     description: 'Máy ảnh mirrorless cao cấp với cảm biến 45MP, quay video 8K RAW và hệ thống lấy nét Dual Pixel CMOS AF II.',
     dailyRate: 2200000,
     availableQuantity: 3,
-    category: 'Máy ảnh',
+    category: 'camera',
     images: [
       {
         id: 3,
@@ -82,7 +82,7 @@ export const mockEquipmentData: Equipment[] = [
     description: 'Ống kính zoom tiêu chuẩn chuyên nghiệp với khẩu độ f/2.8 cố định, thuộc dòng G Master cao cấp.',
     dailyRate: 1180000,
     availableQuantity: 8,
-    category: 'Ống kính',
+    category: 'lens',
     images: [
       {
         id: 4,
@@ -111,7 +111,7 @@ export const mockEquipmentData: Equipment[] = [
     description: 'Ống kính portrait chuyên nghiệp với khẩu độ f/1.2 siêu rộng, tạo hiệu ứng bokeh đẹp mắt.',
     dailyRate: 980000,
     availableQuantity: 4,
-    category: 'Ống kính',
+    category: 'lens',
     images: [
       {
         id: 5,
@@ -140,7 +140,7 @@ export const mockEquipmentData: Equipment[] = [
     description: 'Gimbal cầm tay 3 trục chuyên nghiệp cho máy ảnh DSLR và mirrorless, ổn định hình ảnh hoàn hảo.',
     dailyRate: 1750000,
     availableQuantity: 2,
-    category: 'Phụ kiện',
+    category: 'accessories',
     images: [
       {
         id: 6,
@@ -169,7 +169,7 @@ export const mockEquipmentData: Equipment[] = [
     description: 'Máy ảnh DSLR full-frame 45.7MP với khả năng quay video 4K và hệ thống lấy nét 153 điểm.',
     dailyRate: 1650000,
     availableQuantity: 0, // Out of stock
-    category: 'Máy ảnh',
+    category: 'camera',
     images: [
       {
         id: 7,

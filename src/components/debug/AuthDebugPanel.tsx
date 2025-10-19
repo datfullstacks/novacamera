@@ -97,7 +97,7 @@ export const AuthNavbar = () => {
       </div>
 
       {/* Debug Info */}
-      {process.env.NODE_ENV === 'development' && (
+      {/* {process.env.NODE_ENV === 'development' && (
         <div className="bg-yellow-100 border-t border-yellow-300 px-4 py-2 text-xs">
           <span className="text-yellow-800">
             🔧 Redux Auth: {authState.isAuthenticated ? '✅' : '❌'} | 
@@ -105,7 +105,7 @@ export const AuthNavbar = () => {
             User: {authState.user?.fullName || 'N/A'}
           </span>
         </div>
-      )}
+      )} */}
     </nav>
   );
 };

@@ -19,9 +19,9 @@ export const CategoriesSection: React.FC<CategoriesSectionProps> = ({
       className={className}
       style={{
         width: '100%',
-        maxWidth: 1181,
+        maxWidth: 1440,
         margin: '0 auto',
-        padding: '60px 0',
+        padding: '60px 20px',
       }}
     >
       {/* Section title with underline */}
@@ -59,11 +59,12 @@ export const CategoriesSection: React.FC<CategoriesSectionProps> = ({
       {/* Categories grid */}
       <div
         style={{
-          display: 'flex',
-          gap: 30,
-          justifyContent: 'center',
-          flexWrap: 'wrap',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+          gap: 24,
+          maxWidth: '100%',
         }}
+        className="lg:grid-cols-5"
       >
         {categories.map((category, index) => (
           <CategoryCard

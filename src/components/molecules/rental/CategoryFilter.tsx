@@ -1,11 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { FilterGroup } from './FilterGroup';
 import { Checkbox } from '../../atoms/rental/Checkbox';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { toggleCategory } from '@/store/slices/filtersSlice';
-import { equipmentService } from '@/lib/api/equipmentService';
+import { categoryService } from '@/lib/api/services/category.service';
 
 export interface CategoryFilterProps {
   title?: string;
@@ -17,20 +18,31 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   className = '',
 }) => {
   const dispatch = useAppDispatch();
+  const searchParams = useSearchParams();
   const selectedCategories = useAppSelector((state) => state.filters.categories);
   const [categories, setCategories] = useState<Array<{id: string; name: string; equipmentCount: number}>>([]);
   const [loading, setLoading] = useState(false);
+  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
       setLoading(true);
       try {
-        const response = await equipmentService.getCategories();
-        if (response.success) {
-          setCategories(response.data);
+        const response = await categoryService.getCategories();
+        
+        console.log('✅ Categories API Response:', response);
+        
+        if (response.statusCode === 200 && response.data) {
+          // Map API response to component format
+          const mappedCategories = response.data.map(cat => ({
+            id: cat.categoryId.toString(),
+            name: cat.categoryName || '',
+            equipmentCount: cat.equipmentCount || 0
+          }));
+          setCategories(mappedCategories);
         }
       } catch (error) {
-        console.error('Failed to fetch categories:', error);
+        console.error('❌ Failed to fetch categories:', error);
         // Fallback to mock data
         setCategories([
           { id: 'camera', name: 'Máy ảnh', equipmentCount: 25 },
@@ -48,6 +60,19 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
 
     fetchCategories();
   }, []);
+
+  // Auto-select category from URL params - runs BEFORE categories load
+  useEffect(() => {
+    if (!initialized) {
+      const categoryParam = searchParams.get('category');
+      if (categoryParam && !selectedCategories.includes(categoryParam)) {
+        // Dispatch immediately, don't wait for categories to load
+        dispatch(toggleCategory(categoryParam));
+        console.log('Auto-selected category from URL:', categoryParam);
+      }
+      setInitialized(true);
+    }
+  }, [initialized, searchParams, selectedCategories, dispatch]);
 
   const handleCategoryChange = (categoryId: string) => {
     dispatch(toggleCategory(categoryId));

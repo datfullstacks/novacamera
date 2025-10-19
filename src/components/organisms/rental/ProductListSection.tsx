@@ -5,12 +5,14 @@ import { useRouter } from 'next/navigation';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { updateViewMode, updateSortBy } from '@/store/slices/filtersSlice';
 import { addToCart } from '@/store/slices/cartSlice';
-import { equipmentService, EquipmentSearchParams } from '@/lib/api/equipmentService';
-import { Equipment } from '@/types';
+import { equipmentService } from '@/lib/api/services';
+import type { EquipmentFilterParams, EquipmentCardResponse } from '@/types/api';
+import { Equipment, EquipmentStatus } from '@/types';
 import { EmptyState } from '../../atoms/ui/EmptyState';
 import { ViewToggle } from '../../molecules/rental/ViewToggle';
 import { SortDropdown } from '../../molecules/rental/SortDropdown';
 import { showToast } from '../../atoms/ui/Toast';
+import type { RootState } from '@/store';
 
 interface ProductListSectionProps {
   className?: string;
@@ -27,10 +29,10 @@ export function ProductListSection({ className = '' }: ProductListSectionProps) 
   const [totalCount, setTotalCount] = useState(0);
 
   // Get filter state from Redux
-  const filters = useAppSelector((state: any) => state.filters);
-  const searchQuery = useAppSelector((state: any) => state.filters.searchQuery);
-  const viewMode = useAppSelector((state: any) => state.filters.viewMode);
-  const sortBy = useAppSelector((state: any) => state.filters.sortBy);
+  const filters = useAppSelector((state: RootState) => state.filters);
+  const searchQuery = useAppSelector((state: RootState) => state.filters.searchQuery);
+  const viewMode = useAppSelector((state: RootState) => state.filters.viewMode);
+  const sortBy = useAppSelector((state: RootState) => state.filters.sortBy);
 
   const handleViewDetails = (productId: string | number) => {
     router.push(`/rental/${productId}`);
@@ -93,33 +95,79 @@ export function ProductListSection({ className = '' }: ProductListSectionProps) 
         setLoading(true);
         setError(null);
 
-        // Build search parameters from Redux state
-        const searchParams: EquipmentSearchParams = {
-          search: searchQuery || undefined,
-          page: currentPage,
-          limit: 12,
-          categories: filters.categories.length > 0 ? filters.categories : undefined,
+        // Build filter parameters for real API
+        const filterParams: EquipmentFilterParams = {
+          pageNumber: currentPage,
+          pageSize: 12,
+          searchTerm: searchQuery || undefined,
+          categoryIds: filters.categories.length > 0 ? filters.categories.map((id: string) => parseInt(id, 10)).filter((id: number) => !isNaN(id)) : undefined,
           brands: filters.brands.length > 0 ? filters.brands : undefined,
           minPrice: filters.priceRange[0] > 0 ? filters.priceRange[0] : undefined,
           maxPrice: filters.priceRange[1] < 10000000 ? filters.priceRange[1] : undefined,
-          rating: filters.rating > 0 ? filters.rating : undefined,
-          availableOnly: filters.availability || undefined,
+          isAvailable: filters.availability || undefined,
+          minRating: filters.rating > 0 ? filters.rating : undefined,
           sortBy: sortBy === 'price-low' ? 'price' : sortBy === 'price-high' ? 'price' : sortBy === 'newest' ? 'createdAt' : sortBy,
-          sortOrder: sortBy === 'price-high' ? 'desc' : sortBy === 'newest' ? 'desc' : 'asc',
         };
 
-        const response = await equipmentService.searchEquipment(searchParams);
+        console.log('🔍 Fetching products with filters:', {
+          categories: filters.categories,
+          categoryIds: filterParams.categoryIds,
+          brands: filters.brands,
+          priceRange: filters.priceRange,
+          rating: filters.rating,
+          availability: filters.availability,
+          searchQuery,
+          sortBy,
+          filterParams
+        });
 
-        if (response.success) {
-          setProducts(response.data);
-          setTotalPages(response.totalPages || 1);
-          setTotalCount(response.totalCount || 0);
+        // Call real API
+        const response = await equipmentService.getEquipments(filterParams);
+
+        console.log('✅ API Response:', response);
+        console.log('📦 Response data:', response.data);
+        console.log('📋 Items:', response.data?.items);
+
+        if (response.statusCode === 200 && response.data && response.data.items) {
+          // Map API response to Equipment type
+          const mappedProducts: Equipment[] = response.data.items.map((item: EquipmentCardResponse) => ({
+            id: item.equipmentId,
+            name: item.name || '',
+            description: item.tagline || '',
+            dailyRate: item.pricePerDay,
+            category: item.categoryName || '',
+            brand: item.brand || '',
+            images: item.mainImageUrl ? [{
+              id: 1,
+              url: item.mainImageUrl,
+              alt: item.name || ''
+            }] : [],
+            rating: item.rating || 0,
+            reviewCount: item.reviewCount || 0,
+            isAvailable: item.isAvailable,
+            availableQuantity: 1,
+            specifications: {},
+            status: item.isAvailable ? EquipmentStatus.ACTIVE : EquipmentStatus.INACTIVE,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          }));
+
+          setProducts(mappedProducts);
+          setTotalPages(response.data.totalPage || 1);
+          setTotalCount(response.data.totalCount || 0);
+          
+          console.log('✅ Mapped products:', mappedProducts.length);
+          console.log('📊 Total count:', response.data.totalCount);
+          console.log('📄 Total pages:', response.data.totalPage);
         } else {
-          setError(response.message || 'Failed to fetch products');
+          console.warn('⚠️ API returned non-200 or no data:', response);
+          setError(response.message || 'Không thể tải danh sách sản phẩm');
+          setProducts([]);
+          setTotalCount(0);
         }
       } catch (err) {
         setError('An error occurred while fetching products');
-        console.error('Error fetching products:', err);
+        console.error('❌ Error fetching products:', err);
       } finally {
         setLoading(false);
       }
@@ -233,89 +281,93 @@ export function ProductListSection({ className = '' }: ProductListSectionProps) 
   }
 
   return (
-    <div className={`space-y-6 ${className}`}>
+    <div className={`space-y-4 md:space-y-6 ${className}`}>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
         <div className="flex items-center space-x-2">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+          <h2 className="text-base md:text-lg font-semibold text-gray-900 dark:text-black">
             Sản phẩm
           </h2>
-          <span className="text-sm text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
+          <span className="text-xs md:text-sm text-gray-700 dark:text-white bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
             {totalCount} sản phẩm
           </span>
         </div>
         
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-2 md:space-x-4 w-full sm:w-auto">
           {/* Sort Dropdown */}
-          <SortDropdown
-            value={sortBy}
-            onChange={handleSortChange}
-            options={sortOptions}
-          />
+          <div className="flex-1 sm:flex-initial">
+            <SortDropdown
+              value={sortBy}
+              onChange={handleSortChange}
+              options={sortOptions}
+            />
+          </div>
           
-          {/* View Toggle */}
-          <ViewToggle
-            isGridView={viewMode === 'grid'}
-            onToggle={handleViewModeChange}
-          />
+          {/* View Toggle - Hidden on mobile */}
+          <div className="hidden sm:block">
+            <ViewToggle
+              isGridView={viewMode === 'grid'}
+              onToggle={handleViewModeChange}
+            />
+          </div>
         </div>
       </div>
 
-      {/* Product Grid */}
+      {/* Product Grid - Responsive columns */}
       <div className={viewMode === 'grid' 
-        ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-        : "flex flex-col space-y-4"
+        ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6"
+        : "flex flex-col gap-3 md:gap-4"
       }>
         {products.map((product) => (
           <div
             key={product.id}
-            className={`bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow ${
-              viewMode === 'list' ? 'flex flex-row p-4' : ''
+            className={`bg-gray-50 dark:bg-white rounded-lg shadow-sm border border-gray-200 dark:border-gray-300 hover:shadow-lg hover:border-gray-300 dark:hover:border-gray-400 transition-all duration-200 ${
+              viewMode === 'list' ? 'flex flex-row gap-4 md:gap-6 p-4 md:p-6' : 'flex flex-col'
             }`}
           >
             <div className={`overflow-hidden rounded-lg bg-gray-200 ${
-              viewMode === 'list' ? 'w-48 h-32 flex-shrink-0' : 'aspect-w-1 aspect-h-1 w-full rounded-t-lg'
+              viewMode === 'list' ? 'w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 flex-shrink-0' : 'aspect-w-1 aspect-h-1 w-full rounded-t-lg'
             }`}>
               <img
                 src={product.images?.[0]?.url || '/placeholder-image.jpg'}
                 alt={product.name}
                 className={`object-cover object-center group-hover:opacity-75 ${
-                  viewMode === 'list' ? 'w-full h-full' : 'h-48 w-full'
+                  viewMode === 'list' ? 'w-full h-full' : 'h-40 sm:h-48 w-full'
                 }`}
               />
             </div>
-            <div className={viewMode === 'list' ? 'ml-4 flex-1 flex flex-col justify-between' : 'p-4'}>
-              <div>
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white line-clamp-2">
+            <div className={viewMode === 'list' ? 'flex-1 flex flex-col justify-between' : 'p-3 md:p-4 flex flex-col flex-1'}>
+              <div className="flex-1">
+                <h3 className="text-sm sm:text-base md:text-lg font-medium text-gray-900 dark:text-gray-900 line-clamp-2">
                   {product.name}
                 </h3>
-                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
+                <p className="mt-1 text-xs sm:text-sm text-gray-500 dark:text-gray-600 line-clamp-2">
                   {product.description}
                 </p>
+                <div className="mt-2 flex items-center justify-between">
+                  <p className="text-sm sm:text-base md:text-lg font-semibold text-gray-900 dark:text-gray-900">
+                    {product.dailyRate.toLocaleString('vi-VN')} VNĐ
+                  </p>
+                  {product.rating && (
+                    <div className="flex items-center">
+                      <span className="text-yellow-400 text-sm sm:text-base">★</span>
+                      <span className="ml-1 text-xs sm:text-sm text-gray-600 dark:text-gray-600">
+                        {product.rating}
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
-              <div className="mt-2 flex items-center justify-between">
-                <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                  {product.dailyRate.toLocaleString('vi-VN')} VNĐ
-                </p>
-                {product.rating && (
-                  <div className="flex items-center">
-                    <span className="text-yellow-400">★</span>
-                    <span className="ml-1 text-sm text-gray-600 dark:text-gray-400">
-                      {product.rating}
-                    </span>
-                  </div>
-                )}
-              </div>
-              <div className={`${viewMode === 'list' ? 'mt-2' : 'mt-3'} flex space-x-2`}>
+              <div className="mt-2 md:mt-3 flex flex-col sm:flex-row gap-2">
                 <button 
                   onClick={() => handleAddToCart(product)}
-                  className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
+                  className="flex-1 bg-black dark:bg-black text-white dark:text-white py-2 px-3 md:px-4 rounded-md text-xs sm:text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-800 transition-colors"
                 >
                   Thuê ngay
                 </button>
                 <button 
                   onClick={() => handleViewDetails(product.id)}
-                  className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  className="flex-1 sm:flex-initial px-3 md:px-4 py-2 border-2 border-black dark:border-black rounded-md text-xs sm:text-sm font-medium text-black dark:text-black hover:bg-black hover:text-white dark:hover:bg-black dark:hover:text-white transition-colors"
                 >
                   Chi tiết
                 </button>
