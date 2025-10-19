@@ -5,13 +5,13 @@ import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  label?: string;
+  label?: string | React.ReactNode;
   description?: string;
   error?: string;
 }
 
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
-  ({ className, label, description, error, id, ...props }, ref) => {
+  ({ className, label, description, error, id, checked, onChange, ...props }, ref) => {
     const checkboxId = id || `checkbox-${Math.random().toString(36).substr(2, 9)}`;
     
     return (
@@ -22,6 +22,8 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
               type="checkbox"
               id={checkboxId}
               ref={ref}
+              checked={checked}
+              onChange={onChange}
               className={cn(
                 "peer sr-only",
                 className

@@ -5,13 +5,19 @@ export * from './base';
 export * from './auth';
 export * from './equipment';
 export * from './order';
+export * from './category';
+export * from './dashboard';
+export * from './chat';
+export * from './payment';
 
 // Re-export commonly used types for convenience
 export type {
   ApiResponse,
-  PaginatedResponse,
+  PaginatedApiResponse,
+  PaginationResponse,
   ApiError,
-  RequestOptions
+  RequestOptions,
+  ProblemDetails
 } from './base';
 
 export type {
@@ -20,20 +26,34 @@ export type {
   RegisterResponse,
   LoginResponse,
   UserProfile,
-  UserRole
+  UserRole,
+  UserResponse,
+  ChangePasswordRequest
 } from './auth';
 
 export type {
-  Equipment,
-  EquipmentCategory,
+  EquipmentResponse,
+  EquipmentDetailResponse,
+  EquipmentCardResponse,
   EquipmentStatus,
-  EquipmentFilterParams
+  EquipmentFilterParams,
+  EquipmentImageResponse
 } from './equipment';
 
 export type {
-  Order,
-  OrderItem,
-  OrderStatus,
-  PaymentStatus,
-  CreateOrderRequest
+  RentalOrderResponse,
+  RentalOrderStatus,
+  CreateRentalOrderRequest,
+  RentalOrderItemDto,
+  CustomerInfoDto,
+  DeliveryInfoDto
 } from './order';
+
+export type {
+  CategoryResponse
+} from './category';
+
+export type {
+  DashboardSummaryResponse,
+  UpcomingRentalResponse
+} from './dashboard';

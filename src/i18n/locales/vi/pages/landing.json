@@ -50,7 +50,7 @@
           "video": "8K RAW Video Recording",
           "stabilization": "In-Body Image Stabilization"
         },
-        "price": "500.000đ/ngày"
+        "price": "500.000đ"
       },
       "sonyA7III": {
         "name": "Sony Alpha A7III",
@@ -59,7 +59,7 @@
           "video": "4K Video, 5-Axis Stabilization",
           "autofocus": "693-Point AF System"
         },
-        "price": "450.000đ/ngày"
+        "price": "450.000đ"
       },
       "canonLens": {
         "name": "Canon RF 24-70mm f/2.8L",
@@ -68,7 +68,7 @@
           "stabilization": "Image Stabilization",
           "weather": "Dust and Water Resistant"
         },
-        "price": "300.000đ/ngày"
+        "price": "300.000đ"
       }
     },
     "rentButton": "Thuê Ngay"

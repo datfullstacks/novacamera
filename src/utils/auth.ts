@@ -1,4 +1,4 @@
-import { SignupFormData } from '@/components/molecules/auth/SignupForm';
+import { SignupFormData } from '@/types/forms/auth';
 import { RegisterRequest, UserRole } from '@/types/api/auth';
 
 // Map signup form data to API register request

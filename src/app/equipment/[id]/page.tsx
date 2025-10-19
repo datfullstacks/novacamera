@@ -11,6 +11,7 @@ import {
   EquipmentDetailTabs 
 } from '@/components/organisms/equipment';
 import { EquipmentImageGallery, EquipmentInfo } from '@/components/molecules/equipment';
+import { useEquipment } from '@/lib/react-query/hooks';
 
 interface EquipmentDetailPageProps {
   params: {
@@ -20,76 +21,100 @@ interface EquipmentDetailPageProps {
 
 export default function EquipmentDetailPage({ params }: EquipmentDetailPageProps) {
   const router = useRouter();
+  const equipmentId = Number(params.id);
 
-  // Mock data - in real app, this would come from API based on params.id
-  const equipment = {
+  // Fetch equipment detail from API
+  const { data, isLoading, error } = useEquipment(equipmentId);
+  
+  const equipmentDetail = data?.data;
+
+  // Transform API data to component format
+  const equipment = equipmentDetail ? {
     id: params.id,
-    name: 'Canon EOS R5',
-    code: 'CAM-R5-001',
-    price: '1.500.000đ',
-    status: 'available' as const,
-    mainImage: 'https://placehold.co/350x437',
-    thumbnails: [
-      'https://placehold.co/60x75',
-      'https://placehold.co/90x60',
-      'https://placehold.co/90x60',
-      'https://placehold.co/90x60',
-    ],
+    name: equipmentDetail.name || 'N/A',
+    code: `#EQ-${equipmentDetail.equipmentId}`,
+    price: equipmentDetail.pricingInfo?.formattedOneDay || `${equipmentDetail.pricePerDay.toLocaleString('vi-VN')}₫/ngày`,
+    status: (equipmentDetail.isAvailable ? 'available' : 'rented') as 'available' | 'rented' | 'maintenance' | 'repair',
+    mainImage: equipmentDetail.mainImageUrl || 'https://placehold.co/350x437',
+    thumbnails: equipmentDetail.images?.slice(0, 4).map(img => img.imageUrl).filter((url): url is string => url !== null) || [],
     details: [
-      { label: 'Hãng sản xuất', value: 'Canon' },
-      { label: 'Loại thiết bị', value: 'Máy ảnh mirrorless' },
-      { label: 'Số seri', value: 'R5C98765432' },
-      { label: 'Ngày mua', value: '15/03/2022' },
-      { label: 'Tình trạng', value: 'Mới (95%)' },
-      { label: 'Số lần cho thuê', value: '27 lần' },
+      { label: 'Hãng sản xuất', value: equipmentDetail.brand || 'N/A' },
+      { label: 'Loại thiết bị', value: equipmentDetail.categoryName || 'N/A' },
+      { label: 'Trạng thái', value: equipmentDetail.status || 'N/A' },
+      { label: 'Tồn kho', value: `${equipmentDetail.stock || 0} sản phẩm` },
+      { label: 'Đánh giá', value: equipmentDetail.ratingStars || 'Chưa có đánh giá' },
+      { label: 'Địa điểm', value: equipmentDetail.location || 'N/A' },
+      { label: 'Số lần thuê', value: `${equipmentDetail.rentalCount || 0} lần` },
     ],
-    description: 'Canon EOS R5 là máy ảnh mirrorless full-frame cao cấp với cảm biến 45MP, quay video 8K, hệ thống lấy nét tự động tiên tiến và tốc độ chụp liên tiếp lên đến 20fps. Thiết bị phù hợp cho cả nhiếp ảnh chuyên nghiệp và quay phim.',
-    specs: [
-      { label: 'Cảm biến', value: 'CMOS Full-frame 45 megapixel' },
-      { label: 'Bộ xử lý', value: 'DIGIC X' },
-      { label: 'Dải ISO', value: '100-51,200 (mở rộng: 50-102,400)' },
-      { label: 'Tốc độ màn trập', value: '1/8000 đến 30 giây' },
-      { label: 'Tốc độ chụp liên tiếp', value: 'Tối đa 20 fps (màn trập điện tử), 12 fps (màn trập cơ)' },
-      { label: 'Hệ thống lấy nét', value: 'Dual Pixel CMOS AF II, 1053 điểm AF' },
-      { label: 'Quay video', value: '8K 30p, 4K 120p, 1080p 60p' },
-      { label: 'Màn hình', value: 'LCD cảm ứng 3.2 inch, 2.1 triệu điểm ảnh' },
-      { label: 'Kính ngắm', value: 'EVF OLED 5.76 triệu điểm ảnh' },
-      { label: 'Khe thẻ nhớ', value: '1x CFexpress, 1x SD UHS-II' },
-      { label: 'Kết nối', value: 'Wi-Fi, Bluetooth, USB-C, HDMI micro, Microphone, Headphone' },
-      { label: 'Pin', value: 'LP-E6NH (khoảng 320 ảnh)' },
-      { label: 'Kích thước', value: '138 x 97.5 x 88 mm' },
-      { label: 'Trọng lượng', value: '738g (bao gồm pin và thẻ nhớ)' },
-    ],
-    accessories: [
-      { name: 'Pin Canon LP-E6NH (2 pin)', included: true },
-      { name: 'Sạc pin LC-E6', included: true },
-      { name: 'Dây đeo máy ảnh', included: true },
-      { name: 'Cáp kết nối USB-C', included: true },
-      { name: 'Nắp body và nắp ngàm flash', included: true },
-      { name: 'Thẻ nhớ SD 64GB UHS-II', included: true },
-      { name: 'Túi đựng máy ảnh', included: true },
-    ],
-    bookings: [
-      {
-        id: '1',
-        customerName: 'Trần Hoàng',
-        orderCode: '#BK102',
-        dateRange: '20/07 - 22/07/2023',
-        duration: '3 ngày',
-        status: 'Đang thuê',
-        contact: '0912 345 678',
-      },
-      {
-        id: '2',
-        customerName: 'Nguyễn Lan',
-        orderCode: '#BK103',
-        dateRange: '24/07 - 26/07/2023',
-        duration: '3 ngày',
-        status: 'Đã xác nhận',
-        contact: '0987 654 321',
-      },
-    ],
-  };
+    description: equipmentDetail.description || equipmentDetail.shortDescription || 'Không có mô tả',
+    specs: equipmentDetail.specifications?.map(spec => ({
+      label: spec.label || '',
+      value: spec.value || ''
+    })) || [],
+    accessories: [], // API doesn't provide accessories in current schema
+    bookings: [], // Will be populated from separate endpoint if needed
+  } : null;
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <ProtectedRoute>
+        <DashboardTemplate
+          activeSidebarItem="equipment"
+          onSidebarItemClick={(item) => {
+            if (item === 'equipment') router.push('/equipment');
+          }}
+          activeView="platform"
+          onViewChange={() => {}}
+          userName="Alex Morgan"
+          userRole="Quản trị viên nền tảng"
+        >
+          <div className="flex items-center justify-center h-96">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <p className="text-gray-400">Đang tải chi tiết thiết bị...</p>
+            </div>
+          </div>
+        </DashboardTemplate>
+      </ProtectedRoute>
+    );
+  }
+
+  // Show error state
+  if (error || !equipment) {
+    return (
+      <ProtectedRoute>
+        <DashboardTemplate
+          activeSidebarItem="equipment"
+          onSidebarItemClick={(item) => {
+            if (item === 'equipment') router.push('/equipment');
+          }}
+          activeView="platform"
+          onViewChange={() => {}}
+          userName="Alex Morgan"
+          userRole="Quản trị viên nền tảng"
+        >
+          <div className="flex items-center justify-center h-96">
+            <div className="text-center">
+              <div className="text-red-500 mb-4">
+                <svg className="w-16 h-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <p className="text-gray-300 font-semibold mb-2">Không thể tải thông tin thiết bị</p>
+              <p className="text-gray-500 text-sm mb-4">{error?.message || 'Thiết bị không tồn tại'}</p>
+              <button 
+                onClick={() => router.push('/equipment')}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                Quay lại danh sách
+              </button>
+            </div>
+          </div>
+        </DashboardTemplate>
+      </ProtectedRoute>
+    );
+  }
 
   const handleBack = () => {
     router.push('/equipment');

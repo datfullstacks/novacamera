@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { AuthTemplate } from '@/components/templates/AuthTemplate';
-import { SignupFormData } from '@/components/molecules/auth/SignupForm';
+import { SignupFormData } from '@/types/forms/auth';
 import { showToast } from '@/components/atoms/ui/Toast';
 
 interface LoginFormData {

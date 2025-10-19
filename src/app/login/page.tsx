@@ -1,7 +1,8 @@
 ﻿'use client';
 
 import React, { useState, useEffect } from 'react';
-import { LoginTemplate } from '@/components/templates/LoginTemplate';
+import { AuthTemplate } from '@/components/templates/AuthTemplateNew';
+import { LoginFormNew } from '@/components/molecules/auth/LoginFormNew';
 import { showToast } from '@/components/atoms/ui/Toast';
 import { useLogin } from '@/hooks/api/useAuth';
 import { ApiClientError } from '@/lib/api/client';
@@ -111,22 +112,25 @@ export default function LoginPage() {
     });
   };
 
-  const handleSignUp = () => {
-    window.location.href = '/signup';
-  };
-
   return (
-    <>      
-      <LoginTemplate
-        onLogin={handleLogin}
-        onGoogleLogin={handleGoogleLogin}
-        onFacebookLogin={handleFacebookLogin}
-        onForgotPassword={handleForgotPassword}
-        onSignUp={handleSignUp}
-        loading={loginMutation.isPending}
-        heroImageUrl="https://picsum.photos/id/1/480/600"
+    <>
+      <AuthTemplate
+        title="Chào mừng trở lại"
+        subtitle="Vui lòng nhập chi tiết của bạn để đăng nhập"
+        footerText="Không có tài khoản?"
+        footerLinkText="Đăng ký"
+        footerLinkHref="/signup"
+        heroImageUrl="https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=600&h=800&fit=crop"
         heroImageAlt="Professional camera equipment for rental"
-      />
+      >
+        <LoginFormNew
+          onLogin={handleLogin}
+          onGoogleLogin={handleGoogleLogin}
+          onFacebookLogin={handleFacebookLogin}
+          onForgotPassword={handleForgotPassword}
+          loading={loginMutation.isPending}
+        />
+      </AuthTemplate>
       
       {/* Debug Panel */}
       <AuthDebugPanel />

@@ -1,89 +1,236 @@
-import { ApiResponse, PaginatedResponse, BaseEntity } from './base';
-import { Equipment } from './equipment';
-import { UserProfile } from './auth';
+import { ApiResponse, PaginatedApiResponse } from './base';
 
-// Order status
-export enum OrderStatus {
-  PENDING = 'pending',
-  CONFIRMED = 'confirmed',
-  IN_PROGRESS = 'in_progress',
-  COMPLETED = 'completed',
-  CANCELLED = 'cancelled',
-  REFUNDED = 'refunded'
+// Order/Rental status enum
+export enum RentalOrderStatus {
+  PENDING = 0,
+  CONFIRMED = 1,
+  RENTED = 2,
+  COMPLETED = 3,
+  CANCELLED = 4,
 }
 
-// Payment status
-export enum PaymentStatus {
-  PENDING = 'pending',
-  PAID = 'paid',
-  FAILED = 'failed',
-  REFUNDED = 'refunded'
+// Customer Info
+export interface CustomerInfoDto {
+  fullName: string;
+  phoneNumber: string;
+  email: string;
+  address: string | null;
+  district: string | null;
+  city: string | null;
+  notes: string | null;
 }
 
-// Order item
-export interface OrderItem extends BaseEntity {
-  orderId: number;
+// Delivery Info
+export interface DeliveryInfoDto {
+  deliveryMethod: string;
+  deliveryAddress: string | null;
+  preferredDeliveryTime: string | null;
+  deliveryNotes: string | null;
+}
+
+// Payment Info
+export interface PaymentInfoDto {
+  paymentMethod: string;
+  paidAmount: number | null;
+  paymentReference: string | null;
+  paymentNotes: string | null;
+  isInstallment: boolean;
+  depositAmount: number | null;
+  cardHolderName: string | null;
+  maskedCardNumber: string | null;
+}
+
+// Rental Order Item
+export interface RentalOrderItemDto {
   equipmentId: number;
-  equipment?: Equipment;
+  rentalStartDate: string;
+  rentalEndDate: string;
   quantity: number;
-  dailyRate: number;
-  days: number;
-  subtotal: number;
+  notes: string | null;
+  preferredEquipmentItemIds: number[] | null;
 }
 
-// Order entity
-export interface Order extends BaseEntity {
-  orderNumber: string;
-  customerId: number;
-  customer?: UserProfile;
-  status: OrderStatus;
-  paymentStatus: PaymentStatus;
-  startDate: string;
-  endDate: string;
+// Rental Order Detail Response
+export interface RentalOrderDetailResponse {
+  orderDetailId: number;
+  equipmentId: number;
+  equipmentName: string | null;
+  brand: string | null;
+  equipmentItemId: number | null;
+  serialNumber: string | null;
+  rentalStartDate: string;
+  rentalEndDate: string;
+  pricePerDay: number;
+  depositFee: number | null;
+  imageUrl: string | null;
+}
+
+// Rental Order Response
+export interface RentalOrderResponse {
+  orderId: number;
+  referenceNo: string | null;
+  orderDate: string;
+  status: string | null;
+  totalAmount: number;
+  orderDetails: RentalOrderDetailResponse[];
+  customerInfo: CustomerInfoDto;
+  deliveryInfo: DeliveryInfoDto;
+}
+
+// Create Rental Order Request
+export interface CreateRentalOrderRequest {
+  userId: number;
+  items: RentalOrderItemDto[];
+  note: string | null;
+  customerInfo: CustomerInfoDto;
+  deliveryInfo: DeliveryInfoDto;
+  paymentInfo: PaymentInfoDto;
+  couponCode: string | null;
+  discountAmount: number;
+  requireInsurance: boolean;
+  insuranceAmount: number;
+  isOfflineOrder: boolean;
+}
+
+// Order Item Summary
+export interface OrderItemSummaryDto {
+  equipmentId: number;
+  equipmentName: string | null;
+  brand: string | null;
+  imageUrl: string | null;
+  pricePerDay: number;
+  depositFee: number | null;
+  quantity: number;
+  rentalDays: number;
+  itemTotal: number;
+  isAvailable: boolean;
+  availableStock: number;
+}
+
+// Rental Order Summary
+export interface RentalOrderSummaryDto {
+  items: OrderItemSummaryDto[];
+  subTotal: number;
+  discountAmount: number;
+  deliveryFee: number;
+  totalAmount: number;
   totalDays: number;
-  subtotal: number;
-  tax: number;
-  total: number;
-  deposit: number;
-  items: OrderItem[];
-  notes?: string;
-  deliveryAddress?: string;
-  pickupMethod: 'delivery' | 'pickup';
+  estimatedStartDate: string;
+  estimatedEndDate: string;
 }
 
-// Order requests
-export interface CreateOrderRequest {
-  items: {
-    equipmentId: number;
-    quantity: number;
-    days: number;
-  }[];
+// Update Order Status
+export interface UpdateOrderStatusDto {
+  status: RentalOrderStatus;
+  note: string | null;
+  updatedBy: string | null;
+}
+
+// Enum Value (for status display)
+export interface EnumValueDto {
+  value: number;
+  name: string | null;
+  description: string | null;
+}
+
+// Rental Conflict
+export interface RentalConflictDto {
+  orderId: number;
+  referenceNo: string | null;
   startDate: string;
   endDate: string;
-  deliveryAddress?: string;
-  pickupMethod: 'delivery' | 'pickup';
-  notes?: string;
+  quantity: number;
+  customerName: string | null;
 }
 
-export interface UpdateOrderStatusRequest {
-  status: OrderStatus;
-  notes?: string;
+// Day Availability
+export interface DayAvailabilityDto {
+  date: string;
+  availableCount: number;
+  totalStock: number;
+  isAvailable: boolean;
+  availabilityStatus: string | null;
+  conflicts: RentalConflictDto[];
 }
 
-export interface OrderFilterParams {
-  status?: OrderStatus;
-  paymentStatus?: PaymentStatus;
-  customerId?: number;
-  startDate?: string;
-  endDate?: string;
-  page?: number;
-  limit?: number;
-  sortBy?: 'createdAt' | 'total' | 'status';
-  sortOrder?: 'asc' | 'desc';
+// Equipment Calendar Availability
+export interface EquipmentCalendarAvailabilityDto {
+  equipmentId: number;
+  equipmentName: string | null;
+  totalStock: number;
+  dayAvailabilities: DayAvailabilityDto[];
 }
 
-// API response types
-export type OrderListResponse = PaginatedResponse<Order>;
-export type OrderDetailResponse = ApiResponse<Order>;
-export type OrderCreateResponse = ApiResponse<Order>;
-export type OrderUpdateResponse = ApiResponse<Order>;
+// Selected Dates Availability
+export interface SelectedDatesAvailabilityDto {
+  equipmentId: number;
+  equipmentName: string | null;
+  selectedDates: string[];
+  quantity: number;
+  isAvailable: boolean;
+  unavailableDates: string[];
+  totalRentalDays: number;
+  pricePerDay: number;
+  totalCost: number;
+  depositFee: number | null;
+  message: string | null;
+}
+
+// Check Selected Dates Request
+export interface CheckSelectedDatesRequest {
+  selectedDates: string[];
+  quantity: number;
+}
+
+// Cancel Payment Request
+export interface CancelPaymentRequest {
+  reason: string;
+}
+
+// Rental Order Filter Params (Admin)
+export interface RentalOrderAdminFilterParams {
+  userId?: number;
+  referenceNo?: string;
+  status?: string;
+  orderDateFrom?: string;
+  orderDateTo?: string;
+  rentalStartDateFrom?: string;
+  rentalStartDateTo?: string;
+  rentalEndDateFrom?: string;
+  rentalEndDateTo?: string;
+  minTotalAmount?: number;
+  maxTotalAmount?: number;
+  customerName?: string;
+  customerEmail?: string;
+  customerPhone?: string;
+  searchTerm?: string;
+  sortBy?: string;
+  sortOrder?: string;
+  pageNumber?: number;
+  pageSize?: number;
+}
+
+// Rental Order Filter Params (User)
+export interface RentalOrderUserFilterParams {
+  status?: string;
+  searchTerm?: string;
+  fromDate?: string;
+  toDate?: string;
+  sortBy?: string;
+  sortOrder?: string;
+  pageNumber?: number;
+  pageSize?: number;
+}
+
+// API Response Types
+export type RentalOrderListResponse = PaginatedApiResponse<RentalOrderResponse>;
+export type RentalOrderDetailApiResponse = ApiResponse<RentalOrderResponse>;
+export type RentalOrderSummaryApiResponse = ApiResponse<RentalOrderSummaryDto>;
+export type RentalOrderCreateApiResponse = ApiResponse<RentalOrderResponse>;
+export type OrderStatusListApiResponse = ApiResponse<string[]>;
+export type EnumValueListApiResponse = ApiResponse<EnumValueDto[]>;
+export type AvailabilityCheckApiResponse = ApiResponse<string>;
+export type CalendarAvailabilityApiResponse = ApiResponse<EquipmentCalendarAvailabilityDto>;
+export type SelectedDatesAvailabilityApiResponse = ApiResponse<SelectedDatesAvailabilityDto>;
+export type UpdateOrderStatusApiResponse = ApiResponse<string>;
+export type CancelPaymentApiResponse = ApiResponse<string>;

@@ -3,9 +3,23 @@
  * Central export for all custom query hooks
  */
 
+// Authentication hooks
 export * from './useAuth';
+
+// User hooks
 export * from './useUsers';
 
-// Add more hook exports as needed
-// export * from './useProducts';
-// export * from './useOrders';
+// Equipment hooks
+export * from './useEquipment';
+
+// Rental order hooks
+export * from './useRentals';
+
+// Category hooks
+export * from './useCategories';
+
+// Dashboard hooks
+export * from './useDashboard';
+
+// Chat/AI hooks
+export * from './useChat';

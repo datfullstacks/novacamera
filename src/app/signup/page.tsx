@@ -1,12 +1,21 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { SignupTemplate } from '@/components/templates/SignupTemplate';
-import { SignupFormData } from '@/components/molecules/auth/SignupForm';
+import { AuthTemplate } from '@/components/templates/AuthTemplateNew';
+import { SignupFormNew } from '@/components/molecules/auth/SignupFormNew';
 import { showToast } from '@/components/atoms/ui/Toast';
 import { useRegister } from '@/hooks/api/useAuth';
-import { mapSignupFormToRegisterRequest } from '@/utils/auth';
 import { ApiClientError } from '@/lib/api/client';
+
+interface SignupFormData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  phone: string;
+  agreeToTerms: boolean;
+}
 
 export default function SignupPage() {
   const [isHydrated, setIsHydrated] = useState(false);
@@ -27,7 +36,13 @@ export default function SignupPage() {
   const handleSignup = async (data: SignupFormData) => {
     try {
       // Map form data to API request format
-      const registerRequest = mapSignupFormToRegisterRequest(data);
+      const registerRequest = {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        password: data.password,
+        phone: data.phone,
+      };
       
       // Call API using React Query mutation
       const result = await registerMutation.mutateAsync(registerRequest);
@@ -51,8 +66,8 @@ export default function SignupPage() {
       
       let errorMessage = 'Có lỗi xảy ra, vui lòng thử lại';
       
-      if (error && typeof error === 'object' && 'apiMessage' in error) {
-        errorMessage = (error as { apiMessage: string }).apiMessage;
+      if (error instanceof ApiClientError) {
+        errorMessage = error.apiMessage || errorMessage;
       } else if (error instanceof Error) {
         errorMessage = error.message;
       }
@@ -86,19 +101,22 @@ export default function SignupPage() {
     });
   };
 
-  const handleLogin = () => {
-    window.location.href = '/login';
-  };
-
   return (
-    <SignupTemplate
-      onSignup={handleSignup}
-      onGoogleSignup={handleGoogleSignup}
-      onFacebookSignup={handleFacebookSignup}
-      onLogin={handleLogin}
-      loading={registerMutation.isPending}
-      heroImageUrl="/images/auth-hero.jpg"
+    <AuthTemplate
+      title="Tạo tài khoản"
+      subtitle="Tham gia Nova Camera để thuê thiết bị nhiếp ảnh chuyên nghiệp"
+      footerText="Đã có tài khoản?"
+      footerLinkText="Đăng nhập ngay"
+      footerLinkHref="/login"
+      heroImageUrl="https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=600&h=800&fit=crop"
       heroImageAlt="Nova Camera Equipment"
-    />
+    >
+      <SignupFormNew
+        onSignup={handleSignup}
+        onGoogleSignup={handleGoogleSignup}
+        onFacebookSignup={handleFacebookSignup}
+        loading={registerMutation.isPending}
+      />
+    </AuthTemplate>
   );
 }

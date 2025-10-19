@@ -1,12 +1,24 @@
-// Base API Response structure
+// Base API Response structure matching NovaCMS API
 export interface ApiResponse<T = unknown> {
   statusCode: number;
-  message: string;
+  message: string | null;
   data: T;
-  errors: string[];
+  errors: string[] | null;
 }
 
-// Base pagination
+// Pagination Response structure matching NovaCMS API
+export interface PaginationResponse<T> {
+  items: T[];
+  totalPage: number;
+  pageSize: number;
+  pageNumber: number;
+  totalCount: number;
+}
+
+// Paginated API Response
+export type PaginatedApiResponse<T> = ApiResponse<PaginationResponse<T>>;
+
+// Legacy pagination meta (for backward compatibility)
 export interface PaginationMeta {
   page: number;
   limit: number;
@@ -25,12 +37,23 @@ export interface ApiError {
   errors: string[];
 }
 
+// Problem Details (RFC 7807 format)
+export interface ProblemDetails {
+  type?: string;
+  title?: string;
+  status?: number;
+  detail?: string;
+  instance?: string;
+  [key: string]: string | number | undefined;
+}
+
 // Request options
 export interface RequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   headers?: Record<string, string>;
   body?: Record<string, unknown> | FormData | string;
   token?: string;
+  params?: Record<string, string | number | boolean | undefined>;
 }
 
 // Base entity

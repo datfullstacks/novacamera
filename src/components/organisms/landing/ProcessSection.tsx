@@ -60,9 +60,9 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({
       <div
         style={{
           display: 'flex',
-          gap: 30,
+          gap: 20,
           justifyContent: 'center',
-          flexWrap: 'wrap',
+          flexWrap: 'nowrap',
           padding: '0 20px',
         }}
       >
