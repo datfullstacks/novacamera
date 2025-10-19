@@ -6,8 +6,8 @@
 // Authentication hooks
 export * from './useAuth';
 
-// User hooks
-export * from './useUsers';
+// User hooks - TODO: Implement userService first
+// export * from './useUsers';
 
 // Equipment hooks
 export * from './useEquipment';

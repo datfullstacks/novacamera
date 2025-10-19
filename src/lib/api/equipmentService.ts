@@ -48,7 +48,7 @@ export class EquipmentService {
 
       // Apply filters
       if (params.categories && params.categories.length > 0) {
-        filteredData = filteredData.filter(item => params.categories!.includes(item.categoryId));
+        filteredData = filteredData.filter(item => params.categories!.includes(item.category));
       }
 
       if (params.brands && params.brands.length > 0) {
@@ -56,11 +56,11 @@ export class EquipmentService {
       }
 
       if (params.minPrice !== undefined) {
-        filteredData = filteredData.filter(item => (item.dailyRate || item.price || 0) >= params.minPrice!);
+        filteredData = filteredData.filter(item => (item.dailyRate || 0) >= params.minPrice!);
       }
 
       if (params.maxPrice !== undefined) {
-        filteredData = filteredData.filter(item => (item.dailyRate || item.price || 0) <= params.maxPrice!);
+        filteredData = filteredData.filter(item => (item.dailyRate || 0) <= params.maxPrice!);
       }
 
       if (params.rating !== undefined) {
@@ -68,7 +68,7 @@ export class EquipmentService {
       }
 
       if (params.availableOnly) {
-        filteredData = filteredData.filter(item => item.isAvailable && item.quantity > 0);
+        filteredData = filteredData.filter(item => item.isAvailable && item.availableQuantity > 0);
       }
 
       // Apply sorting
@@ -79,8 +79,8 @@ export class EquipmentService {
 
           switch (params.sortBy) {
             case 'price':
-              aValue = a.price;
-              bValue = b.price;
+              aValue = a.dailyRate;
+              bValue = b.dailyRate;
               break;
             case 'name':
               aValue = a.name.toLowerCase();
@@ -135,7 +135,7 @@ export class EquipmentService {
     try {
       await this.delay(300);
       
-      const equipment = mockEquipmentData.find(item => item.id === id);
+      const equipment = mockEquipmentData.find(item => item.id === parseInt(id, 10));
       
       return {
         data: equipment || null,

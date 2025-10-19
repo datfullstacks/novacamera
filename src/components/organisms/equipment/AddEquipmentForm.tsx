@@ -31,7 +31,7 @@ interface EquipmentFormData {
   accessories: Array<{ name: string; included: boolean }>;
 }
 
-interface AddEquipmentFormProps extends HTMLAttributes<HTMLFormElement> {
+interface AddEquipmentFormProps extends Omit<HTMLAttributes<HTMLFormElement>, 'onSubmit'> {
   onSubmit?: (data: EquipmentFormData) => void;
   onCancel?: () => void;
   loading?: boolean;
@@ -80,7 +80,7 @@ export default function AddEquipmentForm({
 
   const [errors, setErrors] = useState<Partial<Record<keyof EquipmentFormData, string>>>({});
 
-  const updateField = (field: keyof EquipmentFormData, value: any) => {
+  const updateField = (field: keyof EquipmentFormData, value: EquipmentFormData[keyof EquipmentFormData]) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: undefined }));

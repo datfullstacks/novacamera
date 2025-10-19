@@ -33,6 +33,15 @@ export interface ChangePasswordRequest {
   newPassword: string | null;
 }
 
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
+export interface ResetPasswordRequest {
+  token: string;
+  newPassword: string;
+}
+
 export interface UpdateProfileRequest {
   fullName?: string | null;
   phoneNumber?: string | null;
@@ -67,6 +76,8 @@ export interface UserResponse {
 // User Profile (extended)
 export interface UserProfile extends UserResponse {
   userId: number;
+  roleId?: number; // Optional roleId from registration
+  isEmailVerified?: boolean; // Optional email verification status
 }
 
 // Auth responses

@@ -12,20 +12,25 @@ export enum EquipmentStatus {
   MAINTENANCE = 'maintenance'
 }
 
+// Equipment Image type
+export interface EquipmentImage {
+  id: number;
+  url: string;
+  alt: string;
+}
+
 // Equipment types
 export interface Equipment extends BaseEntity {
   name: string;
   description: string;
   brand: string;
+  model?: string;
   category: string;
   dailyRate: number;
   availableQuantity: number;
+  isAvailable: boolean;
   status: EquipmentStatus;
-  images: Array<{
-    id: number;
-    url: string;
-    alt: string;
-  }>;
+  images: EquipmentImage[];
   specifications: Record<string, string>;
   rating: number;
   reviewCount: number;

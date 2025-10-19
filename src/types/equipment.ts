@@ -9,7 +9,9 @@ export interface Equipment extends BaseEntity {
   name: string;
   description?: string;
   price: number;
+  dailyRate: number; // Price per day (from API: pricePerDay)
   quantity: number;
+  availableQuantity: number; // Available stock (from API: stock)
   categoryId: string;
   category?: Category;
   images: EquipmentImage[];

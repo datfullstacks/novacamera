@@ -5,28 +5,14 @@
  * Custom hooks for authentication-related queries and mutations
  */
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { loginStart, loginSuccess, loginFailure, logout as logoutAction, clearError } from '@/store/slices/authSlice';
 import { authService } from '@/lib/api';
 import { QUERY_KEYS } from '../query-keys';
-import type { LoginDto, RegisterDto, AuthUser, AuthResponse } from '@/types/auth';
-
-/**
- * Get current authenticated user
- */
-export function useCurrentUser() {
-  const dispatch = useAppDispatch();
-  const { user, isAuthenticated, token } = useAppSelector((state) => state.auth);
-
-  return useQuery({
-    queryKey: QUERY_KEYS.AUTH.ME,
-    queryFn: () => authService.getCurrentUser(),
-    retry: false, // Don't retry on 401
-    enabled: !!token && isAuthenticated,
-  });
-}
+import type { LoginRequest, RegisterRequest, LoginResponse, RegisterResponse } from '@/types/api/auth';
+import type { ApiResponse } from '@/types/api';
 
 /**
  * Login mutation with Redux integration
@@ -37,18 +23,39 @@ export function useLogin() {
   const dispatch = useAppDispatch();
 
   return useMutation({
-    mutationFn: (credentials: LoginDto) => {
+    mutationFn: (credentials: LoginRequest) => {
       dispatch(loginStart());
       return authService.login(credentials);
     },
-    onSuccess: (data: AuthResponse) => {
-      // Store token in localStorage
+    onSuccess: (response: ApiResponse<LoginResponse>) => {
+      console.log('✅ Login API response:', response);
+      
+      const data = response.data;
+      
+      // Store tokens in localStorage
       if (typeof window !== 'undefined') {
-        localStorage.setItem('token', data.token);
+        localStorage.setItem('accessToken', data.accessToken);
+        if (data.refreshToken) {
+          localStorage.setItem('refreshToken', data.refreshToken);
+        }
       }
       
+      // Create user object for Redux
+      const user = {
+        userId: data.userId,
+        email: data.email,
+        fullName: data.fullName,
+        roleId: data.roleId,
+        roleName: data.roleName,
+      };
+      
       // Update Redux state
-      dispatch(loginSuccess({ user: data.user, token: data.token }));
+      dispatch(loginSuccess({ 
+        user, 
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken,
+        tokenExpiry: data.expiresIn ? Date.now() + data.expiresIn * 1000 : undefined,
+      }));
       
       // Invalidate auth queries
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.AUTH.ME });
@@ -57,7 +64,8 @@ export function useLogin() {
       router.push('/dashboard');
     },
     onError: (error: Error) => {
-      const errorMessage = (error as any)?.response?.data?.message || 'Login failed';
+      console.error('❌ Login error:', error);
+      const errorMessage = error.message || 'Login failed';
       dispatch(loginFailure(errorMessage));
     },
   });
@@ -72,27 +80,50 @@ export function useRegister() {
   const dispatch = useAppDispatch();
 
   return useMutation({
-    mutationFn: (data: RegisterDto) => {
+    mutationFn: (data: RegisterRequest) => {
       dispatch(loginStart());
       return authService.register(data);
     },
-    onSuccess: (data: AuthResponse) => {
-      // Store token in localStorage
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('token', data.token);
+    onSuccess: (response: ApiResponse<RegisterResponse>) => {
+      console.log('✅ Registration API response:', response);
+      
+      const data = response.data;
+      
+      // For registration, we might get a token or need to redirect to login
+      if (data.token) {
+        // Store token if provided
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('accessToken', data.token);
+        }
+        
+        // Create user object for Redux
+        const user = {
+          userId: data.userId,
+          email: data.email,
+          fullName: data.fullName,
+          roleId: data.roleId,
+          roleName: '', // Will be fetched later
+        };
+        
+        // Update Redux state
+        dispatch(loginSuccess({ 
+          user, 
+          accessToken: data.token,
+        }));
+        
+        // Invalidate auth queries
+        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.AUTH.ME });
+        
+        // Redirect to dashboard
+        router.push('/dashboard');
+      } else {
+        // No token provided, redirect to login
+        router.push('/login?registered=true');
       }
-      
-      // Update Redux state
-      dispatch(loginSuccess({ user: data.user, token: data.token }));
-      
-      // Invalidate auth queries
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.AUTH.ME });
-      
-      // Redirect to dashboard
-      router.push('/dashboard');
     },
     onError: (error: Error) => {
-      const errorMessage = (error as any)?.response?.data?.message || 'Registration failed';
+      console.error('❌ Registration error:', error);
+      const errorMessage = error.message || 'Registration failed';
       dispatch(loginFailure(errorMessage));
     },
   });
@@ -109,9 +140,10 @@ export function useLogout() {
   return useMutation({
     mutationFn: () => authService.logout(),
     onSuccess: () => {
-      // Clear token from localStorage
+      // Clear tokens from localStorage
       if (typeof window !== 'undefined') {
-        localStorage.removeItem('token');
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
       }
       
       // Update Redux state
@@ -126,7 +158,8 @@ export function useLogout() {
     onError: () => {
       // Even if API call fails, logout locally
       if (typeof window !== 'undefined') {
-        localStorage.removeItem('token');
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
       }
       dispatch(logoutAction());
       queryClient.clear();

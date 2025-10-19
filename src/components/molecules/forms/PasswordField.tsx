@@ -46,7 +46,7 @@ export const PasswordField: React.FC<PasswordFieldProps> = ({
         className="pr-12"
       />
       <PasswordToggle 
-        visible={showPassword} 
+        show={showPassword} 
         onToggle={togglePasswordVisibility} 
       />
     </div>

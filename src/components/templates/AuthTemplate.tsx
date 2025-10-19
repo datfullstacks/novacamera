@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { HeroSection } from '@/components/organisms/auth/HeroSection';
-import { LoginPanel } from '@/components/organisms/auth/LoginPanel';
-import { SignupPanel } from '@/components/organisms/auth/SignupPanel';
+// TODO: These components don't exist - need to be created or use AuthTemplateNew instead
+// import { HeroSection } from '@/components/organisms/auth/HeroSection';
+// import { LoginPanel } from '@/components/organisms/auth/LoginPanel';
+// import { SignupPanel } from '@/components/organisms/auth/SignupPanel';
 import { SignupFormData } from '@/types/forms/auth';
 
 type AuthMode = 'login' | 'signup';
@@ -52,46 +53,15 @@ export const AuthTemplate: React.FC<AuthTemplateProps> = ({
   onSwitchToLogin,
   onSwitchToSignup
 }) => {
-  const [currentMode, setCurrentMode] = useState<AuthMode>(mode);
-
-  const handleSwitchToLogin = () => {
-    setCurrentMode('login');
-    onSwitchToLogin?.();
-  };
-
-  const handleSwitchToSignup = () => {
-    setCurrentMode('signup');
-    onSwitchToSignup?.();
-  };
-
+  // TODO: This template is deprecated - components don't exist
+  // Use AuthTemplateNew or /login, /signup pages instead
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-      <div className="w-full max-w-[1000px] h-[600px] bg-white rounded-xl shadow-[0px_10px_25px_0px_rgba(0,0,0,0.05)] overflow-hidden flex">
-        {/* Hero Section */}
-        <HeroSection 
-          imageUrl={heroImageUrl}
-          imageAlt={heroImageAlt}
-        />
-        
-        {/* Auth Panel - Dynamic based on mode */}
-        {currentMode === 'login' ? (
-          <LoginPanel
-            onLogin={onLogin}
-            onGoogleLogin={onGoogleLogin}
-            onFacebookLogin={onFacebookLogin}
-            onForgotPassword={onForgotPassword}
-            onSignUp={handleSwitchToSignup}
-            loading={loading}
-          />
-        ) : (
-          <SignupPanel
-            onSignup={onSignup || (() => {})}
-            onGoogleSignup={onGoogleSignup || (() => {})}
-            onFacebookSignup={onFacebookSignup || (() => {})}
-            onLogin={handleSwitchToLogin}
-            loading={loading}
-          />
-        )}
+      <div className="text-center">
+        <h1 className="text-2xl font-bold mb-4">AuthTemplate (Deprecated)</h1>
+        <p className="text-gray-600">
+          This template is no longer maintained. Please use /login or /signup pages.
+        </p>
       </div>
     </div>
   );

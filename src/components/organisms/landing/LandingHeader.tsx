@@ -5,14 +5,14 @@ import { Logo, LandingButton } from '@/components/atoms/landing';
 import { NavMenuItem } from '@/components/molecules/landing';
 import { landingColors } from '@/styles/landing-theme';
 
-export interface NavigationItem {
+export interface LandingNavigationItem {
   label: string;
   href: string;
   isActive?: boolean;
 }
 
 export interface LandingHeaderProps {
-  navigationItems: NavigationItem[];
+  navigationItems: LandingNavigationItem[];
   onLoginClick?: () => void;
   className?: string;
 }

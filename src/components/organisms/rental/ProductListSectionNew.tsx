@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useAppSelector } from '@/lib/store/hooks';
+import { useAppSelector } from '@/store/hooks';
 import { equipmentService, EquipmentSearchParams } from '@/lib/api/equipmentService';
 import { Equipment } from '@/types';
 import { EmptyState } from '../../atoms/ui/EmptyState';
@@ -19,8 +19,8 @@ export function ProductListSection({ className = '' }: ProductListSectionProps) 
   const [totalCount, setTotalCount] = useState(0);
 
   // Get filter state from Redux
-  const filters = useAppSelector((state: any) => state.filters);
-  const searchQuery = useAppSelector((state: any) => state.filters.searchQuery);
+  const filters = useAppSelector((state) => state.filters);
+  const searchQuery = useAppSelector((state) => state.filters.searchQuery);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -38,9 +38,9 @@ export function ProductListSection({ className = '' }: ProductListSectionProps) 
           minPrice: filters.priceRange[0] > 0 ? filters.priceRange[0] : undefined,
           maxPrice: filters.priceRange[1] < 10000000 ? filters.priceRange[1] : undefined,
           rating: filters.rating > 0 ? filters.rating : undefined,
-          availableOnly: filters.availableOnly || undefined,
+          availableOnly: filters.availability || undefined,
           sortBy: filters.sortBy || 'name',
-          sortOrder: filters.sortOrder || 'asc',
+          sortOrder: 'asc',
         };
 
         const response = await equipmentService.searchEquipment(searchParams);
@@ -204,7 +204,7 @@ export function ProductListSection({ className = '' }: ProductListSectionProps) 
               </p>
               <div className="mt-2 flex items-center justify-between">
                 <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                  {product.price.toLocaleString('vi-VN')} VNĐ
+                  {product.dailyRate.toLocaleString('vi-VN')} VNĐ/ngày
                 </p>
                 {product.rating && (
                   <div className="flex items-center">
