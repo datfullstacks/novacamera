@@ -1,7 +1,7 @@
 'use client';
 
 import { useFeaturedEquipment } from '@/lib/react-query/hooks';
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
 
 export function FeaturedEquipmentClient() {
   const { data, isLoading, error } = useFeaturedEquipment(6);

@@ -7,10 +7,10 @@ import { useTranslations } from 'next-intl';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import { useLogout } from '@/hooks/api/useAuth';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
 import { getAuthDataFromCookies } from '@/lib/utils/cookies';
 import { useEffect, useState as useStateHook } from 'react';
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

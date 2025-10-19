@@ -5,8 +5,8 @@ import { RootState } from '@/store';
 import { useEffect, useState } from 'react';
 import { getAuthDataFromCookies } from '@/lib/utils/cookies';
 import { useLogout } from '@/hooks/api/useAuth';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useRouter } from '@/i18n/routing';
+import { Link } from '@/i18n/routing';
 
 // Navigation Component with Auth Check
 export const AuthNavbar = () => {

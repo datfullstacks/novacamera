@@ -78,11 +78,15 @@ export default async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // Temporarily disable middleware to test navigation
-  matcher: []
-  
-  // Original matcher - uncomment to re-enable
-  // matcher: [
-  //   '/((?!api|_next/static|_next/image|favicon.ico).*)',
-  // ]
+  // Match all routes except static files and API routes  
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+  ]
 };

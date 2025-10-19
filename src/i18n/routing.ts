@@ -1,4 +1,5 @@
 import { defineRouting } from 'next-intl/routing';
+import { createNavigation } from 'next-intl/navigation';
 
 export const routing = defineRouting({
   locales: ['en', 'vi'],
@@ -11,25 +12,7 @@ export const routing = defineRouting({
   },
   // Enable locale detection to properly handle root path
   localeDetection: true,
-  // Disable pathname-based locale detection since we're using cookies
-  pathnames: {
-    '/': '/',
-    '/login': '/login',
-    '/signup': '/signup',
-    '/rental': '/rental',
-    '/pricing': '/pricing',
-    '/support': '/support',
-    '/courses': '/courses',
-    '/consignment': '/consignment',
-    '/ai-advisor': '/ai-advisor',
-    '/dashboard': '/dashboard',
-    '/profile': '/profile',
-    '/orders': '/orders',
-    '/cart': '/cart',
-    '/settings': '/settings',
-    '/equipment': '/equipment',
-    '/auth': '/auth',
-    '/auth-test': '/auth-test',
-    '/bookings': '/bookings',
-  }
 });
+
+// Export navigation utilities (Link, redirect, useRouter, usePathname)
+export const { Link, redirect, useRouter, usePathname } = createNavigation(routing);
