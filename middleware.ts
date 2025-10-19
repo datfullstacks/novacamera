@@ -1,5 +1,3 @@
-import createMiddleware from 'next-intl/middleware';
-import { routing } from './src/i18n/routing';
 import { NextRequest, NextResponse } from 'next/server';
 
 // List of protected routes that require authentication
@@ -22,9 +20,6 @@ const authRoutes = [
   '/auth',
 ];
 
-// Create the next-intl middleware
-const intlMiddleware = createMiddleware(routing);
-
 export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
@@ -39,8 +34,9 @@ export default async function middleware(request: NextRequest) {
   }
   
   const authToken = request.cookies.get('authToken')?.value;
+  const locale = request.cookies.get('NEXT_LOCALE')?.value || 'vi';
   
-  // With localePrefix: 'never', no need to handle locale prefix in pathname
+  // Check if route is protected or auth route
   const isProtectedRoute = protectedRoutes.some(route => 
     pathname.startsWith(route)
   );
@@ -73,8 +69,16 @@ export default async function middleware(request: NextRequest) {
     });
   }
 
-  // Apply i18n middleware for all other requests
-  return intlMiddleware(request);
+  // Set locale cookie if not present
+  const response = NextResponse.next();
+  if (!request.cookies.get('NEXT_LOCALE')) {
+    response.cookies.set('NEXT_LOCALE', locale, {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 365, // 1 year
+    });
+  }
+  
+  return response;
 }
 
 export const config = {
