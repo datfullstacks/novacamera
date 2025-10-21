@@ -1,10 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ProtectedRoute } from '@/components/auth';
 import DashboardTemplate from '@/components/templates/DashboardTemplate';
 import { EquipmentManagement } from '@/components/organisms/equipment';
+import { ConfirmationDialog, showToast } from '@/components/atoms/ui';
 import { useEquipments } from '@/lib/react-query/hooks';
+import { equipmentService } from '@/lib/api/services';
+import { QUERY_KEYS } from '@/lib/react-query/query-keys';
 import type { EquipmentFilterParams } from '@/types/api';
 
 interface Equipment {
@@ -22,11 +26,93 @@ export default function EquipmentPage() {
   const [activeView, setActiveView] = useState('platform');
   const [filters, setFilters] = useState<EquipmentFilterParams>({
     pageNumber: 1,
-    pageSize: 20,
+    pageSize: 10, // Change to 10 items per page for better UX
   });
+
+  // Confirmation dialog state
+  const [confirmDialog, setConfirmDialog] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    type?: 'danger' | 'warning' | 'info' | 'success';
+    loading?: boolean;
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    onConfirm: () => {},
+    loading: false,
+  });
+
+  // React Query setup
+  const queryClient = useQueryClient();
 
   // Fetch equipment from API
   const { data, isLoading, error } = useEquipments(filters);
+
+  // Delete mutation
+  const deleteMutation = useMutation({
+    mutationFn: (equipmentId: number) => equipmentService.deleteEquipment(equipmentId),
+    onSuccess: () => {
+      // Invalidate and refetch equipment list
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.EQUIPMENT.LIST(filters as Record<string, unknown>) });
+      
+      // Close dialog
+      setConfirmDialog({ ...confirmDialog, isOpen: false, loading: false });
+      
+      // Show success toast
+      showToast({
+        type: 'success',
+        title: 'Xóa thành công',
+        message: 'Thiết bị đã được xóa khỏi hệ thống',
+      });
+    },
+    onError: (error: Error) => {
+      console.error('Delete failed:', error);
+      
+      // Show error toast
+      showToast({
+        type: 'error',
+        title: 'Xóa thất bại',
+        message: error.message || 'Không thể xóa thiết bị. Vui lòng thử lại.',
+      });
+      
+      // Close dialog
+      setConfirmDialog({ ...confirmDialog, isOpen: false, loading: false });
+    },
+  });
+
+  // Debug: Log component mount
+  useEffect(() => {
+    console.log('🚀 EquipmentPage mounted');
+    console.log('🔑 Current filters:', filters);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Debug: Log data changes
+  useEffect(() => {
+    console.log('📊 Data changed:', {
+      isLoading,
+      hasError: !!error,
+      errorMessage: error?.message,
+      hasData: !!data,
+      itemsCount: data?.data?.items?.length,
+    });
+  }, [data, isLoading, error]);
+
+  console.log('🔍 Equipment Page Debug:', {
+    isLoading,
+    error: error?.message,
+    dataExists: !!data,
+    itemsCount: data?.data?.items?.length,
+    pagination: {
+      currentPage: data?.data?.pageNumber,
+      totalPages: data?.data?.totalPage,
+      totalCount: data?.data?.totalCount,
+    },
+    rawData: data,
+  });
 
   // Transform API data to component format
   const equipment: Equipment[] = data?.data.items.map((item) => ({
@@ -38,6 +124,8 @@ export default function EquipmentPage() {
     usage: '0%', // API doesn't provide this, placeholder
     image: item.mainImageUrl || 'https://placehold.co/60x60',
   })) || [];
+
+  console.log('📦 Transformed Equipment:', equipment.length, 'items');
 
   // Show loading state
   if (isLoading) {
@@ -108,12 +196,33 @@ export default function EquipmentPage() {
 
   const handleDeleteEquipment = (equipment: Equipment) => {
     console.log('Delete equipment:', equipment);
-    // Implementation: Show confirmation dialog and delete
+    // Show confirmation dialog before deleting
+    setConfirmDialog({
+      isOpen: true,
+      title: 'Xác nhận xóa thiết bị',
+      message: `Bạn có chắc chắn muốn xóa thiết bị "${equipment.name}" (${equipment.code})? Hành động này không thể hoàn tác.`,
+      type: 'danger',
+      loading: false,
+      onConfirm: async () => {
+        // Set loading state
+        setConfirmDialog(prev => ({ ...prev, loading: true }));
+        
+        // Call API to delete equipment
+        const equipmentId = parseInt(equipment.id, 10);
+        console.log('🗑️ Deleting equipment:', equipmentId);
+        
+        deleteMutation.mutate(equipmentId);
+      },
+    });
   };
 
   const handleViewEquipment = (equipment: Equipment) => {
     console.log('View equipment:', equipment);
     // Implementation: Navigate to equipment detail page
+  };
+
+  const handlePageChange = (page: number) => {
+    setFilters({ ...filters, pageNumber: page });
   };
 
   return (
@@ -132,6 +241,26 @@ export default function EquipmentPage() {
           onEditEquipment={handleEditEquipment}
           onDeleteEquipment={handleDeleteEquipment}
           onViewEquipment={handleViewEquipment}
+          pagination={{
+            currentPage: data?.data?.pageNumber || 1,
+            totalPages: data?.data?.totalPage || 1,
+            totalCount: data?.data?.totalCount || 0,
+            pageSize: filters.pageSize || 10,
+            onPageChange: handlePageChange,
+          }}
+        />
+
+        {/* Confirmation Dialog */}
+        <ConfirmationDialog
+          isOpen={confirmDialog.isOpen}
+          title={confirmDialog.title}
+          message={confirmDialog.message}
+          type={confirmDialog.type}
+          confirmLabel="Xóa"
+          cancelLabel="Hủy bỏ"
+          loading={confirmDialog.loading}
+          onConfirm={confirmDialog.onConfirm}
+          onCancel={() => setConfirmDialog({ ...confirmDialog, isOpen: false, loading: false })}
         />
       </DashboardTemplate>
     </ProtectedRoute>

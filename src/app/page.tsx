@@ -35,7 +35,7 @@ export default async function HomePage() {
       description: t("categories.items.camera.subtitle"),
       imageUrl: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=400&h=300&fit=crop&q=80",
       itemCount: 25,
-      href: "/rental?category=camera",
+      href: "/equipment/public?category=camera",
     },
     {
       id: "lens",
@@ -43,7 +43,7 @@ export default async function HomePage() {
       description: t("categories.items.lens.subtitle"),
       imageUrl: "https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=400&h=300&fit=crop&q=80",
       itemCount: 18,
-      href: "/rental?category=lens",
+      href: "/equipment/public?category=lens",
     },
     {
       id: "lighting",
@@ -51,7 +51,7 @@ export default async function HomePage() {
       description: t("categories.items.lighting.subtitle"),
       imageUrl: "https://images.unsplash.com/photo-1603317266112-e7cb4a0a5c80?w=400&h=300&fit=crop&q=80",
       itemCount: 12,
-      href: "/rental?category=lighting",
+      href: "/equipment/public?category=lighting",
     },
     {
       id: "tripod",
@@ -59,7 +59,7 @@ export default async function HomePage() {
       description: t("categories.items.tripod.subtitle"),
       imageUrl: "https://images.unsplash.com/photo-1617387608932-cf44c6ac6b28?w=400&h=300&fit=crop&q=80",
       itemCount: 8,
-      href: "/rental?category=tripod",
+      href: "/equipment/public?category=tripod",
     },
     {
       id: "accessories",
@@ -67,7 +67,7 @@ export default async function HomePage() {
       description: t("categories.items.accessories.subtitle"),
       imageUrl: "https://images.unsplash.com/photo-1606016159991-f1d0b5e8c634?w=400&h=300&fit=crop&q=80",
       itemCount: 15,
-      href: "/rental?category=accessories",
+      href: "/equipment/public?category=accessories",
     },
   ];
 

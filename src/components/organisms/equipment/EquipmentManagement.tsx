@@ -16,30 +16,19 @@ interface Equipment {
   readonly image?: string;
 }
 
-interface EquipmentFormData {
-  name: string;
-  code: string;
-  price: string;
-  status: 'available' | 'rented' | 'maintenance' | 'repair';
-  manufacturer: string;
-  category: string;
-  serialNumber: string;
-  purchaseDate: string;
-  condition: string;
-  rentalCount: string;
-  description: string;
-  images: File[];
-  specs: Array<{ label: string; value: string }>;
-  accessories: Array<{ name: string; included: boolean }>;
-}
-
 interface EquipmentManagementProps extends HTMLAttributes<HTMLDivElement> {
   readonly equipment: ReadonlyArray<Equipment>;
   readonly onAddEquipment?: () => void;
   readonly onEditEquipment?: (equipment: Equipment) => void;
   readonly onDeleteEquipment?: (equipment: Equipment) => void;
   readonly onViewEquipment?: (equipment: Equipment) => void;
-  readonly onEquipmentAdded?: (equipment: EquipmentFormData) => void;
+  readonly pagination?: {
+    currentPage: number;
+    totalPages: number;
+    totalCount: number;
+    pageSize: number;
+    onPageChange: (page: number) => void;
+  };
 }
 
 export default function EquipmentManagement({
@@ -48,14 +37,14 @@ export default function EquipmentManagement({
   onEditEquipment,
   onDeleteEquipment,
   onViewEquipment,
-  onEquipmentAdded,
+  pagination,
   className = '',
   ...props
 }: EquipmentManagementProps) {
   const router = useRouter();
   const [searchValue, setSearchValue] = useState('');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [activeFilters, setActiveFilters] = useState<Record<string, any>>({});
+  const [activeFilters, setActiveFilters] = useState<Record<string, string | number | boolean>>({});
   const [filterCount, setFilterCount] = useState(0);
 
   // Filter equipment based on search and filters
@@ -64,10 +53,10 @@ export default function EquipmentManagement({
       item.name.toLowerCase().includes(searchValue.toLowerCase()) ||
       item.code.toLowerCase().includes(searchValue.toLowerCase());
 
-    const matchesStatus = activeFilters.status === 'all' || activeFilters.status === item.status;
+    const matchesStatus = !activeFilters.status || activeFilters.status === 'all' || activeFilters.status === item.status;
 
     const matchesPrice = (() => {
-      if (activeFilters.priceRange === 'all') return true;
+      if (!activeFilters.priceRange || activeFilters.priceRange === 'all') return true;
       
       const price = parseInt(item.price.replace(/[^\d]/g, ''));
       switch (activeFilters.priceRange) {
@@ -85,7 +74,7 @@ export default function EquipmentManagement({
     })();
 
     const matchesUsage = (() => {
-      if (activeFilters.usageRange === 'all') return true;
+      if (!activeFilters.usageRange || activeFilters.usageRange === 'all') return true;
       
       const usage = parseInt(item.usage.replace('%', ''));
       switch (activeFilters.usageRange) {
@@ -105,7 +94,14 @@ export default function EquipmentManagement({
     return matchesSearch && matchesStatus && matchesPrice && matchesUsage;
   });
 
-  const handleFilterApply = (filters: Record<string, any>) => {
+  console.log('🔍 EquipmentManagement Filter Debug:', {
+    totalEquipment: equipment.length,
+    filteredCount: filteredEquipment.length,
+    searchValue,
+    activeFilters,
+  });
+
+  const handleFilterApply = (filters: Record<string, string | number | boolean>) => {
     setActiveFilters(filters);
     const count = Object.values(filters).filter(value => value !== 'all').length;
     setFilterCount(count);
@@ -160,6 +156,7 @@ export default function EquipmentManagement({
         onEdit={onEditEquipment}
         onDelete={onDeleteEquipment}
         onView={onViewEquipment}
+        pagination={pagination}
       />
 
       {/* Filter Panel */}

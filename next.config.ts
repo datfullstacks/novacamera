@@ -81,6 +81,18 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "via.placeholder.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "api.mmoshop.site",
+        port: "",
+        pathname: "/**",
+      }
     ],
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",

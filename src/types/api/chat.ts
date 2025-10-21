@@ -8,6 +8,17 @@ export interface AskRequest {
 // Ask Response
 export interface AskResponse {
   answer: string;
+  contextProducts?: {
+    equipmentId: number;
+    name: string | null;
+    brand: string | null;
+    description: string | null;
+    pricePerDay: number;
+    depositFee: number | null;
+    stock: number | null;
+    category: string | null;
+    imageUrl: string | null;
+  }[];
   relatedEquipment?: number[];
 }
 

@@ -6,6 +6,7 @@ import type {
   EquipmentCardListApiResponse,
   FilterMetadataApiResponse,
   BrandsListApiResponse,
+  ApiResponse,
 } from '@/types/api';
 
 /**
@@ -74,6 +75,14 @@ export const equipmentService = {
    */
   getBrands: async (): Promise<BrandsListApiResponse> => {
     const response = await apiClient.get<BrandsListApiResponse['data']>('/Equipment/brands');
+    return response;
+  },
+
+  /**
+   * Delete equipment by ID
+   */
+  deleteEquipment: async (id: number): Promise<ApiResponse<null>> => {
+    const response = await apiClient.delete<null>(`/Equipment/${id}`);
     return response;
   },
 };
