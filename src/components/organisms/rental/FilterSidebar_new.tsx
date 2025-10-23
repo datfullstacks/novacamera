@@ -11,10 +11,20 @@ import { RatingFilter } from '../../molecules/rental/RatingFilter';
 
 export interface FilterSidebarProps {
   className?: string;
+  categories: Array<{
+    categoryId: number;
+    categoryName: string | null;
+    equipmentCount?: number;
+  }>;
+  brands: string[];
+  loading?: boolean;
 }
 
 export const FilterSidebar: React.FC<FilterSidebarProps> = ({
   className = '',
+  categories,
+  brands,
+  loading = false,
 }) => {
   const dispatch = useAppDispatch();
 
@@ -40,10 +50,16 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
       {/* Filters */}
       <div className="space-y-6">
         {/* Category Filter */}
-        <CategoryFilter />
+        <CategoryFilter 
+          categories={categories}
+          loading={loading}
+        />
 
         {/* Brand Filter */}
-        <BrandFilter />
+        <BrandFilter 
+          brands={brands}
+          loading={loading}
+        />
 
         {/* Price Range Filter */}
         <PriceRangeFilter />

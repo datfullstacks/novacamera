@@ -5,64 +5,48 @@ import { FilterGroup } from './FilterGroup';
 import { Checkbox } from '../../atoms/rental/Checkbox';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { toggleBrand } from '@/store/slices/filtersSlice';
-import { equipmentService } from '@/lib/api/services';
 
 export interface BrandFilterProps {
   title?: string;
   className?: string;
+  brands: string[];
+  loading?: boolean;
 }
 
 export const BrandFilter: React.FC<BrandFilterProps> = ({
   title = "Thương hiệu",
   className = '',
+  brands: externalBrands,
+  loading: externalLoading = false,
 }) => {
   const dispatch = useAppDispatch();
   const selectedBrands = useAppSelector((state) => state.filters.brands);
   const [brands, setBrands] = useState<Array<{id: string; name: string; equipmentCount: number}>>([]);
-  const [loading, setLoading] = useState(false);
 
+  // Map external brands to internal format
   useEffect(() => {
-    const fetchBrands = async () => {
-      setLoading(true);
-      try {
-        const response = await equipmentService.getBrands();
-        
-        console.log('✅ Brands API Response:', response);
-        
-        if (response.statusCode === 200 && response.data) {
-          // Map string array to component format with equipmentCount
-          const mappedBrands = response.data.map((brandName) => ({
-            id: brandName.toLowerCase(),
-            name: brandName,
-            equipmentCount: 0 // API doesn't provide count, will be 0
-          }));
-          setBrands(mappedBrands);
-        }
-      } catch (error) {
-        console.error('❌ Failed to fetch brands:', error);
-        // Fallback to mock data
-        setBrands([
-          { id: 'canon', name: 'Canon', equipmentCount: 15 },
-          { id: 'sony', name: 'Sony', equipmentCount: 12 },
-          { id: 'nikon', name: 'Nikon', equipmentCount: 10 },
-          { id: 'panasonic', name: 'Panasonic', equipmentCount: 8 },
-          { id: 'fujifilm', name: 'Fujifilm', equipmentCount: 6 },
-          { id: 'olympus', name: 'Olympus', equipmentCount: 5 },
-          { id: 'dji', name: 'DJI', equipmentCount: 4 },
-        ]);
-      } finally {
-        setLoading(false);
-      }
-    };
+    console.log('🔍 BrandFilter - externalBrands:', externalBrands);
+    if (externalBrands && externalBrands.length > 0) {
+      const mapped = externalBrands.map((brandName: string) => ({
+        id: brandName, // Use exact brand name as ID (not lowercase)
+        name: brandName,
+        equipmentCount: 0 // API doesn't provide equipment count
+      }));
+      setBrands(mapped);
+      console.log('✅ BrandFilter received brands:', mapped.length, mapped);
+    } else {
+      console.log('⚠️ BrandFilter - No brands received');
+      setBrands([]);
+    }
+  }, [externalBrands]);
 
-    fetchBrands();
-  }, []);
-
-  const handleBrandChange = (brandId: string) => {
-    dispatch(toggleBrand(brandId));
+  const handleBrandChange = (brandName: string) => {
+    // Dispatch the exact brand name (e.g., "Canon", not "canon")
+    dispatch(toggleBrand(brandName));
+    console.log('🔄 Toggle brand:', brandName, 'Selected brands:', selectedBrands);
   };
 
-  if (loading) {
+  if (externalLoading) {
     return (
       <FilterGroup title={title} className={className}>
         <div className="space-y-3">
@@ -79,16 +63,20 @@ export const BrandFilter: React.FC<BrandFilterProps> = ({
   return (
     <FilterGroup title={title} className={className}>
       <div className="space-y-3">
-        {brands.map((brand) => (
-          <Checkbox
-            key={brand.id}
-            id={brand.id}
-            label={`${brand.name} (${brand.equipmentCount})`}
-            checked={selectedBrands.includes(brand.id)}
-            onChange={() => handleBrandChange(brand.id)}
-            className="w-full"
-          />
-        ))}
+        {brands.length === 0 ? (
+          <p className="text-sm text-gray-500">Không có thương hiệu</p>
+        ) : (
+          brands.map((brand) => (
+            <Checkbox
+              key={brand.id}
+              id={brand.id}
+              label={`${brand.name} (${brand.equipmentCount})`}
+              checked={selectedBrands.includes(brand.id)}
+              onChange={() => handleBrandChange(brand.id)}
+              className="w-full"
+            />
+          ))
+        )}
       </div>
     </FilterGroup>
   );

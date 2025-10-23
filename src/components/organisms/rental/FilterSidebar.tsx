@@ -12,10 +12,20 @@ import { RatingFilter } from '../../molecules/rental/RatingFilter';
 
 export interface FilterSidebarProps {
   className?: string;
+  categories: Array<{
+    categoryId: number;
+    categoryName: string | null;
+    equipmentCount?: number;
+  }>;
+  brands: string[];
+  loading?: boolean;
 }
 
 export const FilterSidebar: React.FC<FilterSidebarProps> = ({
   className = '',
+  categories,
+  brands,
+  loading = false,
 }) => {
   const t = useTranslations('rental.filters');
   const dispatch = useAppDispatch();
@@ -28,9 +38,9 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
     <div className={`w-full lg:w-72 h-fit bg-white  rounded-lg shadow-[0px_4px_6px_0px_rgba(0,0,0,0.10)] p-4 md:p-6 ${className}`}>
       {/* Header */}
       <div className="flex items-center justify-between mb-4 md:mb-6">
-        <h2 className="text-base md:text-lg font-extrabold text-zinc-800 dark:text-white leading-relaxed">
+        <h2 className="text-base md:text-lg font-extrabold leading-relaxed">
           {t('title')}
-        </h2>
+        </h2> 1
         <button
           onClick={handleClearFilters}
           className="text-xs md:text-sm text-red-600 hover:text-red-800 dark:text-red-500 dark:hover:text-red-700 font-medium transition-colors"
@@ -42,10 +52,16 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
       {/* Filters */}
       <div className="space-y-4 md:space-y-6">
         {/* Category Filter */}
-        <CategoryFilter />
+        <CategoryFilter 
+          categories={categories}
+          loading={loading}
+        />
 
         {/* Brand Filter */}
-        <BrandFilter />
+        <BrandFilter 
+          brands={brands}
+          loading={loading}
+        />
 
         {/* Price Range Filter */}
         <PriceRangeFilter />

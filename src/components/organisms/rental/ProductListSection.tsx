@@ -16,9 +16,10 @@ import type { RootState } from '@/store';
 
 interface ProductListSectionProps {
   className?: string;
+  filtersReady?: boolean; // Wait for categories & brands to load first
 }
 
-export function ProductListSection({ className = '' }: ProductListSectionProps) {
+export function ProductListSection({ className = '', filtersReady = false }: ProductListSectionProps) {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [products, setProducts] = useState<Equipment[]>([]);
@@ -90,12 +91,22 @@ export function ProductListSection({ className = '' }: ProductListSectionProps) 
   ];
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+    // Don't fetch products until filters are ready
+    if (!filtersReady) {
+      console.log('⏳ Waiting for filters to be ready...');
+      return;
+    }
 
-        // Build filter parameters for real API
+    console.log('✅ Filters ready - fetching products');
+
+    // Debounce to prevent rapid API calls when filters change
+    const timeoutId = setTimeout(() => {
+      const fetchProducts = async () => {
+        try {
+          setLoading(true);
+          setError(null);
+
+          // Build filter parameters for API
         const filterParams: EquipmentFilterParams = {
           pageNumber: currentPage,
           pageSize: 12,
@@ -174,7 +185,11 @@ export function ProductListSection({ className = '' }: ProductListSectionProps) 
     };
 
     fetchProducts();
-  }, [filters, searchQuery, currentPage, sortBy]);
+    }, 300); // 300ms debounce
+
+    // Cleanup function - cancel timeout if dependencies change
+    return () => clearTimeout(timeoutId);
+  }, [filters, searchQuery, currentPage, sortBy, filtersReady]); // Add filtersReady to dependencies
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
