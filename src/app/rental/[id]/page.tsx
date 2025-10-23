@@ -6,6 +6,9 @@ import { Equipment, EquipmentStatus } from '@/types';
 import { equipmentService } from '@/lib/api/services';
 import { ProductDetailTemplate } from '@/components/templates/ProductDetailTemplate';
 
+// Force dynamic rendering on Vercel
+export const dynamic = 'force-dynamic';
+
 export default function ProductDetailPage() {
   const params = useParams();
   const [product, setProduct] = useState<Equipment | null>(null);
@@ -14,14 +17,23 @@ export default function ProductDetailPage() {
 
   useEffect(() => {
     const fetchProduct = async () => {
-      if (!params.id) return;
+      if (!params.id) {
+        console.log('❌ No product ID in params');
+        setError('No product ID provided');
+        setLoading(false);
+        return;
+      }
 
       try {
         setLoading(true);
         const equipmentId = parseInt(params.id as string, 10);
         
+        console.log('🔍 Fetching product with ID:', equipmentId);
+        
         if (isNaN(equipmentId)) {
+          console.log('❌ Invalid product ID:', params.id);
           setError('Invalid product ID');
+          setLoading(false);
           return;
         }
 
