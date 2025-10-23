@@ -12,6 +12,8 @@ export interface RentalPageTemplateProps {
 export const RentalPageTemplate: React.FC<RentalPageTemplateProps> = ({
   className = '',
 }) => {
+  // Note: Category filtering from URL params is handled by CategoryFilter component
+  
   return (
     <div className={`min-h-screen bg-neutral-50  overflow-hidden ${className}`}>
       <div className="w-full max-w-[1487px] mx-auto pt-8 md:pt-16 relative">

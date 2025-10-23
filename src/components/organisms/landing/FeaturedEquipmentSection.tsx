@@ -20,8 +20,7 @@ export const FeaturedEquipmentSection: React.FC<FeaturedEquipmentSectionProps> =
     <section
       className={className}
       style={{
-        width: '100%',
-        maxWidth: 1181,
+        width: '100%',        
         margin: '0 auto',
         padding: '60px 0',
         background: landingColors.primary.lightGray,

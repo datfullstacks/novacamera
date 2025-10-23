@@ -13,6 +13,18 @@ export interface CategoryFilterProps {
   className?: string;
 }
 
+// Mapping slug -> categoryName for URL params
+const CATEGORY_SLUG_MAP: Record<string, string> = {
+  'camera': 'Máy ảnh',
+  'lens': 'Ống kính',
+  'lighting': 'Đèn chiếu sáng',
+  'tripod': 'Chân máy',
+  'accessories': 'Phụ kiện',
+  'audio': 'Thiết bị âm thanh',
+  'video': 'Thiết bị quay phim',
+  'drone': 'Flycam/Drone',
+};
+
 export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   title = "Danh mục",
   className = '',
@@ -61,18 +73,24 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
     fetchCategories();
   }, []);
 
-  // Auto-select category from URL params - runs BEFORE categories load
+  // Auto-select category from URL params - convert slug to categoryId
   useEffect(() => {
-    if (!initialized) {
-      const categoryParam = searchParams.get('category');
-      if (categoryParam && !selectedCategories.includes(categoryParam)) {
-        // Dispatch immediately, don't wait for categories to load
-        dispatch(toggleCategory(categoryParam));
-        console.log('Auto-selected category from URL:', categoryParam);
+    if (!initialized && categories.length > 0) {
+      const categorySlug = searchParams.get('category');
+      if (categorySlug) {
+        // Convert slug to categoryName, then find matching categoryId
+        const categoryName = CATEGORY_SLUG_MAP[categorySlug];
+        if (categoryName) {
+          const matchingCategory = categories.find(cat => cat.name === categoryName);
+          if (matchingCategory && !selectedCategories.includes(matchingCategory.id)) {
+            dispatch(toggleCategory(matchingCategory.id));
+            console.log('✅ Auto-selected category:', categorySlug, '→', matchingCategory.id, '('+matchingCategory.name+')');
+          }
+        }
       }
       setInitialized(true);
     }
-  }, [initialized, searchParams, selectedCategories, dispatch]);
+  }, [initialized, categories, searchParams, selectedCategories, dispatch]);
 
   const handleCategoryChange = (categoryId: string) => {
     dispatch(toggleCategory(categoryId));

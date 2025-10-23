@@ -33,41 +33,41 @@ export default async function HomePage() {
       id: "camera",
       name: t("categories.items.camera.name"),
       description: t("categories.items.camera.subtitle"),
-      imageUrl: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=400&h=300&fit=crop&q=80",
+      imageUrl: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=260&h=192&fit=contain&q=80",
       itemCount: 25,
-      href: "/equipment/public?category=camera",
+      href: "/rental?category=camera",
     },
     {
       id: "lens",
       name: t("categories.items.lens.name"),
       description: t("categories.items.lens.subtitle"),
-      imageUrl: "https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=400&h=300&fit=crop&q=80",
+      imageUrl: "https://wypozyczalnia.fotopoker.pl/wp-content/uploads/2023/08/Canon-RF-24-70mm-f2.8.png?w=260&h=192&fit=contain",
       itemCount: 18,
-      href: "/equipment/public?category=lens",
+      href: "/rental?category=lens",
     },
     {
       id: "lighting",
       name: t("categories.items.lighting.name"),
       description: t("categories.items.lighting.subtitle"),
-      imageUrl: "https://images.unsplash.com/photo-1603317266112-e7cb4a0a5c80?w=400&h=300&fit=crop&q=80",
+      imageUrl: "https://bizweb.dktcdn.net/100/507/659/products/softbox-godox-sb-gue95-grid-foldable-octa-6-d6f5db94-d40a-4450-9105-eef4ef339736.jpg?v=1724584681590&w=260&h=192&fit=contain&quality=95",
       itemCount: 12,
-      href: "/equipment/public?category=lighting",
+      href: "/rental?category=lighting",
     },
     {
       id: "tripod",
       name: t("categories.items.tripod.name"),
       description: t("categories.items.tripod.subtitle"),
-      imageUrl: "https://images.unsplash.com/photo-1617387608932-cf44c6ac6b28?w=400&h=300&fit=crop&q=80",
+      imageUrl: "https://binhminhdigital.com/thumb/images/product/chan-may-anh-sirui-traveler-7a-chinh-hang-1.jpg?w=260&h=192&fit=contain",
       itemCount: 8,
-      href: "/equipment/public?category=tripod",
+      href: "/rental?category=tripod",
     },
     {
       id: "accessories",
       name: t("categories.items.accessories.name"),
       description: t("categories.items.accessories.subtitle"),
-      imageUrl: "https://images.unsplash.com/photo-1606016159991-f1d0b5e8c634?w=400&h=300&fit=crop&q=80",
+      imageUrl: "https://salt.tikicdn.com/cache/w300/ts/product/33/2e/ab/82acd9278df79c2ee6c7f85f4c55fcef.jpg?w=260&h=192&fit=contain",
       itemCount: 15,
-      href: "/equipment/public?category=accessories",
+      href: "/rental?category=accessories",
     },
   ];
 
@@ -75,7 +75,7 @@ export default async function HomePage() {
   const equipment = [
     {
       name: t("featured.equipment.canonR5.name"),
-      image: "https://images.unsplash.com/photo-1606980707556-e2e13052b2d7?w=800&h=600&fit=crop&q=80",
+      image: "https://mayanhtop1.com/upload/filemanager/%E1%BA%A2nh%20trang%20s%E1%BA%A3n%20ph%E1%BA%A9m/canon-r5-01.jpg",
       features: [
         t("featured.equipment.canonR5.features.sensor"),
         t("featured.equipment.canonR5.features.video"),
@@ -85,7 +85,7 @@ export default async function HomePage() {
     },
     {
       name: t("featured.equipment.sonyA7III.name"),
-      image: "https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=800&h=600&fit=crop&q=80",
+      image: "https://irp-cdn.multiscreensite.com/0a13fae6/dms3rep/multi/desktop/highres-Sony-Alpha-A7-III-2-Custom_1519667443.jpg",
       features: [
         t("featured.equipment.sonyA7III.features.sensor"),
         t("featured.equipment.sonyA7III.features.video"),
@@ -95,7 +95,7 @@ export default async function HomePage() {
     },
     {
       name: t("featured.equipment.canonLens.name"),
-      image: "https://images.unsplash.com/photo-1617005082133-548c4dd27f35?w=800&h=600&fit=crop&q=80",
+      image: "https://images.squarespace-cdn.com/content/v1/545012a9e4b0988576f6b699/1624837105281-1SY0VE6ZNO4KQA1KE9GV/canon-rf-24-70mm-f28-review.jpg",
       features: [
         t("featured.equipment.canonLens.features.type"),
         t("featured.equipment.canonLens.features.stabilization"),
