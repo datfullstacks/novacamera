@@ -4,6 +4,7 @@ import { ReactNode, HTMLAttributes } from 'react';
 import Text from '../atoms/Text';
 import { Sidebar, Header } from '../organisms/dashboard';
 import ChatProvider from '../layout/ChatProvider';
+import Breadcrumb from '@/components/atoms/ui/Breadcrumb';
 
 interface DashboardTemplateProps extends HTMLAttributes<HTMLDivElement> {
   readonly children: ReactNode;
@@ -57,6 +58,9 @@ export default function DashboardTemplate({
 
           {/* Page Title */}
           <div className="px-4 lg:px-8 mb-6">
+            <div className="mb-4">
+              <Breadcrumb className="text-sm" />
+            </div>
             <Text variant="body" className="text-slate-800 text-xl lg:text-2xl font-normal leading-loose">
               Bảng điều khiển nền tảng
             </Text>

@@ -110,8 +110,8 @@ export class ApiClient {
       const response = await fetch(url, config);
       const data = await response.json();
 
-      // Check if response is successful
-      if (!response.ok || data.statusCode >= 400) {
+      // Check if response is successful - only throw on actual HTTP errors
+      if (!response.ok) {
         throw new ApiClientError(
           data.statusCode || response.status,
           data.message || 'API request failed',
@@ -119,6 +119,8 @@ export class ApiClient {
         );
       }
 
+      // Return the response even if statusCode is 400 (backend bug workaround)
+      // Some endpoints return statusCode 400 but with data in errors field
       return data as ApiResponse<T>;
     } catch (error) {
       if (error instanceof ApiClientError) {

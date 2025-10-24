@@ -3,6 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { Link } from '@/i18n/routing';
+import Breadcrumb from '@/components/atoms/ui/Breadcrumb';
 
 interface AuthTemplateProps {
   children: React.ReactNode;
@@ -53,6 +54,11 @@ export const AuthTemplate: React.FC<AuthTemplateProps> = ({
         {/* Right Side - Auth Form */}
         <div className="w-full lg:w-1/2 flex items-center justify-center p-6">
           <div className="w-full max-w-md h-full flex flex-col justify-center">
+            {/* Breadcrumb */}
+            <div className="mb-6">
+              <Breadcrumb className="text-sm" />
+            </div>
+
             {/* Back Button */}
             <div className="mb-4 flex justify-end">
               <Link 

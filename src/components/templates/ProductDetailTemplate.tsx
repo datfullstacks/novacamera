@@ -5,6 +5,7 @@ import { Equipment } from '@/types';
 import Header from '@/components/organisms/Header';
 import { ProductDetailMain, SimilarProducts } from '../organisms/product';
 import { ProductTabs } from '../molecules/product';
+import Breadcrumb from '@/components/atoms/ui/Breadcrumb';
 
 interface ProductDetailTemplateProps {
   equipment: Equipment;
@@ -19,6 +20,11 @@ export const ProductDetailTemplate: React.FC<ProductDetailTemplateProps> = ({
       
       <main className="pt-24 pb-16">
         <div className="max-w-7xl mx-auto px-6 space-y-8">
+          {/* Breadcrumb */}
+          <div className="mb-6">
+            <Breadcrumb className="text-sm" />
+          </div>
+
           {/* Product Detail Main Section */}
           <ProductDetailMain equipment={equipment} />
 

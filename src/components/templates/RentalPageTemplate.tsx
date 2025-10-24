@@ -5,6 +5,7 @@ import { FilterSidebar } from '../organisms/rental/FilterSidebar';
 import { ProductListSection } from '../organisms/rental/ProductListSection';
 import { SearchBar } from '../molecules/rental/SearchBar';
 import { useFiltersData } from '@/hooks/useFiltersData';
+import Breadcrumb from '@/components/atoms/ui/Breadcrumb';
 
 export interface RentalPageTemplateProps {
   className?: string;
@@ -26,8 +27,13 @@ export const RentalPageTemplate: React.FC<RentalPageTemplateProps> = ({
   return (
     <div className={`min-h-screen bg-neutral-50  overflow-hidden ${className}`}>
       <div className="w-full max-w-[1487px] mx-auto pt-8 md:pt-16 relative">
+        {/* Breadcrumb */}
+        <div className="px-4 md:px-6 mb-6">
+          <Breadcrumb className="text-sm" />
+        </div>
+
         {/* Search Bar */}
-        <div className="px-4 md:px-6 mb-4 md:mb-6">
+        <div className="flex px-4 md:px-6 mb-4 md:mb-6">
           <SearchBar className="max-w-2xl" />
         </div>
 

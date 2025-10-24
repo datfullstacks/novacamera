@@ -28,7 +28,7 @@ interface FiltersDataState {
 export function useFiltersData(): FiltersDataState {
   const [categories, setCategories] = useState<Category[]>([]);
   const [brands, setBrands] = useState<string[]>([]);
-  const [priceRange, setPriceRange] = useState<PriceRange | null>(null);
+  const [priceRange] = useState<PriceRange | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isReady, setIsReady] = useState(false);

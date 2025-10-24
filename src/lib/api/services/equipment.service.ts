@@ -85,4 +85,105 @@ export const equipmentService = {
     const response = await apiClient.delete<null>(`/Equipment/${id}`);
     return response;
   },
+
+  /**
+   * Create new equipment
+   */
+  createEquipment: async (data: FormData): Promise<EquipmentDetailApiResponse> => {
+    const response = await apiClient.post<EquipmentDetailApiResponse['data']>('/Equipment', data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response;
+  },
+
+  /**
+   * Update equipment
+   */
+  updateEquipment: async (id: number, data: FormData): Promise<EquipmentDetailApiResponse> => {
+    const response = await apiClient.put<EquipmentDetailApiResponse['data']>(`/Equipment/${id}`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response;
+  },
+
+  /**
+   * Get equipment images
+   */
+  getEquipmentImages: async (equipmentId: number): Promise<ApiResponse<Array<{
+    imageId: number;
+    imageUrl: string;
+    isPrimary: boolean;
+    sortOrder: number;
+  }>>> => {
+    const response = await apiClient.get<Array<{
+      imageId: number;
+      imageUrl: string;
+      isPrimary: boolean;
+      sortOrder: number;
+    }>>(`/Equipment/${equipmentId}/images`);
+    return response;
+  },
+
+  /**
+   * Upload equipment image
+   */
+  uploadEquipmentImage: async (equipmentId: number, imageFile: File, isPrimary = false, sortOrder = 0): Promise<ApiResponse<string>> => {
+    const formData = new FormData();
+    formData.append('Image', imageFile);
+    formData.append('IsPrimary', String(isPrimary));
+    formData.append('SortOrder', String(sortOrder));
+
+    const response = await apiClient.post<string>(`/Equipment/${equipmentId}/images`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response;
+  },
+
+  /**
+   * Delete equipment image
+   */
+  deleteEquipmentImage: async (equipmentId: number, imageId: number): Promise<ApiResponse<string>> => {
+    const response = await apiClient.delete<string>(`/Equipment/${equipmentId}/images/${imageId}`);
+    return response;
+  },
+
+  /**
+   * Set equipment image as primary
+   */
+  setEquipmentImageAsPrimary: async (equipmentId: number, imageId: number): Promise<ApiResponse<string>> => {
+    const response = await apiClient.put<string>(`/Equipment/${equipmentId}/images/${imageId}/set-primary`, {});
+    return response;
+  },
+
+  /**
+   * Update equipment image sort order
+   */
+  updateEquipmentImageSortOrder: async (equipmentId: number, images: Array<{ imageId: number; sortOrder: number }>): Promise<ApiResponse<string>> => {
+    const response = await apiClient.put<string>(`/Equipment/${equipmentId}/images/sort-order`, { images });
+    return response;
+  },
+
+  /**
+   * Get related equipment
+   */
+  getRelatedEquipment: async (id: number, categoryId?: number, take = 4): Promise<EquipmentCardListApiResponse> => {
+    const params: Record<string, number | undefined> = { take };
+    if (categoryId) params.categoryId = categoryId;
+    const response = await apiClient.get<EquipmentCardListApiResponse['data']>(`/Equipment/${id}/related`, { params });
+    return response;
+  },
+
+  /**
+   * Get price range
+   */
+  getPriceRange: async (): Promise<ApiResponse<{ minPrice: number; maxPrice: number }>> => {
+    const response = await apiClient.get<{ minPrice: number; maxPrice: number }>('/Equipment/price-range');
+    return response;
+  },
 };

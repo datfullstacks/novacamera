@@ -1,6 +1,6 @@
 'use client';
 
-import { HTMLAttributes, useState } from 'react';
+import { HTMLAttributes, useState, useEffect } from 'react';
 import { 
   FormInput, 
   FormSelect, 
@@ -13,6 +13,7 @@ import {
   SpecField, 
   AccessoryField 
 } from '../../molecules/equipment';
+import { equipmentService, categoryService } from '@/lib/api/services';
 
 interface EquipmentFormData {
   name: string;
@@ -44,16 +45,6 @@ const statusOptions = [
   { value: 'repair', label: 'Sửa chữa' },
 ];
 
-const categoryOptions = [
-  { value: 'camera', label: 'Máy ảnh' },
-  { value: 'lens', label: 'Ống kính' },
-  { value: 'lighting', label: 'Thiết bị chiếu sáng' },
-  { value: 'audio', label: 'Thiết bị âm thanh' },
-  { value: 'video', label: 'Thiết bị quay phim' },
-  { value: 'accessory', label: 'Phụ kiện' },
-  { value: 'other', label: 'Khác' },
-];
-
 export default function AddEquipmentForm({
   onSubmit,
   onCancel,
@@ -79,6 +70,62 @@ export default function AddEquipmentForm({
   });
 
   const [errors, setErrors] = useState<Partial<Record<keyof EquipmentFormData, string>>>({});
+  const [brands, setBrands] = useState<string[]>([]);
+  const [categories, setCategories] = useState<Array<{ value: string; label: string }>>([]);
+  const [loadingData, setLoadingData] = useState(true);
+
+  // Load brands and categories on component mount
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoadingData(true);
+        
+        // Load brands
+        try {
+          const brandsRes = await equipmentService.getBrands();
+          console.log('📦 Brands response:', brandsRes);
+          
+          // Brands API returns statusCode 400 but with data in errors field
+          if (brandsRes.errors && Array.isArray(brandsRes.errors) && brandsRes.errors.length > 0) {
+            console.log('✅ Brands loaded from errors array:', brandsRes.errors);
+            setBrands(brandsRes.errors as string[]);
+          } else if (brandsRes.data && Array.isArray(brandsRes.data)) {
+            console.log('✅ Brands loaded from data:', brandsRes.data);
+            setBrands(brandsRes.data as string[]);
+          }
+        } catch (brandError) {
+          console.error('❌ Error loading brands:', brandError);
+        }
+
+        // Load categories
+        try {
+          const categoriesRes = await categoryService.getCategories();
+          console.log('📂 Categories response:', categoriesRes);
+          
+          if (categoriesRes.data && Array.isArray(categoriesRes.data)) {
+            const categoryOptions = categoriesRes.data
+              .filter((cat) => cat.categoryName)
+              .map((cat) => ({
+                value: String(cat.categoryId),
+                label: cat.categoryName || '',
+              }));
+            console.log('✅ Categories loaded:', categoryOptions);
+            setCategories(categoryOptions);
+          } else {
+            console.warn('⚠️ No categories data:', categoriesRes);
+          }
+        } catch (categoryError) {
+          console.error('❌ Error loading categories:', categoryError);
+        }
+      } catch (error) {
+        console.error('❌ Error loading data:', error);
+      } finally {
+        setLoadingData(false);
+      }
+    };
+
+    loadData();
+  }, []);
 
   const updateField = (field: keyof EquipmentFormData, value: EquipmentFormData[keyof EquipmentFormData]) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -151,13 +198,17 @@ export default function AddEquipmentForm({
             required
             options={statusOptions}
           />
-          <FormInput
+          <FormSelect
             label="Hãng sản xuất"
             value={formData.manufacturer}
             onChange={(value) => updateField('manufacturer', value)}
             error={errors.manufacturer}
             required
-            placeholder="Ví dụ: Canon"
+            options={brands.length > 0 
+              ? brands.map(brand => ({ value: brand, label: brand }))
+              : [{ value: '', label: 'Đang tải...' }]
+            }
+            placeholder="Chọn hãng sản xuất"
           />
           <FormSelect
             label="Loại thiết bị"
@@ -165,7 +216,7 @@ export default function AddEquipmentForm({
             onChange={(value) => updateField('category', value)}
             error={errors.category}
             required
-            options={categoryOptions}
+            options={categories.length > 0 ? categories : [{ value: '', label: 'Đang tải...' }]}
             placeholder="Chọn loại thiết bị"
           />
         </div>

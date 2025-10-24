@@ -5,9 +5,9 @@ import { RentalPageTemplate } from '@/components/templates/RentalPageTemplate';
 
 export default function RentalPage() {
   return (
-    <div className="min-h-screen bg-neutral-50 pt-20">
+    <div className="min-h-screen bg-neutral-50">
       <Header />
-      <main>
+      <main className="pt-20">
         <RentalPageTemplate />
       </main>
     </div>
