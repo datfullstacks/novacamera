@@ -1,4 +1,5 @@
 import { ApiResponse, RequestOptions } from '@/types/api';
+import { getAuthToken } from '@/lib/utils/cookies';
 
 // API Configuration
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.mmoshop.site';
@@ -56,10 +57,12 @@ export class ApiClient {
     }
   }
 
-  // Get authorization token from localStorage
+  // Get authorization token from cookies
   private getStoredToken(): string | null {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('token');
+      const token = getAuthToken();
+      console.log('🔑 Getting auth token from cookies:', token ? 'Token found ✅' : 'No token ❌');
+      return token || null;
     }
     return null;
   }
@@ -85,6 +88,9 @@ export class ApiClient {
     const authToken = token || this.getStoredToken();
     if (authToken) {
       requestHeaders['Authorization'] = `Bearer ${authToken}`;
+      console.log(`🔐 Authorization header added for ${method} ${endpoint}`);
+    } else {
+      console.warn(`⚠️ No auth token available for ${method} ${endpoint}`);
     }
 
     // Prepare request configuration

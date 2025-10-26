@@ -7,6 +7,7 @@ import { CartSummary } from '@/components/molecules/cart/CartSummary';
 import { SavedItemsSection } from './SavedItemsSection';
 import { useRouter } from 'next/navigation';
 import { AlertTriangle, ShoppingCart } from 'lucide-react';
+import { ConfirmModal } from '@/components/molecules/ConfirmModal';
 
 interface CartOrganismProps {
   onContinueShopping?: () => void;
@@ -17,10 +18,18 @@ export const CartOrganism: React.FC<CartOrganismProps> = ({
 }) => {
   const router = useRouter();
   const { items, totalItems } = useAppSelector((state) => state.cart);
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const handleProceedToCheckout = async () => {
+    // Check authentication first
+    if (!isAuthenticated) {
+      setShowLoginModal(true);
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
     
@@ -33,6 +42,10 @@ export const CartOrganism: React.FC<CartOrganismProps> = ({
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleLoginConfirm = () => {
+    router.push('/login?redirect=/checkout');
   };
 
   const handleContinueShopping = () => {
@@ -137,6 +150,17 @@ export const CartOrganism: React.FC<CartOrganismProps> = ({
           <SavedItemsSection />
         </div>
       </div>
+
+      {/* Login Confirmation Modal */}
+      <ConfirmModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        onConfirm={handleLoginConfirm}
+        title="Yêu cầu đăng nhập"
+        message="Bạn cần đăng nhập để tiến hành thanh toán. Bạn có muốn chuyển đến trang đăng nhập không?"
+        confirmText="Đăng nhập"
+        cancelText="Hủy"
+      />
     </div>
   );
 };

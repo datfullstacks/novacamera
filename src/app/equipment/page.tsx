@@ -1,6 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ProtectedRoute } from '@/components/auth';
 import DashboardTemplate from '@/components/templates/DashboardTemplate';
@@ -22,12 +25,31 @@ interface Equipment {
 }
 
 export default function EquipmentPage() {
+  const router = useRouter();
+  const authState = useSelector((state: RootState) => state.auth);
   const [activeSidebarItem, setActiveSidebarItem] = useState('equipment');
   const [activeView, setActiveView] = useState('platform');
   const [filters, setFilters] = useState<EquipmentFilterParams>({
     pageNumber: 1,
     pageSize: 10, // Change to 10 items per page for better UX
   });
+
+  // Admin-only access check
+  useEffect(() => {
+    if (!authState.isAuthenticated) {
+      return; // ProtectedRoute will handle redirect
+    }
+
+    if (authState.user?.roleId !== 1) {
+      router.push('/');
+      showToast({
+        type: 'error',
+        title: 'Truy cập bị từ chối',
+        message: 'Chỉ quản trị viên mới có thể quản lý thiết bị',
+        duration: 5000,
+      });
+    }
+  }, [authState, router]);
 
   // Confirmation dialog state
   const [confirmDialog, setConfirmDialog] = useState<{

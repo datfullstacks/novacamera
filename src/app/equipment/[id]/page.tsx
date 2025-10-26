@@ -1,7 +1,11 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store';
 import { ProtectedRoute } from '@/components/auth';
+import { showToast } from '@/components/atoms/ui/Toast';
 import DashboardTemplate from '@/components/templates/DashboardTemplate';
 import { 
   EquipmentDetailHeader, 
@@ -21,7 +25,25 @@ interface EquipmentDetailPageProps {
 
 export default function EquipmentDetailPage({ params }: EquipmentDetailPageProps) {
   const router = useRouter();
+  const authState = useSelector((state: RootState) => state.auth);
   const equipmentId = Number(params.id);
+
+  // Admin-only access check
+  useEffect(() => {
+    if (!authState.isAuthenticated) {
+      return; // ProtectedRoute will handle redirect
+    }
+
+    if (authState.user?.roleId !== 1) {
+      router.push('/');
+      showToast({
+        type: 'error',
+        title: 'Truy cập bị từ chối',
+        message: 'Chỉ quản trị viên mới có thể xem chi tiết thiết bị',
+        duration: 5000,
+      });
+    }
+  }, [authState, router]);
 
   // Fetch equipment detail from API
   const { data, isLoading, error } = useEquipment(equipmentId);

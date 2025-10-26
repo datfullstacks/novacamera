@@ -1,8 +1,11 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store';
 import { ProtectedRoute } from '@/components/auth';
+import { showToast } from '@/components/atoms/ui/Toast';
 import DashboardTemplate from '@/components/templates/DashboardTemplate';
 import { BackButton } from '@/components/atoms/equipment';
 import { AddEquipmentForm } from '@/components/organisms/equipment';
@@ -26,7 +29,25 @@ interface EquipmentFormData {
 
 export default function AddEquipmentPage() {
   const router = useRouter();
+  const authState = useSelector((state: RootState) => state.auth);
   const [loading, setLoading] = useState(false);
+
+  // Admin-only check
+  useEffect(() => {
+    if (!authState.isAuthenticated) {
+      return; // ProtectedRoute will handle redirect
+    }
+
+    if (authState.user?.roleId !== 1) {
+      router.push('/');
+      showToast({
+        type: 'error',
+        title: 'Truy cập bị từ chối',
+        message: 'Chỉ quản trị viên mới có thể thêm thiết bị',
+        duration: 5000,
+      });
+    }
+  }, [authState, router]);
 
   const handleBack = () => {
     router.push('/equipment');

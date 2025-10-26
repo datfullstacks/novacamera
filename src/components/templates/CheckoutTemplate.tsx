@@ -45,8 +45,13 @@ export const CheckoutTemplate: React.FC = () => {
 
       // Map cart items to rental order items
       const orderItems: RentalOrderItemDto[] = items.map((item) => {
+        // Start date: tomorrow (to avoid timezone/past date issues)
         const startDate = new Date();
-        const endDate = new Date();
+        startDate.setDate(startDate.getDate() + 1);
+        startDate.setHours(0, 0, 0, 0); // Set to beginning of day
+        
+        // End date: start date + rental days
+        const endDate = new Date(startDate);
         endDate.setDate(endDate.getDate() + item.rentalDays);
 
         return {
