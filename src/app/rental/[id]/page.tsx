@@ -49,21 +49,56 @@ export default function ProductDetailPage() {
             id: apiData.equipmentId,
             name: apiData.name || '',
             description: apiData.description || apiData.shortDescription || '',
+            tagline: apiData.tagline || '',
             dailyRate: apiData.pricePerDay,
+            depositFee: apiData.depositFee || undefined,
             category: apiData.categoryName || '',
             brand: apiData.brand || '',
-            images: apiData.images?.map((img) => ({
-              id: img.imageId,
-              url: img.imageUrl || '',
-              alt: apiData.name || ''
-            })) || (apiData.mainImageUrl ? [{
-              id: 1,
-              url: apiData.mainImageUrl,
-              alt: apiData.name || ''
-            }] : []),
+            location: apiData.location || '',
+            condition: apiData.conditionNote || '',
+            mainImageUrl: apiData.mainImageUrl || '',
+            images: (() => {
+              // Build images array with mainImageUrl first, then other images
+              const imagesArray = [];
+              
+              // Add mainImageUrl as first image if exists
+              if (apiData.mainImageUrl) {
+                imagesArray.push({
+                  id: 0,
+                  url: apiData.mainImageUrl,
+                  alt: apiData.name || '',
+                  isPrimary: true
+                });
+              }
+              
+              // Add other images from API (skip if they match mainImageUrl)
+              if (apiData.images && apiData.images.length > 0) {
+                apiData.images.forEach((img) => {
+                  // Skip duplicate of mainImageUrl
+                  if (img.imageUrl !== apiData.mainImageUrl) {
+                    imagesArray.push({
+                      id: img.imageId,
+                      url: img.imageUrl || '',
+                      alt: apiData.name || '',
+                      isPrimary: img.isPrimary || false
+                    });
+                  }
+                });
+              }
+              
+              return imagesArray;
+            })(),
             rating: apiData.rating || 0,
             reviewCount: apiData.reviewCount || 0,
-            isAvailable: apiData.isAvailable,
+            // Normalize status from API: some endpoints return string 'Active'/'InActive'
+            // Prefer explicit status field if present, else fall back to boolean isAvailable
+            // Accept common variants (active, available, in_stock)
+            isAvailable: (() => {
+              const rawStatus = (apiData.status || apiData.availabilityText || '') as string;
+              const s = rawStatus ? rawStatus.toString().toLowerCase() : '';
+              if (s) return s === 'active' || s === 'available' || s === 'in_stock';
+              return !!apiData.isAvailable;
+            })(),
             availableQuantity: apiData.stock || 0,
             specifications: apiData.specifications?.reduce((acc, spec) => {
               if (spec.label) {
@@ -71,9 +106,43 @@ export default function ProductDetailPage() {
               }
               return acc;
             }, {} as Record<string, string>) || {},
-            status: apiData.isAvailable ? EquipmentStatus.ACTIVE : EquipmentStatus.INACTIVE,
+            // Map to EquipmentStatus enum using normalized availability
+            status: ((() => {
+              const rawStatus = (apiData.status || apiData.availabilityText || '') as string;
+              const s = rawStatus ? rawStatus.toString().toLowerCase() : '';
+              const available = s ? (s === 'active' || s === 'available' || s === 'in_stock') : !!apiData.isAvailable;
+              return available ? EquipmentStatus.ACTIVE : EquipmentStatus.INACTIVE;
+            })()),
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
+            // Add pricing info
+            pricingInfo: apiData.pricingInfo ? {
+              oneDayPrice: apiData.pricingInfo.oneDayPrice || 0,
+              threeDayPrice: apiData.pricingInfo.threeDayPrice || 0,
+              weeklyPrice: apiData.pricingInfo.weeklyPrice || 0,
+              monthlyPrice: apiData.pricingInfo.monthlyPrice || 0,
+              depositFee: apiData.pricingInfo.depositFee || 0,
+              currency: apiData.pricingInfo.currency || 'VND',
+              formattedOneDay: apiData.pricingInfo.formattedOneDay || '',
+              formattedThreeDay: apiData.pricingInfo.formattedThreeDay || '',
+              formattedWeekly: apiData.pricingInfo.formattedWeekly || '',
+              formattedMonthly: apiData.pricingInfo.formattedMonthly || '',
+              formattedDeposit: apiData.pricingInfo.formattedDeposit || '',
+            } : undefined,
+            // Add related equipment
+            relatedEquipments: apiData.relatedEquipments?.map((rel) => ({
+              id: rel.equipmentId,
+              name: rel.name || '',
+              brand: rel.brand || '',
+              category: rel.categoryName || '',
+              image: rel.mainImageUrl || '',
+              price: rel.pricePerDay || 0,
+              rating: rel.rating || 0,
+              reviewCount: rel.reviewCount || 0,
+              isAvailable: rel.isAvailable,
+              formattedPrice: rel.formattedPrice || '',
+              ratingDisplay: rel.ratingStars || '',
+            })) || []
           };
 
           setProduct(mappedProduct);

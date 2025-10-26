@@ -11,6 +11,7 @@ import { useRouter } from '@/i18n/routing';
 import { getAuthDataFromCookies } from '@/lib/utils/cookies';
 import { useEffect, useState as useStateHook } from 'react';
 import { Link } from '@/i18n/routing';
+import Image from 'next/image';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -86,7 +87,7 @@ export default function Header() {
     <header className="fixed top-0 left-0 right-0 bg-white shadow-sm z-50">
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
-          <div className="text-2xl font-bold">Nova Camera</div>
+            <Image src="/logo.png" alt="Nova Camera"  width={250} height={32} className=" w-auto" />
           
           {/* Desktop Navigation */}
           <Navigation links={navLinks} />

@@ -32,7 +32,16 @@ export const ProductDetailTemplate: React.FC<ProductDetailTemplateProps> = ({
           <ProductTabs equipment={equipment} />
 
           {/* Similar Products */}
-          <SimilarProducts />
+          <SimilarProducts 
+            products={equipment.relatedEquipments?.map(rel => ({
+              id: rel.id,
+              name: rel.name,
+              price: rel.price,
+              rating: rel.rating,
+              reviews: rel.reviewCount,
+              image: rel.image
+            })) || []}
+          />
         </div>
       </main>
 

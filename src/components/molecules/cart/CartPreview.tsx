@@ -37,7 +37,7 @@ export const CartPreview: React.FC = () => {
 
   const handleCheckout = () => {
     setIsOpen(false);
-    router.push('/checkout');
+    router.push('/cart');
   };
 
   return (
@@ -45,11 +45,11 @@ export const CartPreview: React.FC = () => {
       {/* Cart Icon Button */}
       <button
         onClick={handleTogglePreview}
-        className="relative p-2 text-gray-700 hover:text-gray-900 transition-colors"
+        className="relative p-2 text-black hover:text-gray-700 transition-colors"
       >
         <ShoppingCart className="w-6 h-6" />
         {totalItems > 0 && (
-          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+          <span className="absolute -top-1 -right-1 bg-black text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
             {totalItems > 99 ? '99+' : totalItems}
           </span>
         )}

@@ -32,7 +32,7 @@ export const Logo: React.FC<LogoProps> = ({
       sizes[size],
       className
     )}>
-      Nova Camera
+    <img src="/logo.png" alt="Logo" className="h-auto w-auto" />
     </div>
   );
 };

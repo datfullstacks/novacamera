@@ -92,7 +92,13 @@ const nextConfig: NextConfig = {
         hostname: "api.mmoshop.site",
         port: "",
         pathname: "/**",
-      }
+      },
+      {
+        protocol: "https",
+        hostname: "hongngu3.edu.vn",
+        port: "",
+        pathname: "/**",
+      },
     ],
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",

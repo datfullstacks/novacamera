@@ -6,6 +6,7 @@ import { useAppDispatch } from '@/store/hooks';
 import { addToCart } from '@/store/slices/cartSlice';
 import { Equipment } from '@/types';
 import { Button } from '@/components/ui/button';
+import { showToast } from '@/components/atoms/ui/Toast';
 import { 
   ProductImageGallery, 
   BasicProductInfo, 
@@ -25,11 +26,7 @@ export const ProductDetailMain: React.FC<ProductDetailMainProps> = ({
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [rentalDays, setRentalDays] = useState(3);
-  const [selectedDates, setSelectedDates] = useState<{ start: Date | null; end: Date | null }>({
-    start: null,
-    end: null
-  });
+  const [rentalDays, setRentalDays] = useState(0);
 
   const handleAddToCart = () => {
     const cartItem = {
@@ -43,7 +40,12 @@ export const ProductDetailMain: React.FC<ProductDetailMainProps> = ({
     };
     
     dispatch(addToCart(cartItem));
-    alert('Sản phẩm đã được thêm vào giỏ hàng!');
+    showToast({
+      type: 'success',
+      title: 'Đã thêm vào giỏ hàng',
+      message: `${equipment.name} đã được thêm vào giỏ hàng`,
+      duration: 3000
+    });
   };
 
   const handleRentNow = () => {
@@ -52,7 +54,6 @@ export const ProductDetailMain: React.FC<ProductDetailMainProps> = ({
   };
 
   const handleDateSelect = (dates: { start: Date | null; end: Date | null }) => {
-    setSelectedDates(dates);
     if (dates.start && dates.end) {
       const diffTime = Math.abs(dates.end.getTime() - dates.start.getTime());
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
@@ -60,7 +61,34 @@ export const ProductDetailMain: React.FC<ProductDetailMainProps> = ({
     }
   };
 
-  const discountPrice = 50000; // Mock discount
+  // Calculate discount based on rental days using pricing info
+  const getDiscountedPrice = () => {
+    if (!equipment.pricingInfo) return 0;
+    
+    // Apply tiered pricing discount
+    if (rentalDays >= 30) {
+      // Use monthly rate instead of daily rate for 30+ days
+      const monthlyRate = equipment.pricingInfo.monthlyPrice / 30;
+      const regularPrice = equipment.dailyRate * rentalDays;
+      const monthlyPrice = monthlyRate * rentalDays;
+      return Math.max(0, regularPrice - monthlyPrice);
+    } else if (rentalDays >= 7) {
+      // Use weekly rate instead of daily rate for 7+ days
+      const weeklyRate = equipment.pricingInfo.weeklyPrice / 7;
+      const regularPrice = equipment.dailyRate * rentalDays;
+      const weeklyPrice = weeklyRate * rentalDays;
+      return Math.max(0, regularPrice - weeklyPrice);
+    } else if (rentalDays >= 3) {
+      // Use 3-day rate instead of daily rate for 3+ days
+      const threeDayRate = equipment.pricingInfo.threeDayPrice / 3;
+      const regularPrice = equipment.dailyRate * rentalDays;
+      const threeDayPrice = threeDayRate * rentalDays;
+      return Math.max(0, regularPrice - threeDayPrice);
+    }
+    return 0;
+  };
+
+  const discountAmount = getDiscountedPrice();
 
   return (
     <div className={`bg-white rounded-lg shadow-sm p-8 ${className}`}>
@@ -86,7 +114,7 @@ export const ProductDetailMain: React.FC<ProductDetailMainProps> = ({
             <PriceCalculator
               dailyRate={equipment.dailyRate}
               rentalDays={rentalDays}
-              discountAmount={discountPrice}
+              discountAmount={discountAmount}
             />
           </div>
 

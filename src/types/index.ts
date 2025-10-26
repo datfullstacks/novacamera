@@ -17,6 +17,37 @@ export interface EquipmentImage {
   id: number;
   url: string;
   alt: string;
+  isPrimary?: boolean;
+}
+
+// Equipment Pricing Info
+export interface EquipmentPricingInfo {
+  oneDayPrice: number;
+  threeDayPrice: number;
+  weeklyPrice: number;
+  monthlyPrice: number;
+  depositFee: number;
+  currency: string;
+  formattedOneDay: string;
+  formattedThreeDay: string;
+  formattedWeekly: string;
+  formattedMonthly: string;
+  formattedDeposit: string;
+}
+
+// Related Equipment
+export interface RelatedEquipment {
+  id: number;
+  name: string;
+  brand: string;
+  category: string;
+  image: string;
+  price: number;
+  rating: number;
+  reviewCount: number;
+  isAvailable: boolean;
+  formattedPrice: string;
+  ratingDisplay: string;
 }
 
 // Equipment types
@@ -27,6 +58,7 @@ export interface Equipment extends BaseEntity {
   model?: string;
   category: string;
   dailyRate: number;
+  depositFee?: number;
   availableQuantity: number;
   isAvailable: boolean;
   status: EquipmentStatus;
@@ -34,6 +66,12 @@ export interface Equipment extends BaseEntity {
   specifications: Record<string, string>;
   rating: number;
   reviewCount: number;
+  tagline?: string;
+  location?: string;
+  condition?: string;
+  mainImageUrl?: string;
+  pricingInfo?: EquipmentPricingInfo;
+  relatedEquipments?: RelatedEquipment[];
 }
 
 // User types

@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { ProtectedRoute } from '@/components/auth';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
@@ -9,13 +10,41 @@ import { StatsGrid, ChartCard, EquipmentList, BookingList, MaintenanceList } fro
 import { useDashboardSummary, useUpcomingRentals } from '@/lib/react-query/hooks';
 
 export default function DashboardPage() {
+  const router = useRouter();
   const authState = useSelector((state: RootState) => state.auth);
   const [activeSidebarItem, setActiveSidebarItem] = useState('dashboard');
   const [activeView, setActiveView] = useState('platform');
 
-  // Fetch dashboard data from API
+  // Fetch dashboard data from API (must be called before any returns)
   const { data: summaryData, isLoading: loadingSummary } = useDashboardSummary();
   const { data: upcomingData } = useUpcomingRentals();
+
+  // Check if user is admin (roleId === 1)
+  useEffect(() => {
+    if (!authState.isAuthenticated) {
+      // Not logged in - redirect to login
+      router.push('/login?redirect=/dashboard');
+      return;
+    }
+
+    if (authState.user?.roleId !== 1) {
+      // Not admin - redirect to home with error message
+      router.push('/?error=unauthorized');
+      return;
+    }
+  }, [authState, router]);
+
+  // If not authenticated or not admin, show loading (will redirect)
+  if (!authState.isAuthenticated || authState.user?.roleId !== 1) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Đang kiểm tra quyền truy cập...</p>
+        </div>
+      </div>
+    );
+  }
 
   const summary = summaryData?.data;
 

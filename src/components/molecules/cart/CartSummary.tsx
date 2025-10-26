@@ -99,17 +99,17 @@ export const CartSummary: React.FC<CartSummaryProps> = ({
 
       {/* Discount Code */}
       <div className="mb-6">
-        <div className="flex">
+        <div className="flex items-center gap-2">
           <input
             type="text"
             placeholder="Mã giảm giá"
             value={discountCode}
             onChange={(e) => setDiscountCode(e.target.value)}
-            className="flex-1 px-3 py-3 text-xs border border-gray-200 rounded-l-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="flex-1 h-11 px-4 text-sm text-black bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder:text-gray-400"
           />
           <Button
             onClick={handleApplyDiscount}
-            className="px-4 py-3 bg-gray-800 text-white text-xs font-medium rounded-r-xl hover:bg-gray-700"
+            className="h-11 px-6 bg-black text-white text-sm font-medium rounded-lg hover:bg-gray-800 whitespace-nowrap"
           >
             Áp dụng
           </Button>

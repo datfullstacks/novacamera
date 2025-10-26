@@ -99,26 +99,26 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
           {/* Quantity Controls */}
           <div className="flex items-center gap-4 mb-4">
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">Số lượng:</span>
+              <span className="text-sm text-black font-medium">Số lượng:</span>
               <div className="flex items-center gap-2">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => handleUpdateQuantity(item.quantity - 1)}
-                  className="h-7 w-7 p-0"
+                  className="h-7 w-7 p-0 border-black hover:bg-gray-100"
                 >
-                  <Minus className="h-3 w-3" />
+                  <Minus className="h-3 w-3 text-black" />
                 </Button>
-                <span className="font-medium w-8 text-center">
+                <span className="font-bold text-black w-8 text-center">
                   {item.quantity}
                 </span>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => handleUpdateQuantity(item.quantity + 1)}
-                  className="h-7 w-7 p-0"
+                  className="h-7 w-7 p-0 border-black hover:bg-gray-100"
                 >
-                  <Plus className="h-3 w-3" />
+                  <Plus className="h-3 w-3 text-black" />
                 </Button>
               </div>
             </div>
