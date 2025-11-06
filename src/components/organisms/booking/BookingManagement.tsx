@@ -12,8 +12,16 @@ interface Booking {
   readonly customerName: string;
   readonly equipment: string;
   readonly timeRange: string;
-  readonly status: 'renting' | 'confirmed' | 'returned' | 'cancelled';
+  readonly status: 'pending' | 'confirmed' | 'renting' | 'returned' | 'cancelled';
   readonly deliveryStatus: 'delivered' | 'not-delivered';
+}
+
+interface PaginationInfo {
+  readonly currentPage: number;
+  readonly totalPages: number;
+  readonly totalCount: number;
+  readonly pageSize: number;
+  readonly onPageChange: (page: number) => void;
 }
 
 interface BookingManagementProps extends HTMLAttributes<HTMLDivElement> {
@@ -21,10 +29,10 @@ interface BookingManagementProps extends HTMLAttributes<HTMLDivElement> {
   readonly onViewBooking?: (booking: Booking) => void;
   readonly onEditBooking?: (booking: Booking) => void;
   readonly onCancelBooking?: (booking: Booking) => void;
-  readonly onConfirmBooking?: (booking: Booking) => void;
   readonly onDeliverBooking?: (booking: Booking) => void;
   readonly onReturnBooking?: (booking: Booking) => void;
   readonly onCreateBooking?: () => void;
+  readonly pagination?: PaginationInfo;
 }
 
 export default function BookingManagement({
@@ -32,10 +40,10 @@ export default function BookingManagement({
   onViewBooking,
   onEditBooking,
   onCancelBooking,
-  onConfirmBooking,
   onDeliverBooking,
   onReturnBooking,
   onCreateBooking,
+  pagination,
   className = '',
   ...props
 }: BookingManagementProps) {
@@ -49,8 +57,8 @@ export default function BookingManagement({
       booking.customerName.toLowerCase().includes(searchValue.toLowerCase()) ||
       booking.orderCode.toLowerCase().includes(searchValue.toLowerCase());
 
-    const matchesStatus = activeFilters.status === 'all' || activeFilters.status === booking.status;
-    const matchesDelivery = activeFilters.deliveryStatus === 'all' || activeFilters.deliveryStatus === booking.deliveryStatus;
+    const matchesStatus = !activeFilters.status || activeFilters.status === 'all' || activeFilters.status === booking.status;
+    const matchesDelivery = !activeFilters.deliveryStatus || activeFilters.deliveryStatus === 'all' || activeFilters.deliveryStatus === booking.deliveryStatus;
 
     return matchesSearch && matchesStatus && matchesDelivery;
   });
@@ -107,10 +115,103 @@ export default function BookingManagement({
         onView={onViewBooking}
         onEdit={onEditBooking}
         onCancel={onCancelBooking}
-        onConfirm={onConfirmBooking}
         onDeliver={onDeliverBooking}
         onReturn={onReturnBooking}
       />
+
+      {/* Pagination */}
+      {pagination && pagination.totalPages > 1 && (
+        <div className="flex items-center justify-between px-4 py-3 bg-white border-t border-gray-200 sm:px-6">
+          <div className="flex justify-between flex-1 sm:hidden">
+            <button
+              onClick={() => pagination.onPageChange(pagination.currentPage - 1)}
+              disabled={pagination.currentPage === 1}
+              className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Trước
+            </button>
+            <button
+              onClick={() => pagination.onPageChange(pagination.currentPage + 1)}
+              disabled={pagination.currentPage === pagination.totalPages}
+              className="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Sau
+            </button>
+          </div>
+          <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm text-gray-700">
+                Hiển thị{' '}
+                <span className="font-medium">
+                  {(pagination.currentPage - 1) * pagination.pageSize + 1}
+                </span>{' '}
+                đến{' '}
+                <span className="font-medium">
+                  {Math.min(pagination.currentPage * pagination.pageSize, pagination.totalCount)}
+                </span>{' '}
+                trong tổng số{' '}
+                <span className="font-medium">{pagination.totalCount}</span> đơn hàng
+              </p>
+            </div>
+            <div>
+              <nav className="relative z-0 inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+                {/* Previous Button */}
+                <button
+                  onClick={() => pagination.onPageChange(pagination.currentPage - 1)}
+                  disabled={pagination.currentPage === 1}
+                  className="relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <span className="sr-only">Trước</span>
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                </button>
+
+                {/* Page Numbers */}
+                {(() => {
+                  const pages = [];
+                  const maxPagesToShow = 5;
+                  let startPage = Math.max(1, pagination.currentPage - Math.floor(maxPagesToShow / 2));
+                  const endPage = Math.min(pagination.totalPages, startPage + maxPagesToShow - 1);
+                  
+                  if (endPage - startPage + 1 < maxPagesToShow) {
+                    startPage = Math.max(1, endPage - maxPagesToShow + 1);
+                  }
+
+                  for (let i = startPage; i <= endPage; i++) {
+                    pages.push(
+                      <button
+                        key={i}
+                        onClick={() => pagination.onPageChange(i)}
+                        className={`relative inline-flex items-center px-4 py-2 text-sm font-medium border ${
+                          i === pagination.currentPage
+                            ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
+                            : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                        }`}
+                      >
+                        {i}
+                      </button>
+                    );
+                  }
+                  return pages;
+                })()}
+
+                {/* Next Button */}
+                <button
+                  onClick={() => pagination.onPageChange(pagination.currentPage + 1)}
+                  disabled={pagination.currentPage === pagination.totalPages}
+                  className="relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <span className="sr-only">Sau</span>
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              </nav>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

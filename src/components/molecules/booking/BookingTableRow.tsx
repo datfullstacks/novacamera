@@ -9,7 +9,7 @@ interface Booking {
   readonly customerName: string;
   readonly equipment: string;
   readonly timeRange: string;
-  readonly status: 'renting' | 'confirmed' | 'returned' | 'cancelled';
+  readonly status: 'pending' | 'confirmed' | 'renting' | 'returned' | 'cancelled';
   readonly deliveryStatus: 'delivered' | 'not-delivered';
 }
 
@@ -18,7 +18,6 @@ interface BookingTableRowProps extends HTMLAttributes<HTMLTableRowElement> {
   readonly onView?: (booking: Booking) => void;
   readonly onEdit?: (booking: Booking) => void;
   readonly onCancel?: (booking: Booking) => void;
-  readonly onConfirm?: (booking: Booking) => void;
   readonly onDeliver?: (booking: Booking) => void;
   readonly onReturn?: (booking: Booking) => void;
 }
@@ -28,7 +27,6 @@ export default function BookingTableRow({
   onView,
   onEdit,
   onCancel,
-  onConfirm,
   onDeliver,
   onReturn,
   className = '',
@@ -37,7 +35,6 @@ export default function BookingTableRow({
   const handleView = () => onView?.(booking);
   const handleEdit = () => onEdit?.(booking);
   const handleCancel = () => onCancel?.(booking);
-  const handleConfirm = () => onConfirm?.(booking);
   const handleDeliver = () => onDeliver?.(booking);
   const handleReturn = () => onReturn?.(booking);
 
@@ -49,23 +46,33 @@ export default function BookingTableRow({
     
     // Status-based actions
     switch (booking.status) {
+      case 'pending':
+        // Pending → Only cancel payment option
+        actions.push(
+          { action: 'cancel' as const, handler: handleCancel, label: 'Hủy thanh toán' }
+        );
+        break;
       case 'confirmed':
+        // Confirmed → Rented or Cancelled
         actions.push(
           { action: 'edit' as const, handler: handleEdit, label: 'Sửa' },
-          { action: 'cancel' as const, handler: handleCancel, label: 'Hủy' },
-          { action: 'deliver' as const, handler: handleDeliver, label: 'Giao hàng' }
+          { action: 'deliver' as const, handler: handleDeliver, label: 'Giao hàng' },
+          { action: 'cancel' as const, handler: handleCancel, label: 'Hủy' }
         );
         break;
       case 'renting':
+        // Rented → Completed
         actions.push(
           { action: 'edit' as const, handler: handleEdit, label: 'Sửa' },
           { action: 'return' as const, handler: handleReturn, label: 'Trả hàng' }
         );
         break;
       case 'returned':
+        // Final state - view only
         actions.push({ action: 'view' as const, handler: handleView, label: 'Xem' });
         break;
       case 'cancelled':
+        // Final state - view only
         actions.push({ action: 'view' as const, handler: handleView, label: 'Xem' });
         break;
     }
@@ -99,11 +106,10 @@ export default function BookingTableRow({
         {booking.timeRange}
       </td>
 
-      {/* Trạng thái & Giao nhận */}
+      {/* Trạng thái */}
       <td className="px-6 py-4 whitespace-nowrap">
         <BookingStatusBadge
           status={booking.status}
-          deliveryStatus={booking.deliveryStatus}
         />
       </td>
 

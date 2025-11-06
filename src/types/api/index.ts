@@ -28,7 +28,10 @@ export type {
   UserProfile,
   UserRole,
   UserResponse,
-  ChangePasswordRequest
+  ChangePasswordRequest,
+  Invoice,
+  UserInvoicesData,
+  UserInvoicesResponse
 } from './auth';
 
 export type {

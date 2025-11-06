@@ -5,6 +5,7 @@
 
 export * from './auth.service';
 export * from './equipment.service';
+export * from './equipment-item.service';
 export * from './rental.service';
 export * from './category.service';
 export * from './brand.service';

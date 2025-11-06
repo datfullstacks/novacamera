@@ -7,3 +7,4 @@ export { default as EquipmentBookings } from './EquipmentBookings';
 export { default as EquipmentDetailTabs } from './EquipmentDetailTabs';
 export { default as AddEquipmentForm } from './AddEquipmentForm';
 export { default as EquipmentFormModal } from './EquipmentFormModal';
+export { EquipmentItemsManager } from './EquipmentItemsManager';

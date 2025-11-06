@@ -13,6 +13,7 @@ import type {
   UploadAvatarResponse,
   UserListResponse,
   CreateOfflineUserResponse,
+  UserInvoicesResponse,
 } from '@/types/api';
 
 /**
@@ -72,6 +73,14 @@ export const authService = {
   },
 
   /**
+   * Get user invoices
+   */
+  getUserInvoices: async (): Promise<UserInvoicesResponse> => {
+    const response = await apiClient.get<UserInvoicesResponse['data']>('/User/invoices');
+    return response;
+  },
+
+  /**
    * Get all users (admin)
    */
   getUsers: async (params?: { pageNumber?: number; pageSize?: number }): Promise<UserListResponse> => {
@@ -87,11 +96,5 @@ export const authService = {
     return response;
   },
 
-  /**
-   * Get user invoices
-   */
-  getUserInvoices: async () => {
-    const response = await apiClient.get('/User/invoices');
-    return response;
-  },
+ 
 };

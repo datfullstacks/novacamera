@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import { ProtectedRoute } from '@/components/auth';
@@ -12,10 +12,12 @@ import {
   EquipmentSpecsTable, 
   EquipmentAccessories, 
   EquipmentBookings,
-  EquipmentDetailTabs 
+  EquipmentDetailTabs,
+  EquipmentItemsManager
 } from '@/components/organisms/equipment';
 import { EquipmentImageGallery, EquipmentInfo } from '@/components/molecules/equipment';
 import { useEquipment } from '@/lib/react-query/hooks';
+import { equipmentItemService, type EquipmentItemResponse } from '@/lib/api/services/equipment-item.service';
 
 interface EquipmentDetailPageProps {
   params: {
@@ -23,10 +25,13 @@ interface EquipmentDetailPageProps {
   };
 }
 
-export default function EquipmentDetailPage({ params }: EquipmentDetailPageProps) {
+export default function EquipmentDetailPage({ params }: Readonly<EquipmentDetailPageProps>) {
   const router = useRouter();
   const authState = useSelector((state: RootState) => state.auth);
   const equipmentId = Number(params.id);
+
+  // Equipment Items state
+  const [equipmentItems, setEquipmentItems] = useState<EquipmentItemResponse[]>([]);
 
   // Admin-only access check
   useEffect(() => {
@@ -49,6 +54,26 @@ export default function EquipmentDetailPage({ params }: EquipmentDetailPageProps
   const { data, isLoading, error } = useEquipment(equipmentId);
   
   const equipmentDetail = data?.data;
+
+  // Fetch equipment items
+  const loadEquipmentItems = async () => {
+    try {
+      const response = await equipmentItemService.getItemsByEquipmentId(equipmentId);
+      if (response.statusCode === 200 && response.data) {
+        setEquipmentItems(response.data);
+      }
+    } catch (err) {
+      console.error('Error loading equipment items:', err);
+    }
+  };
+
+  // Load items when equipment is loaded
+  useEffect(() => {
+    if (equipmentDetail) {
+      loadEquipmentItems();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [equipmentDetail]);
 
   // Transform API data to component format
   const equipment = equipmentDetail ? {
@@ -244,6 +269,14 @@ export default function EquipmentDetailPage({ params }: EquipmentDetailPageProps
             {/* Accessories */}
             <EquipmentAccessories
               accessories={equipment.accessories}
+            />
+
+            {/* Equipment Items Manager */}
+            <EquipmentItemsManager
+              equipmentId={equipmentId}
+              equipmentName={equipment.name}
+              items={equipmentItems}
+              onItemsChange={loadEquipmentItems}
             />
           </div>
         </div>

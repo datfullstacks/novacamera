@@ -208,12 +208,12 @@ export default function EquipmentPage() {
 
   const handleAddEquipment = () => {
     console.log('Add equipment clicked');
-    // Implementation: Open add equipment modal/form
+    router.push('/equipment/add');
   };
 
   const handleEditEquipment = (equipment: Equipment) => {
     console.log('Edit equipment:', equipment);
-    // Implementation: Open edit equipment modal/form
+    router.push(`/equipment/${equipment.id}`);
   };
 
   const handleDeleteEquipment = (equipment: Equipment) => {
@@ -240,7 +240,7 @@ export default function EquipmentPage() {
 
   const handleViewEquipment = (equipment: Equipment) => {
     console.log('View equipment:', equipment);
-    // Implementation: Navigate to equipment detail page
+    router.push(`/equipment/${equipment.id}`);
   };
 
   const handlePageChange = (page: number) => {

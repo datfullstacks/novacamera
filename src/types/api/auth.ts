@@ -110,3 +110,24 @@ export type UpdateProfileResponse = ApiResponse<UserProfile>;
 export type ChangePasswordResponse = ApiResponse<string>;
 export type UploadAvatarResponse = ApiResponse<{ avatarUrl: string }>;
 export type CreateOfflineUserResponse = ApiResponse<UserResponse>;
+
+// Invoice types
+export interface Invoice {
+  invoiceId: number;
+  invoiceDate: string;
+  amount: number;
+  dueDate: string;
+  paymentMethod: string;
+  paymentStatus: string;
+}
+
+export interface UserInvoicesData {
+  userId: number;
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  roleName: string | null;
+  invoices: Invoice[];
+}
+
+export type UserInvoicesResponse = ApiResponse<UserInvoicesData>;

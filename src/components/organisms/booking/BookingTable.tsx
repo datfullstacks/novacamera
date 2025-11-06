@@ -9,7 +9,7 @@ interface Booking {
   readonly customerName: string;
   readonly equipment: string;
   readonly timeRange: string;
-  readonly status: 'renting' | 'confirmed' | 'returned' | 'cancelled';
+  readonly status: 'pending' | 'confirmed' | 'renting' | 'returned' | 'cancelled';
   readonly deliveryStatus: 'delivered' | 'not-delivered';
 }
 
@@ -18,7 +18,6 @@ interface BookingTableProps extends HTMLAttributes<HTMLDivElement> {
   readonly onView?: (booking: Booking) => void;
   readonly onEdit?: (booking: Booking) => void;
   readonly onCancel?: (booking: Booking) => void;
-  readonly onConfirm?: (booking: Booking) => void;
   readonly onDeliver?: (booking: Booking) => void;
   readonly onReturn?: (booking: Booking) => void;
 }
@@ -28,7 +27,6 @@ export default function BookingTable({
   onView,
   onEdit,
   onCancel,
-  onConfirm,
   onDeliver,
   onReturn,
   className = '',
@@ -75,7 +73,6 @@ export default function BookingTable({
                   onView={onView}
                   onEdit={onEdit}
                   onCancel={onCancel}
-                  onConfirm={onConfirm}
                   onDeliver={onDeliver}
                   onReturn={onReturn}
                 />

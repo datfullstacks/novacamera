@@ -2,7 +2,7 @@
 
 import { HTMLAttributes } from 'react';
 
-type BookingStatus = 'renting' | 'confirmed' | 'returned' | 'cancelled';
+type BookingStatus = 'pending' | 'confirmed' | 'renting' | 'returned' | 'cancelled';
 type DeliveryStatus = 'delivered' | 'not-delivered';
 
 interface BookingStatusBadgeProps extends HTMLAttributes<HTMLSpanElement> {
@@ -11,13 +11,17 @@ interface BookingStatusBadgeProps extends HTMLAttributes<HTMLSpanElement> {
 }
 
 const statusConfig = {
-  renting: {
-    label: 'Đang thuê',
-    className: 'bg-blue-100 text-blue-800',
+  pending: {
+    label: 'Chờ xác nhận',
+    className: 'bg-yellow-100 text-yellow-800',
   },
   confirmed: {
     label: 'Đã xác nhận',
     className: 'bg-green-100 text-green-800',
+  },
+  renting: {
+    label: 'Đang thuê',
+    className: 'bg-blue-100 text-blue-800',
   },
   returned: {
     label: 'Đã trả',

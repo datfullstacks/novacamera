@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Navigation, LanguageSwitcher } from '../molecules';
+import { Navigation } from '../molecules';
 import { CartPreview } from '../molecules/cart/CartPreview';
 import { useTranslations } from 'next-intl';
 import { useSelector } from 'react-redux';
@@ -76,11 +76,11 @@ export default function Header() {
   const navLinks = [
     { label: t('home'), href: '/' },
     { label: t('rental'), href: '/rental' },
-    { label: t('pricing'), href: '/pricing' },
+    // { label: t('pricing'), href: '/pricing' },
     { label: t('aiAdvisor'), href: '/ai-advisor' },
-    { label: t('support'), href: '/support' },
-    { label: t('courses'), href: '/courses' },
-    { label: t('consignment'), href: '/consignment' },
+    // { label: t('support'), href: '/support' },
+    // { label: t('courses'), href: '/courses' },
+    // { label: t('consignment'), href: '/consignment' },
   ];
 
   return (
@@ -200,7 +200,7 @@ export default function Header() {
               </>
             )}
             
-            <LanguageSwitcher variant="dropdown" />
+            {/* <LanguageSwitcher variant="dropdown" /> */}
           </div>
 
           {/* Mobile menu button */}
