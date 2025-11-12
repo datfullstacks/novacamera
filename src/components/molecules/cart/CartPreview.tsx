@@ -93,7 +93,7 @@ export const CartPreview: React.FC = () => {
                     setIsOpen(false);
                     router.push('/rental');
                   }}
-                  className="w-full"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                 >
                   Khám phá thiết bị
                 </Button>
@@ -194,23 +194,23 @@ export const CartPreview: React.FC = () => {
                   <div className="space-y-2">
                     <Button
                       onClick={handleCheckout}
-                      className="w-full bg-zinc-900 hover:bg-zinc-800"
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                     >
                       Thanh toán
                     </Button>
                     <Button
                       onClick={handleGoToCart}
                       variant="outline"
-                      className="w-full"
+                      className="w-full border-gray-300 text-gray-700 hover:bg-gray-50"
                     >
                       Xem giỏ hàng
                     </Button>
                     <Button
                       onClick={() => dispatch(clearCart())}
-                      variant="destructive"
-                      className="w-full text-xs"
+                      variant="outline"
+                      className="w-full border-red-300 text-red-600 hover:bg-red-50 text-xs"
                     >
-                      Clear Cart (Dev)
+                      Xóa giỏ hàng
                     </Button>
                   </div>
                 </div>

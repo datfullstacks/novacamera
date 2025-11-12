@@ -7,7 +7,6 @@ import { sepayService } from '@/lib/api/services/sepay.service';
 import { rentalService } from '@/lib/api/services/rental.service';
 import { showToast } from '@/components/atoms/ui/Toast';
 import { Loader2, CheckCircle, XCircle, Clock, RefreshCw } from 'lucide-react';
-import { RentalOrderStatus } from '@/types/api/order';
 
 interface PaymentQRCodeProps {
   orderId: number;
@@ -100,11 +99,9 @@ export const PaymentQRCode: React.FC<PaymentQRCodeProps> = ({
     setIsCancelling(true);
     
     try {
-      // Call API to cancel order
-      await rentalService.updateOrderStatus(orderId, {
-        status: RentalOrderStatus.CANCELLED,
-        note: 'Tự động hủy do hết thời gian thanh toán',
-        updatedBy: customerName,
+      // Call API to cancel payment
+      await rentalService.cancelPayment(orderId, {
+        reason: 'Tự động hủy do hết thời gian thanh toán (15 phút)',
       });
       
       // Delete cookie
@@ -569,32 +566,89 @@ export const PaymentQRCode: React.FC<PaymentQRCodeProps> = ({
 
       {/* Manual Refresh Button */}
       {paymentStatus === 'pending' && (
-        <button
-          onClick={handleManualRefresh}
-          disabled={isManualChecking}
-          className={`
-            w-full max-w-md mb-4 flex items-center justify-center gap-2 
-            px-6 py-3 rounded-lg font-medium
-            transition-all duration-300 ease-in-out
-            ${isManualChecking 
-              ? 'bg-gray-400 cursor-not-allowed' 
-              : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-md hover:shadow-lg transform hover:-translate-y-0.5'
-            }
-            text-white
-          `}
-        >
-          {isManualChecking ? (
-            <>
-              <Loader2 className="w-5 h-5 animate-spin" />
-              <span>Đang kiểm tra...</span>
-            </>
-          ) : (
-            <>
-              <RefreshCw className="w-5 h-5" />
-              <span>Kiểm tra thanh toán ngay</span>
-            </>
-          )}
-        </button>
+        <div className="w-full max-w-md space-y-3 mb-4">
+          <button
+            onClick={handleManualRefresh}
+            disabled={isManualChecking}
+            className={`
+              w-full flex items-center justify-center gap-2 
+              px-6 py-3 rounded-lg font-medium
+              transition-all duration-300 ease-in-out
+              ${isManualChecking 
+                ? 'bg-gray-400 cursor-not-allowed' 
+                : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-md hover:shadow-lg transform hover:-translate-y-0.5'
+              }
+              text-white
+            `}
+          >
+            {isManualChecking ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span>Đang kiểm tra...</span>
+              </>
+            ) : (
+              <>
+                <RefreshCw className="w-5 h-5" />
+                <span>Kiểm tra thanh toán ngay</span>
+              </>
+            )}
+          </button>
+
+          <button
+            onClick={async () => {
+              if (window.confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')) {
+                setIsCancelling(true);
+                try {
+                  await rentalService.cancelPayment(orderId, {
+                    reason: 'Khách hàng tự hủy đơn hàng',
+                  });
+                  
+                  deleteCookie(`payment_start_${orderId}`);
+                  setPaymentStatus('timeout');
+                  
+                  showToast({
+                    type: 'info',
+                    title: 'Đã hủy đơn hàng',
+                    message: 'Đơn hàng của bạn đã được hủy thành công.',
+                    duration: 3000,
+                  });
+                } catch (err) {
+                  console.error('Error cancelling order:', err);
+                  showToast({
+                    type: 'error',
+                    title: 'Lỗi',
+                    message: 'Không thể hủy đơn hàng. Vui lòng thử lại.',
+                    duration: 3000,
+                  });
+                } finally {
+                  setIsCancelling(false);
+                }
+              }
+            }}
+            disabled={isCancelling}
+            className={`
+              w-full flex items-center justify-center gap-2 
+              px-6 py-3 rounded-lg font-medium
+              transition-all duration-300 ease-in-out
+              ${isCancelling 
+                ? 'bg-gray-300 cursor-not-allowed' 
+                : 'bg-white border-2 border-red-500 text-red-600 hover:bg-red-50'
+              }
+            `}
+          >
+            {isCancelling ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span>Đang hủy...</span>
+              </>
+            ) : (
+              <>
+                <XCircle className="w-5 h-5" />
+                <span>Hủy đơn hàng</span>
+              </>
+            )}
+          </button>
+        </div>
       )}
 
       {/* Payment Details */}

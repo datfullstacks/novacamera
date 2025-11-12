@@ -114,6 +114,7 @@ export type CreateOfflineUserResponse = ApiResponse<UserResponse>;
 // Invoice types
 export interface Invoice {
   invoiceId: number;
+  orderId?: number; // Optional order ID for cancellation
   invoiceDate: string;
   amount: number;
   dueDate: string;
