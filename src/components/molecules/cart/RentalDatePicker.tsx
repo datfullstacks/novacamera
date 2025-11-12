@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Calendar } from 'lucide-react';
 
 interface RentalDatePickerProps {
@@ -16,13 +16,66 @@ export const RentalDatePicker: React.FC<RentalDatePickerProps> = ({
   onDateChange,
   className = '',
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
   const [selectedStartDate, setSelectedStartDate] = useState<Date>(
     startDate || new Date()
   );
   const [selectedEndDate, setSelectedEndDate] = useState<Date>(
     endDate || new Date(Date.now() + 24 * 60 * 60 * 1000) // tomorrow
   );
+  const [isOpen, setIsOpen] = useState(false);
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  // Calculate and update dropdown position
+  const updateDropdownPosition = () => {
+    if (buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setDropdownPosition({
+        top: rect.bottom,
+        left: rect.left,
+      });
+    }
+  };
+
+  // Update position when dropdown opens
+  useEffect(() => {
+    if (isOpen) {
+      updateDropdownPosition();
+    }
+  }, [isOpen]);
+
+  // Close dropdown when scrolling
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleScroll = () => {
+      // Update position instead of closing
+      updateDropdownPosition();
+    };
+
+    window.addEventListener('scroll', handleScroll, true);
+    return () => window.removeEventListener('scroll', handleScroll, true);
+  }, [isOpen]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isOpen]);
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('vi-VN', {
@@ -72,6 +125,7 @@ export const RentalDatePicker: React.FC<RentalDatePickerProps> = ({
     <div className={`relative ${className}`}>
       {/* Trigger Button */}
       <button
+        ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
         className="w-full p-3 border border-gray-200 rounded-lg bg-white text-left flex items-center justify-between hover:border-gray-300 transition-colors"
       >
@@ -95,12 +149,19 @@ export const RentalDatePicker: React.FC<RentalDatePickerProps> = ({
             onClick={() => setIsOpen(false)}
           />
           
-          {/* Dropdown Panel */}
-          <div className="absolute top-full mt-2 left-0 right-0 bg-white rounded-lg shadow-xl border border-gray-200 z-50 p-4">
+          {/* Dropdown Panel - positioned next to button */}
+          <div 
+            ref={dropdownRef}
+            className="fixed bg-white rounded-lg shadow-2xl border border-gray-200 z-50 p-4 w-96"
+            style={{
+              top: `${dropdownPosition.top}px`,
+              left: `${dropdownPosition.left}px`,
+            }}
+          >
             <div className="space-y-4">
               {/* Start Date */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-900 mb-2">
                   Ngày bắt đầu thuê
                 </label>
                 <input
@@ -108,13 +169,13 @@ export const RentalDatePicker: React.FC<RentalDatePickerProps> = ({
                   value={selectedStartDate.toISOString().split('T')[0]}
                   onChange={handleStartDateChange}
                   min={getMinStartDate()}
-                  className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 font-medium"
                 />
               </div>
 
               {/* End Date */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-900 mb-2">
                   Ngày trả thiết bị
                 </label>
                 <input
@@ -122,15 +183,15 @@ export const RentalDatePicker: React.FC<RentalDatePickerProps> = ({
                   value={selectedEndDate.toISOString().split('T')[0]}
                   onChange={handleEndDateChange}
                   min={getMinEndDate()}
-                  className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 font-medium"
                 />
               </div>
 
               {/* Summary */}
               <div className="pt-2 border-t border-gray-200">
                 <div className="flex justify-between items-center text-sm">
-                  <span className="text-gray-600">Thời gian thuê:</span>
-                  <span className="font-medium text-gray-800">
+                  <span className="text-gray-900 font-medium">Thời gian thuê:</span>
+                  <span className="font-bold text-gray-900">
                     {getDaysDifference()} ngày
                   </span>
                 </div>
@@ -140,13 +201,13 @@ export const RentalDatePicker: React.FC<RentalDatePickerProps> = ({
               <div className="flex gap-2 pt-2">
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="flex-1 px-3 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="flex-1 px-3 py-2 text-sm text-gray-900 font-medium border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   Hủy
                 </button>
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="flex-1 px-3 py-2 text-sm text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+                  className="flex-1 px-3 py-2 text-sm text-white font-medium bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   Xác nhận
                 </button>

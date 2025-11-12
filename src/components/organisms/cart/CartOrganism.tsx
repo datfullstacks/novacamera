@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAppSelector } from '@/store/hooks';
 import { CartItem } from '@/components/molecules/cart/CartItem';
 import { CartSummary } from '@/components/molecules/cart/CartSummary';
@@ -8,6 +8,7 @@ import { SavedItemsSection } from './SavedItemsSection';
 import { useRouter } from 'next/navigation';
 import { AlertTriangle, ShoppingCart } from 'lucide-react';
 import { ConfirmModal } from '@/components/molecules/ConfirmModal';
+import { getAuthDataFromCookies } from '@/lib/utils/cookies';
 
 interface CartOrganismProps {
   onContinueShopping?: () => void;
@@ -18,13 +19,23 @@ export const CartOrganism: React.FC<CartOrganismProps> = ({
 }) => {
   const router = useRouter();
   const { items, totalItems } = useAppSelector((state) => state.cart);
-  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const authState = useAppSelector((state) => state.auth);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [cookieData, setCookieData] = useState(() => getAuthDataFromCookies());
+
+  // Update cookie data when auth state changes
+  useEffect(() => {
+    const data = getAuthDataFromCookies();
+    setCookieData(data);
+  }, [authState.isAuthenticated]);
+
+  // Check both Redux and cookies for authentication
+  const isAuthenticated = authState.isAuthenticated && cookieData.isAuthenticated;
 
   const handleProceedToCheckout = async () => {
-    // Check authentication first
+    // Check authentication first (both Redux and cookies)
     if (!isAuthenticated) {
       setShowLoginModal(true);
       return;

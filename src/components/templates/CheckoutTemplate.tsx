@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAppSelector, useAppDispatch } from "@/store/hooks";
 import { clearCart } from "@/store/slices/cartSlice";
@@ -19,6 +19,7 @@ import Header from "@/components/organisms/Header";
 import Breadcrumb from "@/components/atoms/ui/Breadcrumb";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { getAuthDataFromCookies } from "@/lib/utils/cookies";
 
 export const CheckoutTemplate: React.FC = () => {
   const router = useRouter();
@@ -32,6 +33,29 @@ export const CheckoutTemplate: React.FC = () => {
     amount: number;
     customerName: string;
   } | null>(null);
+  const [cookieData, setCookieData] = useState(() => getAuthDataFromCookies());
+
+  // Update cookie data when auth state changes
+  useEffect(() => {
+    const data = getAuthDataFromCookies();
+    setCookieData(data);
+  }, [authState.isAuthenticated]);
+
+  // Check both Redux and cookies for authentication
+  const isAuthenticated = authState.isAuthenticated && cookieData.isAuthenticated;
+
+  // Check authentication on mount
+  useEffect(() => {
+    if (!isAuthenticated) {
+      showToast({
+        type: "error",
+        title: "Yêu cầu đăng nhập",
+        message: "Bạn cần đăng nhập để tiến hành thanh toán",
+        duration: 3000,
+      });
+      router.push("/login?redirect=/checkout");
+    }
+  }, [isAuthenticated, router]);
 
   const handleCheckout = async (formData: {
     customerInfo: CustomerInfoDto;
@@ -157,8 +181,8 @@ export const CheckoutTemplate: React.FC = () => {
     }
   };
 
-  // Check if user is logged in
-  if (!authState.isAuthenticated || !authState.user) {
+  // Check if user is logged in (both Redux and cookies)
+  if (!isAuthenticated || !authState.user) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
@@ -201,7 +225,7 @@ export const CheckoutTemplate: React.FC = () => {
         <main className="pt-24 pb-16">
           <div className="max-w-4xl mx-auto px-6">
             {/* Breadcrumb */}
-            <div className="mb-6">
+            <div className="pt-4 mb-6">
               <Breadcrumb className="text-sm" />
             </div>
 
@@ -272,7 +296,7 @@ export const CheckoutTemplate: React.FC = () => {
       <main className="pt-24 pb-16">
         <div className="max-w-7xl mx-auto px-6">
           {/* Breadcrumb */}
-          <div className="mb-6">
+          <div className="pt-4 mb-6">
             <Breadcrumb className="text-sm" />
           </div>
 
