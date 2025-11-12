@@ -6,6 +6,7 @@ import { ProductListSection } from '../organisms/rental/ProductListSection';
 import { SearchBar } from '../molecules/rental/SearchBar';
 import { useFiltersData } from '@/hooks/useFiltersData';
 import Breadcrumb from '@/components/atoms/ui/Breadcrumb';
+import PageFooter from '@/components/molecules/common/PageFooter';
 
 export interface RentalPageTemplateProps {
   className?: string;
@@ -26,9 +27,9 @@ export const RentalPageTemplate: React.FC<RentalPageTemplateProps> = ({
   
   return (
     <div className={`min-h-screen bg-neutral-50  overflow-hidden ${className}`}>
-      <div className="w-full max-w-[1487px] mx-auto pt-8 md:pt-16 relative">
+      <div className="w-full max-w-[1487px] mx-auto relative">
         {/* Breadcrumb */}
-        <div className="px-4 md:px-6 mb-6">
+        <div className="px-4 md:px-6 mb-6 pt-4 md:pt-6 py-4 bg-neutral-50">
           <Breadcrumb className="text-sm" />
         </div>
 
@@ -38,7 +39,7 @@ export const RentalPageTemplate: React.FC<RentalPageTemplateProps> = ({
         </div>
 
         {/* Main Content Container - Responsive Layout */}
-        <div className="flex flex-col lg:flex-row gap-4 md:gap-6 px-4 md:px-6">
+        <div className="flex flex-col lg:flex-row gap-4 md:gap-6 px-4 md:px-6 pb-16 md:pb-20">
           {/* Filter Sidebar - Full width on mobile, sidebar on desktop */}
           <div className="w-full lg:w-auto lg:flex-shrink-0">
             <FilterSidebar 
@@ -56,6 +57,9 @@ export const RentalPageTemplate: React.FC<RentalPageTemplateProps> = ({
           </div>
         </div>
       </div>
+      
+      {/* Footer */}
+      <PageFooter />
     </div>
   );
 };

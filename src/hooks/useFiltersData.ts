@@ -64,12 +64,19 @@ export function useFiltersData(): FiltersDataState {
 
           if (!isMounted) return;
 
-          // Backend returns brands in "errors" field with statusCode 400 (backend mistake)
-          // Will be fixed later, for now we handle both cases
-          const brandsData = brandsResponse.errors || brandsResponse.data || [];
-          
+          // Chuẩn hóa lấy brands từ brandsResponse.data.brands (API chuẩn)
+          let brandsData: string[] = [];
+          if (
+            brandsResponse.data &&
+            Array.isArray((brandsResponse.data as unknown as Record<string, unknown>).brands)
+          ) {
+            brandsData = (brandsResponse.data as unknown as Record<string, string[]>).brands;
+          } else if (Array.isArray(brandsResponse.errors)) {
+            // Fallback cho backend cũ
+            brandsData = brandsResponse.errors;
+          }
+
           console.log('🔍 Final brandsData:', brandsData);
-          
           if (brandsData.length > 0) {
             setBrands(brandsData);
             console.log('✅ Brands SET to state:', brandsData.length, brandsData);

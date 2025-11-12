@@ -44,12 +44,11 @@ export const LandingFooter: React.FC<LandingFooterProps> = ({
           gap: 10,
         }}
       >
-        <Logo textColor={landingColors.ui.black} />
+        <Logo width={180} height={28} textColor={landingColors.ui.black} showText={false} />
         <div
           style={{
             color: landingColors.ui.black,
             fontSize: 16,
-            fontFamily: 'Poppins',
             fontWeight: 400,
             lineHeight: '16px',
             whiteSpace: 'pre-line',
@@ -86,7 +85,7 @@ export const LandingFooter: React.FC<LandingFooterProps> = ({
                 style={{
                   color: landingColors.ui.black,
                   fontSize: 20,
-                  fontFamily: 'Afacad',
+                  fontFamily: 'var(--font-geist-sans), sans-serif',
                   fontWeight: 700,
                   lineHeight: '20px',
                   margin: 0,
@@ -99,7 +98,6 @@ export const LandingFooter: React.FC<LandingFooterProps> = ({
               style={{
                 color: landingColors.ui.black,
                 fontSize: 15.62,
-                fontFamily: 'Poppins',
                 fontWeight: 400,
                 lineHeight: '15.62px',
                 whiteSpace: 'pre-line',

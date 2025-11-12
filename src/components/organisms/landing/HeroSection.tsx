@@ -19,7 +19,7 @@ export function HeroSection({
   backgroundImage,
 }: HeroSectionProps) {
   return (
-    <section className="relative min-h-[600px] lg:min-h-[700px] overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black pt-20">
+    <section className="relative min-h-[600px] lg:min-h-[700px] overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black pt-24 md:pt-28">
       <div className="container mx-auto px-4 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-[600px] lg:min-h-[700px] py-12 lg:py-20">
           {/* Left Column - Image */}
@@ -45,13 +45,13 @@ export function HeroSection({
             </p>
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <Link
-                href="/equipment/public"
+                href="/rental"
                 className="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all"
               >
                 {ctaPrimaryText}
               </Link>
               <Link
-                href="/pricing"
+                href="/ai-advisor"
                 className="inline-flex items-center justify-center border-2 border-white text-white hover:bg-white hover:text-black px-8 py-4 text-lg font-semibold rounded-lg transition-all"
               >
                 {ctaSecondaryText}

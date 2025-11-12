@@ -12,21 +12,6 @@ import {
 export default async function HomePage() {
   const t = await getTranslations("landing");
 
-  // Navigation items
-  const navigationItems = [
-    { label: t("navigation.home"), href: "/", isActive: true },
-    { label: t("navigation.rental"), href: "/rental", isActive: false },
-    { label: t("navigation.pricing"), href: "/pricing", isActive: false },
-    { label: t("navigation.aiAdvisor"), href: "/ai-advisor", isActive: false },
-    { label: t("navigation.support"), href: "/support", isActive: false },
-    { label: t("navigation.courses"), href: "/courses", isActive: false },
-    {
-      label: t("navigation.consignment"),
-      href: "/consignment",
-      isActive: false,
-    },
-  ];
-
   // Categories data
   const categories = [
     {
@@ -151,66 +136,8 @@ export default async function HomePage() {
     },
   ];
 
-  // Footer columns data
-  const footerColumns = [
-    {
-      title: t("footer.company.title"),
-      content: (
-        <>
-          {t("footer.company.description")}
-          <br />
-          <br />
-          {t("footer.company.mission")}
-        </>
-      ),
-    },
-    {
-      title: t("footer.services.title"),
-      content: (
-        <>
-          {t("footer.services.rental")}
-          <br />
-          {t("footer.services.consulting")}
-          <br />
-          {t("footer.services.courses")}
-          <br />
-          {t("footer.services.maintenance")}
-        </>
-      ),
-    },
-    {
-      title: t("footer.contact.title"),
-      content: (
-        <>
-          {t("footer.contact.address")}
-          <br />
-          {t("footer.contact.phone")}
-          <br />
-          {t("footer.contact.email")}
-        </>
-      ),
-    },
-    {
-      title: t("footer.support.title"),
-      content: (
-        <>
-          {t("footer.support.hotline")}
-          <br />
-          {t("footer.support.technical")}
-          <br />
-          <br />
-          {t("footer.support.businessEmail")}
-        </>
-      ),
-    },
-  ];
-
   return (
-    <CameraLandingTemplate
-      navigationItems={navigationItems}
-      companyInfo={t("footer.company.description")}
-      footerColumns={footerColumns}
-    >
+    <CameraLandingTemplate>
       {/* Header */}
       <Header />
 

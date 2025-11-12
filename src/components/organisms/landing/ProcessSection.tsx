@@ -38,7 +38,7 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({
             textAlign: 'center',
             color: landingColors.primary.navy,
             fontSize: 31.92,
-            fontFamily: 'Segoe UI',
+            fontFamily: 'var(--font-geist-sans), sans-serif',
             fontWeight: 700,
             lineHeight: '51px',
             margin: 0,

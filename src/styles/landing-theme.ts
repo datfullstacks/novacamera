@@ -30,10 +30,10 @@ export const landingColors = {
 
 export const landingTypography = {
   fontFamilies: {
-    primary: 'Segoe UI, sans-serif',
-    secondary: 'Inter, sans-serif',
-    tertiary: 'Poppins, sans-serif',
-    quaternary: 'Afacad, sans-serif',
+    primary: 'var(--font-geist-sans), sans-serif',
+    secondary: 'var(--font-poppins), sans-serif',
+    tertiary: 'var(--font-poppins), sans-serif',
+    quaternary: 'var(--font-geist-sans), sans-serif',
   },
   
   fontSizes: {

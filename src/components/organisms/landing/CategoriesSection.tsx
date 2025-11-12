@@ -38,7 +38,7 @@ export const CategoriesSection: React.FC<CategoriesSectionProps> = ({
             textAlign: 'center',
             color: landingColors.primary.navy,
             fontSize: 31.97,
-            fontFamily: 'Segoe UI',
+            fontFamily: 'var(--font-geist-sans), sans-serif',
             fontWeight: 700,
             lineHeight: '51px',
             margin: 0,

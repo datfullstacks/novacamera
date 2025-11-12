@@ -13,10 +13,10 @@ export const FilterGroup: React.FC<FilterGroupProps> = ({
 }) => {
   return (
     <div className={`bg-transparent ${className}`}>
-      <h3 className="text-sm font-extrabold text-zinc-800 leading-tight mb-4">
+      <h3 className="text-sm font-bold text-gray-900 leading-tight mb-4">
         {title}
       </h3>
-      <div className="space-y-2">
+      <div className="space-y-3">
         {children}
       </div>
     </div>

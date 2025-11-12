@@ -133,7 +133,7 @@ export function Breadcrumb({ items, className = '' }: BreadcrumbProps) {
 
   return (
     <nav
-      className={`flex items-center flex-wrap gap-2 text-sm ${className}`}
+      className={`flex items-center flex-wrap gap-2 text-sm py-2 ${className}`}
       aria-label="Breadcrumb"
     >
       {breadcrumbs.map((item, index) => (

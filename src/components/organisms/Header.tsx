@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Navigation } from '../molecules';
 import { CartPreview } from '../molecules/cart/CartPreview';
 import { useTranslations } from 'next-intl';
@@ -8,10 +8,9 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import { useLogout } from '@/hooks/api/useAuth';
 import { useRouter } from '@/i18n/routing';
-import { getAuthDataFromCookies } from '@/lib/utils/cookies';
-import { useEffect, useState as useStateHook } from 'react';
 import { Link } from '@/i18n/routing';
-import Image from 'next/image';
+import { getAuthDataFromCookies } from '@/lib/utils/cookies';
+import { Logo } from '@/components/atoms/landing';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -22,7 +21,7 @@ export default function Header() {
   const authState = useSelector((state: RootState) => state.auth);
   const logoutMutation = useLogout();
   const router = useRouter();
-  const [cookieData, setCookieData] = useStateHook<{
+  const [cookieData, setCookieData] = useState<{
     authToken: string | undefined;
     refreshToken: string | undefined;
     tokenExpiry: number | undefined;
@@ -87,7 +86,7 @@ export default function Header() {
     <header className="fixed top-0 left-0 right-0 bg-white shadow-sm z-50">
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
-            <Image src="/logo.png" alt="Nova Camera"  width={250} height={32} className=" w-auto" />
+            <Logo width={180} height={28} showText={false} />
           
           {/* Desktop Navigation */}
           <Navigation links={navLinks} />

@@ -1,24 +1,17 @@
 'use client';
 
 import React from 'react';
-import { LandingHeader, LandingFooter } from '@/components/organisms/landing';
-import type { LandingNavigationItem, FooterColumn } from '@/components/organisms/landing';
+import PageFooter from '@/components/molecules/common/PageFooter';
 
 export interface CameraLandingTemplateProps {
   children: React.ReactNode;
-  navigationItems: LandingNavigationItem[];
-  companyInfo: string;
-  footerColumns: FooterColumn[];
+  companyInfo?: string;
   onLoginClick?: () => void;
   className?: string;
 }
 
 export const CameraLandingTemplate: React.FC<CameraLandingTemplateProps> = ({
   children,
-  navigationItems,
-  companyInfo,
-  footerColumns,
-  onLoginClick,
   className = '',
 }) => {
   return (
@@ -47,10 +40,7 @@ export const CameraLandingTemplate: React.FC<CameraLandingTemplateProps> = ({
       </main>
       
       {/* Footer */}
-      <LandingFooter
-        companyInfo={companyInfo}
-        columns={footerColumns}
-      />
+      <PageFooter />
     </div>
   );
 };

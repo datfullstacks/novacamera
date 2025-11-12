@@ -1,11 +1,17 @@
 ﻿import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Poppins } from "next/font/google";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getLocale } from 'next-intl/server';
 import { QueryProvider } from "@/providers/QueryProvider";
 import { ReduxProvider } from "@/components/providers/ReduxProvider";
 import { ToastContainer } from "@/components/atoms/ui/Toast";
 import "./globals.css";
+
+const poppins = Poppins({
+  variable: "--font-poppins",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,7 +39,7 @@ export default async function RootLayout({
 
   return (
     <html lang={locale}>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${poppins.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ReduxProvider>
           <NextIntlClientProvider messages={messages} locale={locale}>
             <QueryProvider>
