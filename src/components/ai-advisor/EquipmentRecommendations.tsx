@@ -3,6 +3,9 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useDispatch } from 'react-redux';
+import { addToCart } from '@/store/slices/cartSlice';
+import { showToast } from '@/components/atoms/ui/Toast';
 
 interface Equipment {
   equipmentId: number;
@@ -29,12 +32,48 @@ export default function EquipmentRecommendations({
   onAddToCart 
 }: EquipmentRecommendationsProps) {
   
+  const dispatch = useDispatch();
+  
   // State để track carousel page cho mỗi section
   const [carouselPages, setCarouselPages] = useState<Record<number, number>>({});
 
-  const handleAddToCart = (equipmentId: number) => {
+  const handleAddToCart = (item: Equipment) => {
+    // If parent provides onAddToCart, use it
     if (onAddToCart) {
-      onAddToCart(equipmentId);
+      onAddToCart(item.equipmentId);
+      return;
+    }
+    
+    // Otherwise, dispatch to Redux directly
+    try {
+      dispatch(addToCart({
+        equipmentId: item.equipmentId,
+        name: item.equipmentName,
+        pricePerDay: item.price,
+        depositFee: 0,
+        imageUrl: item.image || null,
+        brand: null,
+        category: item.category,
+        quantity: 1,
+        rentalStartDate: null,
+        rentalEndDate: null,
+        totalDays: 1,
+      }));
+      
+      showToast({
+        type: 'success',
+        title: 'Đã thêm vào giỏ hàng',
+        message: `${item.equipmentName} đã được thêm vào giỏ hàng`,
+        duration: 3000,
+      });
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      showToast({
+        type: 'error',
+        title: 'Lỗi',
+        message: 'Không thể thêm sản phẩm vào giỏ hàng',
+        duration: 3000,
+      });
     }
   };
 
@@ -152,7 +191,7 @@ export default function EquipmentRecommendations({
                             Chi tiết
                           </Link>
                           <button
-                            onClick={() => handleAddToCart(item.equipmentId)}
+                            onClick={() => handleAddToCart(item)}
                             className="flex-1 text-xs px-3 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm hover:shadow-md font-medium"
                           >
                             + Thêm

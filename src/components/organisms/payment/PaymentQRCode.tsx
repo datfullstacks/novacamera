@@ -7,6 +7,7 @@ import { sepayService } from '@/lib/api/services/sepay.service';
 import { rentalService } from '@/lib/api/services/rental.service';
 import { showToast } from '@/components/atoms/ui/Toast';
 import { Loader2, CheckCircle, XCircle, Clock, RefreshCw } from 'lucide-react';
+import { RentalOrderStatus } from '@/types/api/order';
 
 interface PaymentQRCodeProps {
   orderId: number;
@@ -14,7 +15,29 @@ interface PaymentQRCodeProps {
   customerName: string;
 }
 
-type PaymentStatus = 'pending' | 'checking' | 'success' | 'failed' | 'timeout';
+// Payment status type definition 
+type TPaymentStatus = 'pending' | 'success' | 'failed' | 'timeout';
+
+// Cookie helper functions
+const PAYMENT_TIMEOUT_DURATION = 15 * 60 * 1000; // 15 minutes in milliseconds
+
+const getCookie = (name: string): string | null => {
+  if (typeof document === 'undefined') return null;
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+  return null;
+};
+
+const setCookie = (name: string, value: string, maxAge: number) => {
+  if (typeof document === 'undefined') return;
+  document.cookie = `${name}=${value}; path=/; max-age=${maxAge}; SameSite=Lax`;
+};
+
+const deleteCookie = (name: string) => {
+  if (typeof document === 'undefined') return;
+  document.cookie = `${name}=; path=/; max-age=0`;
+};
 
 export const PaymentQRCode: React.FC<PaymentQRCodeProps> = ({
   orderId,
@@ -28,16 +51,85 @@ export const PaymentQRCode: React.FC<PaymentQRCodeProps> = ({
   const [error, setError] = useState<string>('');
   
   // Payment status tracking
-  const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>('pending');
+  const [paymentStatus, setPaymentStatus] = useState<TPaymentStatus>('pending');
   const [orderStatus, setOrderStatus] = useState<string>('Pending');
   const [timeRemaining, setTimeRemaining] = useState(15 * 60); // 15 minutes in seconds
   const [isManualChecking, setIsManualChecking] = useState(false);
+  const [isCancelling, setIsCancelling] = useState(false);
   
   // Refs for cleanup
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const countdownRef = useRef<NodeJS.Timeout | null>(null);
+  const paymentStartTimeRef = useRef<number | null>(null);
 
+  // Initialize payment start time from cookie or create new
+  useEffect(() => {
+    const cookieName = `payment_start_${orderId}`;
+    const savedStartTime = getCookie(cookieName);
+    
+    if (savedStartTime) {
+      // Resume from saved time
+      const startTime = Number.parseInt(savedStartTime, 10);
+      paymentStartTimeRef.current = startTime;
+      
+      // Calculate remaining time
+      const now = Date.now();
+      const elapsed = now - startTime;
+      const remaining = Math.max(0, PAYMENT_TIMEOUT_DURATION - elapsed);
+      
+      if (remaining === 0) {
+        // Already expired
+        setPaymentStatus('timeout');
+        setTimeRemaining(0);
+      } else {
+        setTimeRemaining(Math.floor(remaining / 1000));
+      }
+    } else {
+      // First time - create new start time
+      const now = Date.now();
+      paymentStartTimeRef.current = now;
+      setCookie(cookieName, now.toString(), 15 * 60); // 15 minutes
+      setTimeRemaining(15 * 60);
+    }
+  }, [orderId]);
+
+  // Auto-cancel order when timeout
+  const handleTimeout = async () => {
+    setPaymentStatus('timeout');
+    setIsCancelling(true);
+    
+    try {
+      // Call API to cancel order
+      await rentalService.updateOrderStatus(orderId, {
+        status: RentalOrderStatus.CANCELLED,
+        note: 'Tự động hủy do hết thời gian thanh toán',
+        updatedBy: customerName,
+      });
+      
+      // Delete cookie
+      deleteCookie(`payment_start_${orderId}`);
+      
+      showToast({
+        type: 'warning',
+        title: 'Hết thời gian thanh toán',
+        message: 'Đơn hàng đã bị hủy tự động do quá thời gian chờ thanh toán.',
+        duration: 5000,
+      });
+    } catch (err) {
+      console.error('Error cancelling order:', err);
+      showToast({
+        type: 'error',
+        title: 'Lỗi hủy đơn hàng',
+        message: 'Không thể hủy đơn hàng tự động. Vui lòng liên hệ hỗ trợ.',
+        duration: 5000,
+      });
+    } finally {
+      setIsCancelling(false);
+    }
+  };
+
+  // Generate QR Code
   useEffect(() => {
     const generateQRCode = async () => {
       try {
@@ -82,17 +174,31 @@ export const PaymentQRCode: React.FC<PaymentQRCodeProps> = ({
   useEffect(() => {
     const checkPaymentStatus = async () => {
       try {
-        setPaymentStatus('checking');
+        // Don't change status to 'checking' during auto-polling to avoid UI flicker
         const response = await rentalService.getOrderStatus(orderId);
         
         if (response.statusCode === 200 && response.data) {
-          const status = response.data; // response.data is the status string directly
+          // Handle both string and object response
+          let status: string;
+          if (typeof response.data === 'string') {
+            status = response.data;
+          } else if (typeof response.data === 'object' && response.data !== null) {
+            // If it's an object, try to extract status field
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            status = (response.data as any).status || (response.data as any).statusValue || 'Pending';
+          } else {
+            status = 'Pending';
+          }
+          
           setOrderStatus(status);
           
           // Check for completion states
           if (status === 'Confirmed') {
             setPaymentStatus('success');
             clearPolling();
+            
+            // Delete payment timer cookie on success
+            deleteCookie(`payment_start_${orderId}`);
             
             showToast({
               type: 'success',
@@ -109,21 +215,21 @@ export const PaymentQRCode: React.FC<PaymentQRCodeProps> = ({
             setPaymentStatus('failed');
             clearPolling();
             
+            // Delete payment timer cookie on cancellation
+            deleteCookie(`payment_start_${orderId}`);
+            
             showToast({
               type: 'error',
               title: 'Đơn hàng đã bị hủy',
               message: 'Vui lòng tạo đơn hàng mới để tiếp tục.',
               duration: 5000,
             });
-          } else {
-            // Still pending, continue polling
-            setPaymentStatus('pending');
           }
+          // If still pending, keep status as 'pending' without changing
         }
       } catch (err) {
         console.error('Error checking payment status:', err);
-        // Continue polling on error
-        setPaymentStatus('pending');
+        // Continue polling on error without changing UI state
       }
     };
 
@@ -142,37 +248,43 @@ export const PaymentQRCode: React.FC<PaymentQRCodeProps> = ({
       }
     };
 
-    // Start polling only after QR code is loaded
-    if (!isLoading && qrCodeUrl) {
+    // Start polling only after QR code is loaded and not already timed out
+    if (!isLoading && qrCodeUrl && paymentStatus !== 'timeout') {
       // Initial check
       checkPaymentStatus();
       
       // Poll every 3 seconds
       pollingIntervalRef.current = setInterval(checkPaymentStatus, 3000);
       
-      // Timeout after 15 minutes
-      timeoutRef.current = setTimeout(() => {
-        setPaymentStatus('timeout');
-        clearPolling();
+      // Calculate remaining timeout based on saved start time
+      if (paymentStartTimeRef.current) {
+        const now = Date.now();
+        const elapsed = now - paymentStartTimeRef.current;
+        const remainingTimeout = Math.max(0, PAYMENT_TIMEOUT_DURATION - elapsed);
         
-        showToast({
-          type: 'warning',
-          title: 'Hết thời gian chờ',
-          message: 'Quá thời gian chờ thanh toán. Vui lòng kiểm tra lại hoặc tạo đơn mới.',
-          duration: 5000,
-        });
-      }, 15 * 60 * 1000); // 15 minutes
+        if (remainingTimeout > 0) {
+          // Set timeout for remaining time
+          timeoutRef.current = setTimeout(() => {
+            handleTimeout();
+            clearPolling();
+          }, remainingTimeout);
+        } else {
+          // Already timed out
+          handleTimeout();
+        }
+      }
     }
 
     // Cleanup on unmount
     return () => {
       clearPolling();
     };
-  }, [orderId, isLoading, qrCodeUrl, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orderId, isLoading, qrCodeUrl, router, paymentStatus]);
 
   // Countdown timer
   useEffect(() => {
-    if (paymentStatus === 'pending' || paymentStatus === 'checking') {
+    if (paymentStatus === 'pending') {
       countdownRef.current = setInterval(() => {
         setTimeRemaining((prev) => {
           if (prev <= 1) {
@@ -198,7 +310,18 @@ export const PaymentQRCode: React.FC<PaymentQRCodeProps> = ({
       const response = await rentalService.getOrderStatus(orderId);
       
       if (response.statusCode === 200 && response.data) {
-        const status = response.data; // response.data is the status string directly
+        // Handle both string and object response
+        let status: string;
+        if (typeof response.data === 'string') {
+          status = response.data;
+        } else if (typeof response.data === 'object' && response.data !== null) {
+          // If it's an object, try to extract status field
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          status = (response.data as any).status || (response.data as any).statusValue || 'Pending';
+        } else {
+          status = 'Pending';
+        }
+        
         setOrderStatus(status);
         
         if (status === 'Confirmed') {
@@ -270,16 +393,96 @@ export const PaymentQRCode: React.FC<PaymentQRCodeProps> = ({
     );
   }
 
-  // Payment status UI
-  const getStatusUI = () => {
-    switch (paymentStatus) {
-      case 'checking':
-        return (
-          <div className="w-full max-w-md flex items-center justify-center gap-2 text-blue-600 bg-blue-50 p-3 rounded-lg mb-4">
-            <Loader2 className="w-5 h-5 animate-spin" />
-            <span className="font-medium">Đang kiểm tra thanh toán...</span>
+  // Timeout expired layout
+  if (paymentStatus === 'timeout') {
+    return (
+      <div className="flex flex-col items-center justify-center p-6 bg-white rounded-xl shadow-lg">
+        {/* Timeout Header */}
+        <div className="text-center mb-6">
+          <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-orange-100 flex items-center justify-center">
+            <Clock className="w-10 h-10 text-orange-600" />
           </div>
-        );
+          <h3 className="text-2xl font-bold text-gray-800 mb-2">
+            Hết thời gian thanh toán
+          </h3>
+          <p className="text-gray-600">
+            Đơn hàng #{orderId} đã hết thời gian chờ thanh toán
+          </p>
+        </div>
+
+        {/* Timeout Status */}
+        <div className="w-full max-w-md bg-orange-50 border-2 border-orange-200 rounded-lg p-4 mb-6">
+          <div className="flex items-start gap-3">
+            <XCircle className="w-6 h-6 text-orange-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <h4 className="font-semibold text-orange-800 mb-1">
+                Đơn hàng đã bị hủy tự động
+              </h4>
+              <p className="text-sm text-orange-700">
+                Do không nhận được thanh toán trong vòng 15 phút, đơn hàng đã được hủy tự động. 
+                {isCancelling && ' Đang xử lý hủy đơn...'}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Order Details */}
+        <div className="w-full max-w-md space-y-3 mb-6">
+          <div className="flex justify-between items-center py-2 border-b border-gray-200">
+            <span className="text-sm text-gray-600">Mã đơn hàng:</span>
+            <span className="text-sm font-semibold text-gray-800">#{orderId}</span>
+          </div>
+          <div className="flex justify-between items-center py-2 border-b border-gray-200">
+            <span className="text-sm text-gray-600">Số tiền:</span>
+            <span className="text-lg font-bold text-gray-600 line-through">
+              {amount.toLocaleString('vi-VN')}đ
+            </span>
+          </div>
+          <div className="flex justify-between items-center py-2 border-b border-gray-200">
+            <span className="text-sm text-gray-600">Trạng thái:</span>
+            <span className="text-sm font-semibold text-orange-600">Đã hủy</span>
+          </div>
+          <div className="flex justify-between items-center py-2">
+            <span className="text-sm text-gray-600">Thời gian hết hạn:</span>
+            <span className="text-sm font-mono text-gray-800">00:00</span>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="w-full max-w-md space-y-3">
+          <button
+            onClick={() => router.push('/rental')}
+            className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all shadow-md hover:shadow-lg"
+          >
+            Đặt hàng mới
+          </button>
+          <button
+            onClick={() => router.push('/orders')}
+            className="w-full px-6 py-3 bg-white text-gray-700 font-medium rounded-lg border-2 border-gray-300 hover:bg-gray-50 transition-colors"
+          >
+            Xem đơn hàng của tôi
+          </button>
+        </div>
+
+        {/* Info Box */}
+        <div className="w-full max-w-md bg-blue-50 rounded-lg p-4 mt-6">
+          <h4 className="text-sm font-semibold text-blue-800 mb-2">
+            💡 Lưu ý:
+          </h4>
+          <ul className="text-sm text-blue-700 space-y-1 list-disc list-inside">
+            <li>Đơn hàng đã bị hủy và không thể khôi phục</li>
+            <li>Nếu bạn đã thanh toán, vui lòng liên hệ hỗ trợ</li>
+            <li>Bạn có thể tạo đơn hàng mới bất cứ lúc nào</li>
+          </ul>
+        </div>
+      </div>
+    );
+  }
+
+  // Payment status UI
+  const getStatusUI = (): React.ReactNode => {
+    const status: TPaymentStatus = paymentStatus;
+    switch (status) {
       case 'success':
         return (
           <div className="w-full max-w-md flex items-center justify-center gap-2 text-green-600 bg-green-50 p-3 rounded-lg mb-4">
@@ -294,23 +497,43 @@ export const PaymentQRCode: React.FC<PaymentQRCodeProps> = ({
             <span className="font-medium">Đơn hàng đã bị hủy</span>
           </div>
         );
-      case 'timeout':
-        return (
-          <div className="w-full max-w-md flex items-center justify-center gap-2 text-orange-600 bg-orange-50 p-3 rounded-lg mb-4">
-            <Clock className="w-5 h-5" />
-            <span className="font-medium">Hết thời gian chờ thanh toán</span>
-          </div>
-        );
       default:
-        return (
-          <div className="w-full max-w-md flex items-center justify-between bg-yellow-50 p-3 rounded-lg mb-4">
-            <div className="flex items-center gap-2 text-yellow-700">
+        if (status === ('timeout' as TPaymentStatus)) {
+          return (
+            <div className="w-full max-w-md flex items-center justify-center gap-2 text-orange-600 bg-orange-50 p-3 rounded-lg mb-4">
               <Clock className="w-5 h-5" />
-              <span className="font-medium">Đang chờ thanh toán...</span>
+              <span className="font-medium">Hết thời gian chờ thanh toán</span>
             </div>
-            <div className="text-yellow-700 font-mono font-bold">
-              {formatTime(timeRemaining)}
+          );
+        }
+        return (
+          <div className="w-full max-w-md bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg mb-4 border border-blue-100">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2 text-blue-700">
+                <Clock className="w-5 h-5 animate-pulse" />
+                <span className="font-semibold">Đang chờ thanh toán</span>
+              </div>
             </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-blue-600">Thời gian còn lại:</span>
+              <div className="flex items-center gap-2">
+                <div className="text-2xl font-bold text-blue-700 font-mono tabular-nums">
+                  {formatTime(timeRemaining)}
+                </div>
+                <div className="w-12 h-12 rounded-full border-4 border-blue-200 border-t-blue-600 animate-spin opacity-20"></div>
+              </div>
+            </div>
+            <div className="mt-2 h-1.5 bg-blue-100 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-gradient-to-r from-blue-500 to-indigo-600 transition-all duration-1000 ease-linear"
+                style={{ 
+                  width: `${(timeRemaining / (15 * 60)) * 100}%` 
+                }}
+              ></div>
+            </div>
+            <p className="text-xs text-blue-500 mt-2 text-center">
+              Hệ thống tự động kiểm tra mỗi 3 giây
+            </p>
           </div>
         );
     }
@@ -332,7 +555,7 @@ export const PaymentQRCode: React.FC<PaymentQRCodeProps> = ({
       {getStatusUI()}
 
       {/* QR Code */}
-      {qrCodeUrl && (
+      {qrCodeUrl && paymentStatus !== ('timeout' as TPaymentStatus) && (
         <div className="relative w-80 h-80 mb-6 bg-white rounded-lg border-2 border-gray-200 overflow-hidden">
           <Image
             src={qrCodeUrl}
@@ -345,14 +568,32 @@ export const PaymentQRCode: React.FC<PaymentQRCodeProps> = ({
       )}
 
       {/* Manual Refresh Button */}
-      {(paymentStatus === 'pending' || paymentStatus === 'timeout') && (
+      {paymentStatus === 'pending' && (
         <button
           onClick={handleManualRefresh}
           disabled={isManualChecking}
-          className="w-full max-w-md mb-4 flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+          className={`
+            w-full max-w-md mb-4 flex items-center justify-center gap-2 
+            px-6 py-3 rounded-lg font-medium
+            transition-all duration-300 ease-in-out
+            ${isManualChecking 
+              ? 'bg-gray-400 cursor-not-allowed' 
+              : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-md hover:shadow-lg transform hover:-translate-y-0.5'
+            }
+            text-white
+          `}
         >
-          <RefreshCw className={`w-4 h-4 ${isManualChecking ? 'animate-spin' : ''}`} />
-          <span>{isManualChecking ? 'Đang kiểm tra...' : 'Kiểm tra thanh toán'}</span>
+          {isManualChecking ? (
+            <>
+              <Loader2 className="w-5 h-5 animate-spin" />
+              <span>Đang kiểm tra...</span>
+            </>
+          ) : (
+            <>
+              <RefreshCw className="w-5 h-5" />
+              <span>Kiểm tra thanh toán ngay</span>
+            </>
+          )}
         </button>
       )}
 

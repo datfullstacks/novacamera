@@ -1,12 +1,16 @@
-import React from 'react';
-import Image from 'next/image';
-import { useAppDispatch } from '@/store/hooks';
-import { removeFromCart, updateQuantity, updateRentalDays } from '@/store/slices/cartSlice';
-import { moveFromCartToWishlist } from '@/store/slices/wishlistSlice';
-import { CartItem as CartItemType } from '@/store/slices/cartSlice';
-import { Button } from '@/components/ui/button';
-import { RentalDatePicker } from './RentalDatePicker';
-import { Minus, Plus, Trash2, Heart } from 'lucide-react';
+import React from "react";
+import Image from "next/image";
+import { useAppDispatch } from "@/store/hooks";
+import {
+  removeFromCart,
+  updateQuantity,
+  updateRentalDays,
+} from "@/store/slices/cartSlice";
+import { moveFromCartToWishlist } from "@/store/slices/wishlistSlice";
+import { CartItem as CartItemType } from "@/store/slices/cartSlice";
+import { Button } from "@/components/ui/button";
+import { RentalDatePicker } from "./RentalDatePicker";
+import { Minus, Plus, Trash2, Heart } from "lucide-react";
 
 interface CartItemProps {
   item: CartItemType;
@@ -15,37 +19,44 @@ interface CartItemProps {
 export const CartItem: React.FC<CartItemProps> = ({ item }) => {
   const dispatch = useAppDispatch();
 
+  // Normalize item ID (support both formats)
+  const itemId = item.id || item.equipmentId?.toString() || "";
+  const dailyRate = item.dailyRate || item.pricePerDay || 0;
+  const rentalDays = item.rentalDays || item.totalDays || 1;
+
   const handleRemove = () => {
-    dispatch(removeFromCart(item.id));
+    dispatch(removeFromCart(itemId));
   };
 
   const handleSaveForLater = () => {
-    dispatch(moveFromCartToWishlist({
-      id: item.id,
-      name: item.name,
-      price: item.dailyRate || item.price || 0,
-      imageUrl: item.imageUrl,
-      description: item.description,
-      addedAt: new Date().toISOString(),
-    }));
-    dispatch(removeFromCart(item.id));
+    dispatch(
+      moveFromCartToWishlist({
+        id: itemId,
+        name: item.name,
+        price: dailyRate,
+        imageUrl: item.imageUrl || "",
+        description: item.description,
+        addedAt: new Date().toISOString(),
+      })
+    );
+    dispatch(removeFromCart(itemId));
   };
 
   const handleUpdateQuantity = (newQuantity: number) => {
     if (newQuantity <= 0) {
       handleRemove();
     } else {
-      dispatch(updateQuantity({ id: item.id, quantity: newQuantity }));
+      dispatch(updateQuantity({ id: itemId, quantity: newQuantity }));
     }
   };
 
   const handleUpdateRentalDays = (newDays: number) => {
     if (newDays >= 1) {
-      dispatch(updateRentalDays({ id: item.id, rentalDays: newDays }));
+      dispatch(updateRentalDays({ id: itemId, rentalDays: newDays }));
     }
   };
 
-  const totalPrice = (item.dailyRate || item.price || 0) * item.quantity * item.rentalDays;
+  const totalPrice = dailyRate * item.quantity * rentalDays;
 
   return (
     <div className="bg-white p-6 border-b border-gray-200 last:border-b-0">
@@ -54,7 +65,7 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
         <div className="flex-shrink-0">
           <div className="w-28 h-28 relative bg-gray-100 rounded-xl overflow-hidden">
             <Image
-              src={item.imageUrl || '/images/placeholder.jpg'}
+              src={item.imageUrl || "/images/placeholder.jpg"}
               alt={item.name}
               fill
               className="object-cover"
@@ -68,25 +79,26 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
           <h3 className="text-base font-bold text-gray-800 mb-2">
             {item.name}
           </h3>
-          
+
           <div className="space-y-1 mb-4">
             <p className="text-xs text-gray-500">
-              {(item.dailyRate || item.price || 0).toLocaleString('vi-VN')}đ/ngày
+              {(item.dailyRate || item.price || 0).toLocaleString("vi-VN")}
+              đ/ngày
             </p>
-            <p className="text-sm text-gray-500">
-              Thuê từ NovaCMS
-            </p>
-            <p className="text-sm text-gray-500">
-              Có sẵn
-            </p>
+            <p className="text-sm text-gray-500">Thuê từ NovaCMS</p>
+            <p className="text-sm text-gray-500">Có sẵn</p>
           </div>
 
           {/* Rental Date Picker */}
           <div className="mb-4">
-            <label className="block text-sm text-gray-600 mb-2">Thời gian thuê:</label>
+            <label className="block text-sm text-gray-600 mb-2">
+              Thời gian thuê:
+            </label>
             <RentalDatePicker
               startDate={new Date()}
-              endDate={new Date(Date.now() + item.rentalDays * 24 * 60 * 60 * 1000)}
+              endDate={
+                new Date(Date.now() + (item.rentalDays || item.totalDays || 1) * 24 * 60 * 60 * 1000)
+              }
               onDateChange={(startDate, endDate) => {
                 const diffTime = endDate.getTime() - startDate.getTime();
                 const days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -126,7 +138,8 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
 
           {/* Total Price */}
           <div className="text-base font-bold text-gray-800">
-            Tổng cộng: {totalPrice.toLocaleString('vi-VN')}đ trong {item.rentalDays} ngày
+            Tổng cộng: {totalPrice.toLocaleString("vi-VN")}đ trong{" "}
+            {item.rentalDays} ngày
           </div>
         </div>
 

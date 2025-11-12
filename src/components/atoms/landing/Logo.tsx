@@ -13,12 +13,12 @@ export interface LogoProps {
 }
 
 export const Logo: React.FC<LogoProps> = ({
-  width = 60,
-  height = 42,
+  width = 100,
+  height = 32,
   showText = true,
   text = 'Nova Camera',
   textColor = '#120B0B',
-  src = 'https://placehold.co/60x42',
+  src = '/logo.png',
   className = '',
 }) => {
   return (
@@ -38,24 +38,9 @@ export const Logo: React.FC<LogoProps> = ({
         alt={text}
         width={width}
         height={height}
-        style={{
-          mixBlendMode: 'luminosity',
-          boxShadow: landingShadows.logo,
-        }}
+       
       />
-      {showText && (
-        <div
-          style={{
-            textAlign: 'center',
-            color: textColor,
-            fontSize: 14,
-            fontFamily: 'Inter',
-            fontWeight: 700,
-          }}
-        >
-          {text}
-        </div>
-      )}
+      
     </div>
   );
 };

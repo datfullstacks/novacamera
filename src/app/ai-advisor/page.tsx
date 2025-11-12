@@ -50,9 +50,7 @@ export default function AIAdvisorPage() {
             tagline: null,
             shortDescription: product.description,
             brand: product.brand,
-            mainImageUrl: product.imageUrl 
-              ? `https://api.mmoshop.site/images/${product.imageUrl}` 
-              : null,
+            mainImageUrl: product.imageUrl || null,
             description: product.description,
             conditionNote: null,
             pricePerDay: product.pricePerDay,

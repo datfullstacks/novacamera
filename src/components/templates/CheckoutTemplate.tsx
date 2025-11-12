@@ -52,10 +52,11 @@ export const CheckoutTemplate: React.FC = () => {
         
         // End date: start date + rental days
         const endDate = new Date(startDate);
-        endDate.setDate(endDate.getDate() + item.rentalDays);
+        const rentalDays = item.rentalDays || item.totalDays || 1;
+        endDate.setDate(endDate.getDate() + rentalDays);
 
         return {
-          equipmentId: parseInt(item.id),
+          equipmentId: Number.parseInt(item.id || item.equipmentId?.toString() || '0', 10),
           rentalStartDate: startDate.toISOString(),
           rentalEndDate: endDate.toISOString(),
           quantity: item.quantity,
@@ -312,13 +313,13 @@ export const CheckoutTemplate: React.FC = () => {
                           {item.name}
                         </h4>
                         <p className="text-xs text-gray-500 mt-1">
-                          SL: {item.quantity} × {item.rentalDays} ngày
+                          SL: {item.quantity} × {item.rentalDays || item.totalDays || 1} ngày
                         </p>
                         <p className="text-sm font-medium text-gray-800 mt-1">
                           {(
-                            (item.dailyRate || item.price || 0) *
+                            (item.dailyRate || item.pricePerDay || item.price || 0) *
                             item.quantity *
-                            item.rentalDays
+                            (item.rentalDays || item.totalDays || 1)
                           ).toLocaleString("vi-VN")}
                           đ
                         </p>

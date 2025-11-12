@@ -220,7 +220,7 @@ export default async function HomePage() {
         subtitle={t("hero.subtitle")}
         ctaPrimaryText={t("hero.ctaPrimary")}
         ctaSecondaryText={t("hero.ctaSecondary")}
-        backgroundImage="https://images.unsplash.com/photo-1606980707556-e2e13052b2d7?w=1920&h=1200&fit=crop&q=90&sat=-20&contrast=10"
+        backgroundImage="https://imgs.search.brave.com/o2cW3n4oXJZ6p2OsOZ-MSY2ZQojET6kX6uJthhh6vJ4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzA5LzE1LzA3LzU0/LzM2MF9GXzkxNTA3/NTQyNF9MY0g5UHBu/SEU0dVVrYWtyZU5P/TURsaGIzTm9JbDFw/QS5qcGc"
       />
 
       {/* Categories Section */}

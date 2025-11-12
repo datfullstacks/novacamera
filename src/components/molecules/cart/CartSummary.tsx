@@ -62,7 +62,7 @@ export const CartSummary: React.FC<CartSummaryProps> = ({
         <div className="flex justify-between">
           <span className="text-sm text-gray-500">Ngày cho thuê</span>
           <span className="text-base font-medium text-gray-800">
-            {items.reduce((total, item) => Math.max(total, item.rentalDays), 0)}
+            {items.reduce((total, item) => Math.max(total, item.rentalDays || item.totalDays || 1), 0)}
           </span>
         </div>
 
