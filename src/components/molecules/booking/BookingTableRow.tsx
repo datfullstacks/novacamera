@@ -41,20 +41,19 @@ export default function BookingTableRow({
   const getAvailableActions = () => {
     const actions = [];
     
-    // Always available
-    actions.push({ action: 'view' as const, handler: handleView, label: 'Xem' });
-    
     // Status-based actions
     switch (booking.status) {
       case 'pending':
-        // Pending → Only cancel payment option
+        // Pending → Cancel payment option
         actions.push(
+          { action: 'view' as const, handler: handleView, label: 'Xem' },
           { action: 'cancel' as const, handler: handleCancel, label: 'Hủy thanh toán' }
         );
         break;
       case 'confirmed':
         // Confirmed → Rented or Cancelled
         actions.push(
+          { action: 'view' as const, handler: handleView, label: 'Xem' },
           { action: 'edit' as const, handler: handleEdit, label: 'Sửa' },
           { action: 'deliver' as const, handler: handleDeliver, label: 'Giao hàng' },
           { action: 'cancel' as const, handler: handleCancel, label: 'Hủy' }
@@ -63,6 +62,7 @@ export default function BookingTableRow({
       case 'renting':
         // Rented → Completed
         actions.push(
+          { action: 'view' as const, handler: handleView, label: 'Xem' },
           { action: 'edit' as const, handler: handleEdit, label: 'Sửa' },
           { action: 'return' as const, handler: handleReturn, label: 'Trả hàng' }
         );

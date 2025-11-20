@@ -5,4 +5,5 @@ export { default as ChartCard } from './ChartCard';
 export { default as EquipmentList } from './EquipmentList';
 export { default as BookingList } from './BookingList';
 export { default as MaintenanceList } from './MaintenanceList';
+export { default as RevenueChart } from './RevenueChart';
 

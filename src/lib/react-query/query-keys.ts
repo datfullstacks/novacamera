@@ -66,6 +66,8 @@ export const QUERY_KEYS = {
     SUMMARY: ['dashboard', 'summary'] as const,
     UPCOMING_RENTALS: (params?: Record<string, unknown>) =>
       ['dashboard', 'upcoming-rentals', params] as const,
+    MONTHLY_REVENUE: ['dashboard', 'monthly-revenue'] as const,
+    POPULAR_EQUIPMENT: ['dashboard', 'popular-equipment'] as const,
   },
 
   // Chat / AI

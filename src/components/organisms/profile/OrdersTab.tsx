@@ -121,7 +121,7 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({ userId }) => {
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="h-[600px] flex flex-col">
       {/* Header with Search and Filter */}
       <div className="mb-6 space-y-4">
         {/* Search Bar */}

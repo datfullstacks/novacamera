@@ -6,8 +6,8 @@ import { ProtectedRoute } from '@/components/auth';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import DashboardTemplate from '@/components/templates/DashboardTemplate';
-import { StatsGrid, ChartCard, EquipmentList, BookingList, MaintenanceList } from '@/components/organisms/dashboard';
-import { useDashboardSummary, useUpcomingRentals } from '@/lib/react-query/hooks';
+import { StatsGrid, ChartCard, EquipmentList, BookingList, MaintenanceList, RevenueChart } from '@/components/organisms/dashboard';
+import { useDashboardSummary, useUpcomingRentals, useMonthlyRevenue, useDashboardPopularEquipment } from '@/lib/react-query/hooks';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -18,6 +18,8 @@ export default function DashboardPage() {
   // Fetch dashboard data from API (must be called before any returns)
   const { data: summaryData, isLoading: loadingSummary } = useDashboardSummary();
   const { data: upcomingData } = useUpcomingRentals();
+  const { data: revenueData } = useMonthlyRevenue();
+  const { data: popularEquipmentData } = useDashboardPopularEquipment();
 
   // Check if user is admin (roleId === 1)
   useEffect(() => {
@@ -47,6 +49,12 @@ export default function DashboardPage() {
   }
 
   const summary = summaryData?.data;
+
+  // Transform monthly revenue data for chart
+  const monthlyRevenueData = revenueData?.data ? Object.entries(revenueData.data).map(([month, revenue]) => ({
+    month: `Tháng ${month}`,
+    revenue: revenue,
+  })) : [];
 
   // Transform API data to component format - simplified without change fields
   const stats = summary ? [
@@ -85,46 +93,62 @@ export default function DashboardPage() {
     },
   ];
 
-  const equipment = [
-    {
-      id: '1',
-      name: 'Sony Alpha A7III',
-      price: '$ 85/ngày',
-      usage: '92%',
-      status: 'rented' as const,
-      image: 'https://placehold.co/60x75',
-    },
-    {
-      id: '2',
-      name: 'Canon EOS R5',
-      price: '$ 95/ngày',
-      usage: '88%',
-      status: 'available' as const,
-      image: 'https://placehold.co/90x60',
-    },
-    {
-      id: '3',
-      name: 'Dji Ronin-s Gimbal',
-      price: '$ 45/ngày',
-      usage: '76%',
-      status: 'maintenance' as const,
-      image: 'https://placehold.co/90x60',
-    },
-    {
-      id: '4',
-      name: 'Nikon Z6 II',
-      price: '$ 75/ngày',
-      usage: '72%',
-      status: 'available' as const,
-    },
-  ];
+  // Transform popular equipment data - fallback to mock data if API fails
+  const equipment = (popularEquipmentData?.data && popularEquipmentData.data.length > 0)
+    ? popularEquipmentData.data.map((item) => {
+        const status: 'available' | 'rented' | 'maintenance' = 
+          item.availabilityClass === 'available' ? 'available' : 
+          item.availabilityClass === 'rented' ? 'rented' : 'maintenance';
+        
+        return {
+          id: item.equipmentId.toString(),
+          name: item.name || 'N/A',
+          price: item.formattedPrice || '0₫',
+          usage: '0%', // API không cung cấp usage data
+          status,
+          image: item.mainImageUrl || 'https://placehold.co/90x60',
+        };
+      })
+    : [
+        {
+          id: '1',
+          name: 'Sony Alpha A7III',
+          price: '$ 85/ngày',
+          usage: '92%',
+          status: 'rented' as const,
+          image: 'https://placehold.co/60x75',
+        },
+        {
+          id: '2',
+          name: 'Canon EOS R5',
+          price: '$ 95/ngày',
+          usage: '88%',
+          status: 'available' as const,
+          image: 'https://placehold.co/90x60',
+        },
+        {
+          id: '3',
+          name: 'Dji Ronin-s Gimbal',
+          price: '$ 45/ngày',
+          usage: '76%',
+          status: 'maintenance' as const,
+          image: 'https://placehold.co/90x60',
+        },
+        {
+          id: '4',
+          name: 'Nikon Z6 II',
+          price: '$ 75/ngày',
+          usage: '72%',
+          status: 'available' as const,
+        },
+      ];
 
   // Transform upcoming rentals data - fallback to mock data if API fails
   const bookings = (upcomingData?.data && upcomingData.data.length > 0) 
-    ? upcomingData.data.map((rental) => {
+    ? upcomingData.data.map((rental, index) => {
         const rentalDate = new Date(rental.rentalStartDate || '');
         return {
-          id: rental.orderId?.toString() || '',
+          id: `${rental.orderId || index}-${index}`, // Thêm index để đảm bảo unique key
           day: rentalDate.getDate(),
           month: rentalDate.toLocaleDateString('vi-VN', { month: 'short' }),
           customerName: rental.customerName || 'N/A',
@@ -190,17 +214,7 @@ export default function DashboardPage() {
               title="Tổng quan doanh thu"
               actionText="Xem báo cáo"
             >
-              <div className="w-full h-64 lg:h-72 bg-black/0 overflow-hidden">
-                <div className="w-full h-48 relative overflow-hidden">
-                  <div className="w-full h-40 absolute top-2 bg-blue-500/20 rounded" />
-                  <div className="w-full h-32 absolute top-2 outline-2 outline-blue-500 rounded" />
-                  <div className="w-1.5 h-1.5 absolute left-[20%] top-[75%] bg-blue-500 rounded-full" />
-                  <div className="w-1.5 h-1.5 absolute left-[40%] top-[90%] bg-blue-500 rounded-full" />
-                  <div className="w-1.5 h-1.5 absolute left-[60%] top-[60%] bg-blue-500 rounded-full" />
-                  <div className="w-1.5 h-1.5 absolute left-[80%] top-[40%] bg-blue-500 rounded-full" />
-                  <div className="w-1.5 h-1.5 absolute left-[95%] top-[20%] bg-blue-500 rounded-full" />
-                </div>
-              </div>
+              <RevenueChart data={monthlyRevenueData} />
             </ChartCard>
 
             {/* Equipment List */}

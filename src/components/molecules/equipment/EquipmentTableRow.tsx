@@ -16,6 +16,7 @@ interface Equipment {
 
 interface EquipmentTableRowProps extends HTMLAttributes<HTMLTableRowElement> {
   readonly equipment: Equipment;
+  readonly index?: number; // STT của row
   readonly onEdit?: (equipment: Equipment) => void;
   readonly onDelete?: (equipment: Equipment) => void;
   readonly onView?: (equipment: Equipment) => void;
@@ -23,6 +24,7 @@ interface EquipmentTableRowProps extends HTMLAttributes<HTMLTableRowElement> {
 
 export default function EquipmentTableRow({
   equipment,
+  index,
   onEdit,
   onDelete,
   onView,
@@ -43,6 +45,11 @@ export default function EquipmentTableRow({
 
   return (
     <tr className={`hover:bg-gray-50 ${className}`} {...props}>
+      {/* STT */}
+      <td className="px-6 py-4 whitespace-nowrap text-center">
+        <div className="text-sm font-medium text-gray-900">{index}</div>
+      </td>
+
       {/* Ảnh */}
       <td className="px-6 py-4 whitespace-nowrap">
         <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-200 flex items-center justify-center">
@@ -74,26 +81,13 @@ export default function EquipmentTableRow({
       </td>
 
       {/* Giá thuê */}
-      <td className="px-6 py-4 whitespace-nowrap">
+      <td className="px-6 py-4 whitespace-nowrap text-right">
         <div className="text-sm font-medium text-gray-900">{equipment.price}</div>
       </td>
 
-      {/* Tần suất sử dụng */}
-      <td className="px-6 py-4 whitespace-nowrap">
-        <div className="flex items-center">
-          <div className="w-16 bg-gray-200 rounded-full h-2 mr-2">
-            <div
-              className="bg-blue-600 h-2 rounded-full"
-              style={{ width: equipment.usage }}
-            />
-          </div>
-          <span className="text-sm text-gray-600">{equipment.usage}</span>
-        </div>
-      </td>
-
       {/* Hành động */}
-      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-        <div className="flex items-center space-x-2">
+      <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+        <div className="flex items-center justify-center space-x-2">
           <ActionButton
             variant="secondary"
             size="sm"

@@ -85,13 +85,9 @@ export default function AddEquipmentForm({
           const brandsRes = await equipmentService.getBrands();
           console.log('📦 Brands response:', brandsRes);
           
-          // Brands API returns statusCode 400 but with data in errors field
-          if (brandsRes.errors && Array.isArray(brandsRes.errors) && brandsRes.errors.length > 0) {
-            console.log('✅ Brands loaded from errors array:', brandsRes.errors);
-            setBrands(brandsRes.errors as string[]);
-          } else if (brandsRes.data && Array.isArray(brandsRes.data)) {
-            console.log('✅ Brands loaded from data:', brandsRes.data);
-            setBrands(brandsRes.data as string[]);
+          if (brandsRes.data?.brands && Array.isArray(brandsRes.data.brands)) {
+            console.log('✅ Brands loaded:', brandsRes.data.brands);
+            setBrands(brandsRes.data.brands);
           }
         } catch (brandError) {
           console.error('❌ Error loading brands:', brandError);

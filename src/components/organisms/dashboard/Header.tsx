@@ -12,11 +12,7 @@ interface HeaderProps extends HTMLAttributes<HTMLDivElement> {
   userAvatar?: string;
 }
 
-const viewOptions = [
-  { label: 'Quan điểm nền tảng', value: 'platform' },
-  { label: 'Quan điểm đối tác', value: 'partner' },
-  { label: 'Quan điểm của khách hàng', value: 'customer' },
-];
+const viewOptions: { label: string; value: string }[] = [];
 
 export default function Header({
   activeView,

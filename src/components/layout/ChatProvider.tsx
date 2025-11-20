@@ -28,18 +28,18 @@ export default function ChatProvider({
       {children}
       
       {/* Chat Button */}
-      <ChatButton
+      {/* <ChatButton
         onClick={handleToggleChat}
         isOpen={isChatOpen}
-      />
+      /> */}
       
       {/* Chat Container */}
-      <ChatContainer
+      {/* <ChatContainer
         isOpen={isChatOpen}
         onClose={handleCloseChat}
         aiAvatar="https://placehold.co/40x40"
         userAvatar="https://placehold.co/40x40"
-      />
+      /> */}
     </div>
   );
 }

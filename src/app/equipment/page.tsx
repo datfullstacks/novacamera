@@ -32,6 +32,8 @@ export default function EquipmentPage() {
   const [filters, setFilters] = useState<EquipmentFilterParams>({
     pageNumber: 1,
     pageSize: 10, // Change to 10 items per page for better UX
+    isAvailable: true, // Chỉ hiển thị thiết bị available
+    sortBy: 'newest', // Mặc định sắp xếp theo tên
   });
 
   // Admin-only access check

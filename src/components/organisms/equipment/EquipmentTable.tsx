@@ -25,6 +25,7 @@ interface EquipmentTableProps extends HTMLAttributes<HTMLDivElement> {
     pageSize: number;
     onPageChange: (page: number) => void;
   };
+  readonly startIndex?: number; // Index bắt đầu cho row
 }
 
 export default function EquipmentTable({
@@ -33,6 +34,7 @@ export default function EquipmentTable({
   onDelete,
   onView,
   pagination,
+  startIndex = 0,
   className = '',
   ...props
 }: EquipmentTableProps) {
@@ -81,6 +83,9 @@ export default function EquipmentTable({
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
+              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                STT
+              </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Ảnh
               </th>
@@ -93,13 +98,10 @@ export default function EquipmentTable({
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Trạng thái
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Giá thuê
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Tần suất SD
-              </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Hành động
               </th>
             </tr>
@@ -118,10 +120,11 @@ export default function EquipmentTable({
                 </td>
               </tr>
             ) : (
-              equipment.map((item) => (
+              equipment.map((item, index) => (
                 <EquipmentTableRow
                   key={item.id}
                   equipment={item}
+                  index={startIndex + index + 1}
                   onEdit={onEdit}
                   onDelete={onDelete}
                   onView={onView}

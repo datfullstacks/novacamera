@@ -16,8 +16,8 @@ const initialState: FilterState = {
   brands: [],
   priceRange: [0, 10000000], // 0 to 10M VND
   rating: 0,
-  availability: false,
-  sortBy: 'recommended',
+  availability: true, // Mặc định chỉ hiển thị thiết bị có sẵn
+  sortBy: 'price_desc', // Mặc định sắp xếp theo giá cao đến thấp
   viewMode: 'grid',
   searchQuery: '',
 };
@@ -71,7 +71,7 @@ const filtersSlice = createSlice({
       state.brands = [];
       state.priceRange = [0, 10000000];
       state.rating = 0;
-      state.availability = false;
+      state.availability = true; // Luôn giữ mặc định chỉ hiển thị thiết bị có sẵn
       state.searchQuery = '';
     },
     resetToDefaults: () => initialState,

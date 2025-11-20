@@ -64,20 +64,10 @@ export function useFiltersData(): FiltersDataState {
 
           if (!isMounted) return;
 
-          // Chuẩn hóa lấy brands từ brandsResponse.data.brands (API chuẩn)
-          let brandsData: string[] = [];
-          if (
-            brandsResponse.data &&
-            Array.isArray((brandsResponse.data as unknown as Record<string, unknown>).brands)
-          ) {
-            brandsData = (brandsResponse.data as unknown as Record<string, string[]>).brands;
-          } else if (Array.isArray(brandsResponse.errors)) {
-            // Fallback cho backend cũ
-            brandsData = brandsResponse.errors;
-          }
-
-          console.log('🔍 Final brandsData:', brandsData);
-          if (brandsData.length > 0) {
+          // Lấy brands từ brandsResponse.data.brands
+          if (brandsResponse.data?.brands && Array.isArray(brandsResponse.data.brands)) {
+            const brandsData = brandsResponse.data.brands;
+            console.log('🔍 Final brandsData:', brandsData);
             setBrands(brandsData);
             console.log('✅ Brands SET to state:', brandsData.length, brandsData);
           } else {

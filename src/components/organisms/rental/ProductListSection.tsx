@@ -83,11 +83,15 @@ export function ProductListSection({ className = '', filtersReady = false }: Pro
 
   const sortOptions = [
     { value: 'recommended', label: 'Được đề xuất' },
-    { value: 'name', label: 'Tên A-Z' },
-    { value: 'price-low', label: 'Giá thấp đến cao' },
-    { value: 'price-high', label: 'Giá cao đến thấp' },
-    { value: 'rating', label: 'Đánh giá cao nhất' },
+    { value: 'name_asc', label: 'Tên A-Z' },
+    { value: 'name_desc', label: 'Tên Z-A' },
+    { value: 'price_asc', label: 'Giá thấp đến cao' },
+    { value: 'price_desc', label: 'Giá cao đến thấp' },
+    { value: 'rating_desc', label: 'Đánh giá cao nhất' },
+    { value: 'rating_asc', label: 'Đánh giá thấp nhất' },
     { value: 'newest', label: 'Mới nhất' },
+    { value: 'oldest', label: 'Cũ nhất' },
+    { value: 'popular', label: 'Phổ biến nhất' },
   ];
 
   useEffect(() => {
@@ -115,9 +119,9 @@ export function ProductListSection({ className = '', filtersReady = false }: Pro
           brands: filters.brands.length > 0 ? filters.brands : undefined,
           minPrice: filters.priceRange[0] > 0 ? filters.priceRange[0] : undefined,
           maxPrice: filters.priceRange[1] < 10000000 ? filters.priceRange[1] : undefined,
-          isAvailable: filters.availability || undefined,
+          isAvailable: filters.availability ? true : undefined, // Chỉ filter khi availability = true
           minRating: filters.rating > 0 ? filters.rating : undefined,
-          sortBy: sortBy === 'price-low' ? 'price' : sortBy === 'price-high' ? 'price' : sortBy === 'newest' ? 'createdAt' : sortBy,
+          sortBy: sortBy === 'recommended' ? undefined : sortBy, // API sẽ tự xử lý nếu undefined
         };
 
         console.log('🔍 Fetching products with filters:', {

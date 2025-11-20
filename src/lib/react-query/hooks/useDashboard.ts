@@ -40,3 +40,31 @@ export function useUpcomingRentals(
     ...options,
   });
 }
+
+/**
+ * Get monthly revenue data
+ */
+export function useMonthlyRevenue(
+  options?: Omit<UseQueryOptions<Awaited<ReturnType<typeof dashboardService.getMonthlyRevenue>>>, 'queryKey' | 'queryFn'>
+) {
+  return useQuery({
+    queryKey: QUERY_KEYS.DASHBOARD.MONTHLY_REVENUE,
+    queryFn: () => dashboardService.getMonthlyRevenue(),
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    ...options,
+  });
+}
+
+/**
+ * Get popular equipment (top 5) for dashboard
+ */
+export function useDashboardPopularEquipment(
+  options?: Omit<UseQueryOptions<Awaited<ReturnType<typeof dashboardService.getPopularEquipment>>>, 'queryKey' | 'queryFn'>
+) {
+  return useQuery({
+    queryKey: QUERY_KEYS.DASHBOARD.POPULAR_EQUIPMENT,
+    queryFn: () => dashboardService.getPopularEquipment(),
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    ...options,
+  });
+}

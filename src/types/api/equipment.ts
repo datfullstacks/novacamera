@@ -150,5 +150,5 @@ export type EquipmentCardListApiResponse = ApiResponse<EquipmentCardResponse[]>;
 export type EquipmentApiResponse = ApiResponse<EquipmentResponse>;
 export type EquipmentImagesApiResponse = ApiResponse<EquipmentImageResponse[]>;
 export type FilterMetadataApiResponse = ApiResponse<FilterMetadata>;
-export type BrandsListApiResponse = ApiResponse<string[]>;
+export type BrandsListApiResponse = ApiResponse<{ brands: string[] }>;
 export type PriceRangeApiResponse = ApiResponse<string>;

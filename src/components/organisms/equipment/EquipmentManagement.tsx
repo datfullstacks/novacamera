@@ -157,6 +157,7 @@ export default function EquipmentManagement({
         onDelete={onDeleteEquipment}
         onView={onViewEquipment}
         pagination={pagination}
+        startIndex={pagination ? (pagination.currentPage - 1) * pagination.pageSize : 0}
       />
 
       {/* Filter Panel */}

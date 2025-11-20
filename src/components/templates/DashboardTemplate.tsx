@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { ReactNode, HTMLAttributes } from 'react';
-import Text from '../atoms/Text';
-import { Sidebar, Header } from '../organisms/dashboard';
-import ChatProvider from '../layout/ChatProvider';
-import Breadcrumb from '@/components/atoms/ui/Breadcrumb';
+import { ReactNode, HTMLAttributes } from "react";
+import Text from "../atoms/Text";
+import { Sidebar, Header } from "../organisms/dashboard";
+import ChatProvider from "../layout/ChatProvider";
+import Breadcrumb from "@/components/atoms/ui/Breadcrumb";
 
 interface DashboardTemplateProps extends HTMLAttributes<HTMLDivElement> {
   readonly children: ReactNode;
@@ -19,14 +19,14 @@ interface DashboardTemplateProps extends HTMLAttributes<HTMLDivElement> {
 
 export default function DashboardTemplate({
   children,
-  activeSidebarItem = 'dashboard',
+  activeSidebarItem = "dashboard",
   onSidebarItemClick,
   activeView,
   onViewChange,
   userName,
   userRole,
   userAvatar,
-  className = '',
+  className = "",
   ...props
 }: DashboardTemplateProps) {
   return (
@@ -44,35 +44,32 @@ export default function DashboardTemplate({
 
         {/* Main Content Area */}
         <div className="flex-1 lg:ml-60 min-h-screen">
-          {/* Header */}
+          {/* Header with Breadcrumb */}
           <div className="w-full px-4 lg:px-8 py-4 lg:py-6">
-            <Header
-              activeView={activeView}
-              onViewChange={onViewChange}
-              userName={userName}
-              userRole={userRole}
-              userAvatar={userAvatar}
-              className="w-full"
-            />
-          </div>
-
-          {/* Page Title */}
-          <div className="px-4 lg:px-8 mb-6">
-            <div className="mb-4">
-              <Breadcrumb className="text-sm" />
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              {/* Breadcrumb */}
+              <div className="order-2 lg:order-1">
+                <Breadcrumb className="text-sm" />
+              </div>
+              
+              {/* User Info */}
+              <div className="order-1 lg:order-2">
+                <Header
+                  activeView={activeView}
+                  onViewChange={onViewChange}
+                  userName={userName}
+                  userRole={userRole}
+                  userAvatar={userAvatar}
+                  className="w-full"
+                />
+              </div>
             </div>
-            <Text variant="body" className="text-slate-800 text-xl lg:text-2xl font-normal leading-loose">
-              Bảng điều khiển nền tảng
-            </Text>
           </div>
 
           {/* Main Content */}
-          <div className="px-4 lg:px-8 pb-8">
-            {children}
-          </div>
+          <div className="px-4 lg:px-8 pb-8">{children}</div>
         </div>
       </div>
     </ChatProvider>
   );
 }
-

@@ -20,7 +20,7 @@ export default function ViewToggle({
   ...props
 }: ViewToggleProps) {
   return (
-    <div className={`bg-slate-200 rounded-lg p-1 flex flex-wrap ${className}`} {...props}>
+    <div className={`rounded-lg p-1 flex flex-wrap ${className}`} {...props}>
       {options.map((option) => (
         <button
           key={option.value}
