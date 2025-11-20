@@ -17,7 +17,7 @@ const initialState: FilterState = {
   priceRange: [0, 10000000], // 0 to 10M VND
   rating: 0,
   availability: true, // Mặc định chỉ hiển thị thiết bị có sẵn
-  sortBy: 'price_desc', // Mặc định sắp xếp theo giá cao đến thấp
+  sortBy: 'newest', // Mặc định hiển thị sản phẩm mới nhất trước
   viewMode: 'grid',
   searchQuery: '',
 };
