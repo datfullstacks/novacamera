@@ -7,7 +7,7 @@ interface EquipmentFormData {
   name: string;
   code: string;
   price: string;
-  status: 'available' | 'rented' | 'maintenance' | 'repair';
+  status: 'active' | 'inactive';
   manufacturer: string;
   category: string;
   serialNumber: string;
@@ -43,7 +43,7 @@ export default function EquipmentFormModal({
         {/* Backdrop */}
         <button 
           type="button"
-          className="fixed inset-0 bg-black bg-opacity-25" 
+          className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm" 
           onClick={onClose}
           onKeyDown={(e) => e.key === 'Escape' && onClose()}
           aria-label="Close modal"

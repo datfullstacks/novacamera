@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -32,8 +32,8 @@ export default function EquipmentPage() {
   const [filters, setFilters] = useState<EquipmentFilterParams>({
     pageNumber: 1,
     pageSize: 10, // Change to 10 items per page for better UX
-    isAvailable: true, // Chỉ hiển thị thiết bị available
-    sortBy: 'newest', // Mặc định sắp xếp theo tên
+    isAvailable: true, // Chỉ hiển thị thiết bị khả dụng
+    sortBy: 'newest', // M?c d?nh s?p x?p theo m?i nh?t
   });
 
   // Admin-only access check
@@ -65,7 +65,7 @@ export default function EquipmentPage() {
     isOpen: false,
     title: '',
     message: '',
-    onConfirm: () => {},
+    onConfirm: () => { },
     loading: false,
   });
 
@@ -73,7 +73,11 @@ export default function EquipmentPage() {
   const queryClient = useQueryClient();
 
   // Fetch equipment from API
-  const { data, isLoading, error } = useEquipments(filters);
+  const { data, isLoading, error } = useEquipments(filters, {
+    staleTime: 0,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: true,
+  });
 
   // Delete mutation
   const deleteMutation = useMutation({
@@ -81,10 +85,10 @@ export default function EquipmentPage() {
     onSuccess: () => {
       // Invalidate and refetch equipment list
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.EQUIPMENT.LIST(filters as Record<string, unknown>) });
-      
+
       // Close dialog
       setConfirmDialog({ ...confirmDialog, isOpen: false, loading: false });
-      
+
       // Show success toast
       showToast({
         type: 'success',
@@ -94,14 +98,14 @@ export default function EquipmentPage() {
     },
     onError: (error: Error) => {
       console.error('Delete failed:', error);
-      
+
       // Show error toast
       showToast({
         type: 'error',
         title: 'Xóa thất bại',
         message: error.message || 'Không thể xóa thiết bị. Vui lòng thử lại.',
       });
-      
+
       // Close dialog
       setConfirmDialog({ ...confirmDialog, isOpen: false, loading: false });
     },
@@ -111,7 +115,7 @@ export default function EquipmentPage() {
   useEffect(() => {
     console.log('🚀 EquipmentPage mounted');
     console.log('🔑 Current filters:', filters);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Debug: Log data changes
@@ -144,7 +148,7 @@ export default function EquipmentPage() {
     name: item.name || 'N/A',
     code: `#${item.equipmentId}`,
     status: item.isAvailable ? 'available' : 'rented',
-    price: `${item.pricePerDay.toLocaleString('vi-VN')}₫`,
+    price: item.pricePerDay != null ? item.pricePerDay.toLocaleString('vi-VN') : '0',
     usage: '0%', // API doesn't provide this, placeholder
     image: item.mainImageUrl || 'https://placehold.co/60x60',
   })) || [];
@@ -195,7 +199,7 @@ export default function EquipmentPage() {
               </div>
               <p className="text-gray-800 font-semibold mb-2">Không thể tải dữ liệu thiết bị</p>
               <p className="text-gray-600 text-sm">{error.message}</p>
-              <button 
+              <button
                 onClick={() => setFilters({ ...filters })}
                 className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
               >
@@ -230,11 +234,11 @@ export default function EquipmentPage() {
       onConfirm: async () => {
         // Set loading state
         setConfirmDialog(prev => ({ ...prev, loading: true }));
-        
+
         // Call API to delete equipment
         const equipmentId = parseInt(equipment.id, 10);
         console.log('🗑️ Deleting equipment:', equipmentId);
-        
+
         deleteMutation.mutate(equipmentId);
       },
     });
@@ -290,3 +294,11 @@ export default function EquipmentPage() {
     </ProtectedRoute>
   );
 }
+
+
+
+
+
+
+
+

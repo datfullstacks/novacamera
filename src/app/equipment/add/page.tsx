@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { useQueryClient } from '@tanstack/react-query';
 import { RootState } from '@/store';
 import { ProtectedRoute } from '@/components/auth';
 import { showToast } from '@/components/atoms/ui/Toast';
@@ -14,9 +15,14 @@ interface EquipmentFormData {
   name: string;
   code: string;
   price: string;
-  status: 'available' | 'rented' | 'maintenance' | 'repair';
+  status: 'active' | 'inactive';
   manufacturer: string;
   category: string;
+  categoryId: number;
+  tagline: string;
+  shortDescription: string;
+  depositFee: string;
+  stock: string;
   serialNumber: string;
   purchaseDate: string;
   condition: string;
@@ -30,7 +36,10 @@ interface EquipmentFormData {
 export default function AddEquipmentPage() {
   const router = useRouter();
   const authState = useSelector((state: RootState) => state.auth);
+  const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
+  // Debug log auth state
+  console.log('AddEquipmentPage - authState:', authState);
 
   // Admin-only check
   useEffect(() => {
@@ -56,21 +65,49 @@ export default function AddEquipmentPage() {
   const handleSubmit = async (data: EquipmentFormData) => {
     setLoading(true);
     try {
-      // Simulate API call
-      console.log('Adding equipment:', data);
-      
-      // Here you would typically:
-      // 1. Upload images to cloud storage
-      // 2. Save equipment data to database
-      // 3. Handle success/error states
-      
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate API delay
-      
-      // Redirect to equipment list after success
+      // Mapping đúng trường API
+      const formData = new FormData();
+      formData.append('Name', data.name);
+      formData.append('Tagline', data.tagline || '');
+      formData.append('ShortDescription', data.shortDescription || '');
+      formData.append('Brand', data.manufacturer);
+      formData.append('Description', data.description);
+      formData.append('ConditionNote', data.condition);
+      formData.append('PricePerDay', String(data.price));
+      formData.append('DepositFee', String(data.depositFee || 0));
+      formData.append('Status', data.status); // 'active' hoặc 'inactive'
+      formData.append('Stock', String(data.stock || 0));
+      formData.append('RentalCount', String(data.rentalCount || 0));
+      formData.append('CategoryId', String(data.categoryId));
+      // MainImage
+      if (data.images[0]) {
+        formData.append('MainImage', data.images[0]);
+      } else {
+        // API cho phép gửi giá trị trống
+        formData.append('MainImage', '');
+      }
+      // AdditionalImages
+      data.images.slice(1).forEach(img => formData.append('AdditionalImages', img));
+      // Các trường mở rộng nếu có
+      // Gọi API
+      const response = await import('@/lib/api/services/equipment.service').then(mod => mod.equipmentService.createEquipment(formData));
+      showToast({
+        type: 'success',
+        title: 'Thêm thiết bị thành công',
+        message: response.message || 'Thiết bị đã được thêm!',
+        duration: 4000,
+      });
+      // Invalidate equipment queries so list refreshes after navigation
+      queryClient.invalidateQueries({ queryKey: ['equipment'] });
       router.push('/equipment');
     } catch (error) {
       console.error('Error adding equipment:', error);
-      // Handle error (show toast, etc.)
+      showToast({
+        type: 'error',
+        title: 'Lỗi',
+        message: 'Không thể thêm thiết bị',
+        duration: 4000,
+      });
     } finally {
       setLoading(false);
     }
@@ -119,4 +156,5 @@ export default function AddEquipmentPage() {
     </ProtectedRoute>
   );
 }
+
 

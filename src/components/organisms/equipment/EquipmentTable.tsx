@@ -99,7 +99,7 @@ export default function EquipmentTable({
                 Trạng thái
               </th>
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Giá thuê
+                Giá thuê (VND/ngày)
               </th>
               <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Hành động
@@ -229,3 +229,5 @@ export default function EquipmentTable({
     </div>
   );
 }
+
+

@@ -47,6 +47,7 @@ export default function SpecField({
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-medium text-gray-900">Thông số kỹ thuật</h3>
         <ActionButton
+          type="button"
           variant="secondary"
           size="sm"
           onClick={addSpec}
@@ -80,6 +81,7 @@ export default function SpecField({
               />
             </div>
             <ActionButton
+              type="button"
               variant="danger"
               size="sm"
               onClick={() => removeSpec(index)}

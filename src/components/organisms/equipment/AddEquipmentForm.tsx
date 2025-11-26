@@ -1,27 +1,32 @@
 'use client';
 
-import { HTMLAttributes, useState, useEffect } from 'react';
-import { 
-  FormInput, 
-  FormSelect, 
-  FormTextarea, 
-  ImageUpload, 
-  ActionButton 
+import { categoryService, equipmentService } from '@/lib/api/services';
+import { FormEvent, HTMLAttributes, useEffect, useState } from 'react';
+import {
+  ActionButton,
+  FormInput,
+  FormSelect,
+  FormTextarea,
+  ImageUpload,
 } from '../../atoms/equipment';
-import { 
-  FormSection, 
-  SpecField, 
-  AccessoryField 
+import {
+  AccessoryField,
+  FormSection,
+  SpecField,
 } from '../../molecules/equipment';
-import { equipmentService, categoryService } from '@/lib/api/services';
 
 interface EquipmentFormData {
   name: string;
   code: string;
   price: string;
-  status: 'available' | 'rented' | 'maintenance' | 'repair';
+  status: 'active' | 'inactive';
   manufacturer: string;
   category: string;
+  categoryId: number;
+  tagline: string;
+  shortDescription: string;
+  depositFee: string;
+  stock: string;
   serialNumber: string;
   purchaseDate: string;
   condition: string;
@@ -39,10 +44,8 @@ interface AddEquipmentFormProps extends Omit<HTMLAttributes<HTMLFormElement>, 'o
 }
 
 const statusOptions = [
-  { value: 'available', label: 'Có sẵn' },
-  { value: 'rented', label: 'Đang thuê' },
-  { value: 'maintenance', label: 'Bảo trì' },
-  { value: 'repair', label: 'Sửa chữa' },
+  { value: 'active', label: 'Đang hoạt động' },
+  { value: 'inactive', label: 'Ngừng kinh doanh' },
 ];
 
 export default function AddEquipmentForm({
@@ -56,9 +59,14 @@ export default function AddEquipmentForm({
     name: '',
     code: '',
     price: '',
-    status: 'available',
+    status: 'active',
     manufacturer: '',
     category: '',
+    categoryId: 0,
+    tagline: '',
+    shortDescription: '',
+    depositFee: '',
+    stock: '',
     serialNumber: '',
     purchaseDate: '',
     condition: '',
@@ -79,25 +87,18 @@ export default function AddEquipmentForm({
     const loadData = async () => {
       try {
         setLoadingData(true);
-        
-        // Load brands
+
         try {
           const brandsRes = await equipmentService.getBrands();
-          console.log('📦 Brands response:', brandsRes);
-          
           if (brandsRes.data?.brands && Array.isArray(brandsRes.data.brands)) {
-            console.log('✅ Brands loaded:', brandsRes.data.brands);
             setBrands(brandsRes.data.brands);
           }
         } catch (brandError) {
-          console.error('❌ Error loading brands:', brandError);
+          console.error('Error loading brands:', brandError);
         }
 
-        // Load categories
         try {
           const categoriesRes = await categoryService.getCategories();
-          console.log('📂 Categories response:', categoriesRes);
-          
           if (categoriesRes.data && Array.isArray(categoriesRes.data)) {
             const categoryOptions = categoriesRes.data
               .filter((cat) => cat.categoryName)
@@ -105,16 +106,15 @@ export default function AddEquipmentForm({
                 value: String(cat.categoryId),
                 label: cat.categoryName || '',
               }));
-            console.log('✅ Categories loaded:', categoryOptions);
             setCategories(categoryOptions);
           } else {
-            console.warn('⚠️ No categories data:', categoriesRes);
+            console.warn('No categories data:', categoriesRes);
           }
         } catch (categoryError) {
-          console.error('❌ Error loading categories:', categoryError);
+          console.error('Error loading categories:', categoryError);
         }
       } catch (error) {
-        console.error('❌ Error loading data:', error);
+        console.error('Error loading data:', error);
       } finally {
         setLoadingData(false);
       }
@@ -124,9 +124,9 @@ export default function AddEquipmentForm({
   }, []);
 
   const updateField = (field: keyof EquipmentFormData, value: EquipmentFormData[keyof EquipmentFormData]) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: undefined }));
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
   };
 
@@ -136,6 +136,8 @@ export default function AddEquipmentForm({
     if (!formData.name.trim()) newErrors.name = 'Tên thiết bị là bắt buộc';
     if (!formData.code.trim()) newErrors.code = 'Mã thiết bị là bắt buộc';
     if (!formData.price.trim()) newErrors.price = 'Giá thuê là bắt buộc';
+    else if (Number.isNaN(Number(formData.price))) newErrors.price = 'Giá thuê phải là số';
+    if (formData.depositFee && Number.isNaN(Number(formData.depositFee))) newErrors.depositFee = 'Phí đặt cọc phải là số';
     if (!formData.manufacturer.trim()) newErrors.manufacturer = 'Hãng sản xuất là bắt buộc';
     if (!formData.category) newErrors.category = 'Loại thiết bị là bắt buộc';
     if (!formData.serialNumber.trim()) newErrors.serialNumber = 'Số seri là bắt buộc';
@@ -147,7 +149,7 @@ export default function AddEquipmentForm({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
       onSubmit?.(formData);
@@ -179,12 +181,33 @@ export default function AddEquipmentForm({
             placeholder="Ví dụ: CAM-R5-001"
           />
           <FormInput
-            label="Giá thuê (VNĐ/ngày)"
+            label="Tagline"
+            value={formData.tagline}
+            onChange={(value) => updateField('tagline', value)}
+            placeholder="Ví dụ: Máy ảnh chuyên nghiệp cho mọi nhu cầu"
+          />
+          <FormInput
+            label="Mô tả ngắn"
+            value={formData.shortDescription}
+            onChange={(value) => updateField('shortDescription', value)}
+            placeholder="Tóm tắt ngắn gọn về thiết bị"
+          />
+          <FormInput
+            label="Giá thuê (VND/ngày)"
+            type="number"
             value={formData.price}
             onChange={(value) => updateField('price', value)}
             error={errors.price}
             required
             placeholder="Ví dụ: 1.500.000"
+          />
+          <FormInput
+            label="Phí đặt cọc (VND)"
+            type="number"
+            value={formData.depositFee}
+            onChange={(value) => updateField('depositFee', value)}
+            error={errors.depositFee}
+            placeholder="Ví dụ: 500.000"
           />
           <FormSelect
             label="Trạng thái"
@@ -194,25 +217,41 @@ export default function AddEquipmentForm({
             required
             options={statusOptions}
           />
+          <FormInput
+            label="Số lượng tồn kho"
+            type="number"
+            value={formData.stock}
+            onChange={(value) => updateField('stock', value)}
+            placeholder="Ví dụ: 10"
+          />
           <FormSelect
             label="Hãng sản xuất"
             value={formData.manufacturer}
             onChange={(value) => updateField('manufacturer', value)}
             error={errors.manufacturer}
             required
-            options={brands.length > 0 
-              ? brands.map(brand => ({ value: brand, label: brand }))
-              : [{ value: '', label: 'Đang tải...' }]
+            options={
+              brands.length > 0
+                ? brands.map((brand) => ({ value: brand, label: brand }))
+                : [{ value: '', label: loadingData ? 'Đang tải...' : 'Không có dữ liệu' }]
             }
             placeholder="Chọn hãng sản xuất"
           />
           <FormSelect
             label="Loại thiết bị"
             value={formData.category}
-            onChange={(value) => updateField('category', value)}
+            onChange={(value) => {
+              updateField('category', value);
+              const selected = categories.find((cat) => cat.value === value);
+              updateField('categoryId', selected ? Number(selected.value) : 0);
+            }}
             error={errors.category}
             required
-            options={categories.length > 0 ? categories : [{ value: '', label: 'Đang tải...' }]}
+            options={
+              categories.length > 0
+                ? categories
+                : [{ value: '', label: loadingData ? 'Đang tải...' : 'Không có dữ liệu' }]
+            }
             placeholder="Chọn loại thiết bị"
           />
         </div>
@@ -275,7 +314,7 @@ export default function AddEquipmentForm({
           label="Hình ảnh thiết bị"
           multiple
           onImagesChange={(images) => updateField('images', images)}
-          previewImages={formData.images.map(file => URL.createObjectURL(file))}
+          previewImages={formData.images.map((file) => URL.createObjectURL(file))}
         />
       </FormSection>
 
@@ -284,6 +323,7 @@ export default function AddEquipmentForm({
         title="Thông số kỹ thuật"
         description="Thêm các thông số kỹ thuật của thiết bị"
       >
+        {/* Đảm bảo SpecField không trigger submit form khi thêm thông số */}
         <SpecField
           specs={formData.specs}
           onSpecsChange={(specs) => updateField('specs', specs)}
@@ -309,7 +349,7 @@ export default function AddEquipmentForm({
           onClick={onCancel}
           disabled={loading}
         >
-          Hủy
+          Huỷ
         </ActionButton>
         <ActionButton
           type="submit"
@@ -322,4 +362,3 @@ export default function AddEquipmentForm({
     </form>
   );
 }
-

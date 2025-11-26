@@ -47,6 +47,7 @@ export default function AccessoryField({
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-medium text-gray-900">Phụ kiện đi kèm</h3>
         <ActionButton
+          type="button"
           variant="secondary"
           size="sm"
           onClick={addAccessory}
@@ -81,6 +82,7 @@ export default function AccessoryField({
               <label className="text-sm text-gray-700">Có kèm theo</label>
             </div>
             <ActionButton
+              type="button"
               variant="danger"
               size="sm"
               onClick={() => removeAccessory(index)}
