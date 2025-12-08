@@ -1,6 +1,6 @@
 'use client';
 
-import { categoryService, equipmentService } from '@/lib/api/services';
+import { categoryService } from '@/lib/api/services';
 import { FormEvent, HTMLAttributes, useEffect, useState } from 'react';
 import {
   ActionButton,
@@ -48,6 +48,21 @@ const statusOptions = [
   { value: 'inactive', label: 'Ngừng kinh doanh' },
 ];
 
+const brandOptions = [
+  'Sony',
+  'Canon',
+  'DJI',
+  'Nikon',
+  'Portkey',
+  'Godox',
+  'Sigma',
+  'Tamron',
+  'Viltrox',
+  'Ulanzi',
+  'Benro',
+  'SanDisk',
+];
+
 export default function AddEquipmentForm({
   onSubmit,
   onCancel,
@@ -78,24 +93,14 @@ export default function AddEquipmentForm({
   });
 
   const [errors, setErrors] = useState<Partial<Record<keyof EquipmentFormData, string>>>({});
-  const [brands, setBrands] = useState<string[]>([]);
   const [categories, setCategories] = useState<Array<{ value: string; label: string }>>([]);
   const [loadingData, setLoadingData] = useState(true);
 
-  // Load brands and categories on component mount
+  // Load categories on component mount
   useEffect(() => {
     const loadData = async () => {
       try {
         setLoadingData(true);
-
-        try {
-          const brandsRes = await equipmentService.getBrands();
-          if (brandsRes.data?.brands && Array.isArray(brandsRes.data.brands)) {
-            setBrands(brandsRes.data.brands);
-          }
-        } catch (brandError) {
-          console.error('Error loading brands:', brandError);
-        }
 
         try {
           const categoriesRes = await categoryService.getCategories();
@@ -230,11 +235,7 @@ export default function AddEquipmentForm({
             onChange={(value) => updateField('manufacturer', value)}
             error={errors.manufacturer}
             required
-            options={
-              brands.length > 0
-                ? brands.map((brand) => ({ value: brand, label: brand }))
-                : [{ value: '', label: loadingData ? 'Đang tải...' : 'Không có dữ liệu' }]
-            }
+            options={brandOptions.map((brand) => ({ value: brand, label: brand }))}
             placeholder="Chọn hãng sản xuất"
           />
           <FormSelect
